@@ -1,0 +1,12 @@
+﻿<settings>
+  <lazybone>
+    <host>10.0.1.127</host>
+    <port>2000</port>
+  </lazybone>
+  <camera>
+    
+  </camera>
+  <danalock>
+    
+  </danalock>
+</settings>
