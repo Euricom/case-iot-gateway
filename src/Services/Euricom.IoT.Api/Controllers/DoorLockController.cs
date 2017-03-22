@@ -1,14 +1,12 @@
-﻿using Euricom.IoT.Api.Configuration;
-using Euricom.IoT.Api.Notifications;
-using Euricom.IoT.Api.OpenZWave;
+﻿using Euricom.IoT.Api.Notifications;
 using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.DanaLock;
+using Euricom.IoT.Messaging;
+using Newtonsoft.Json;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
-using Euricom.IoT.Api.Utilities;
 using System;
-using Newtonsoft.Json;
-using Euricom.IoT.Messaging;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -16,12 +14,12 @@ namespace Euricom.IoT.Api.Controllers
     public sealed partial class DoorLockController
     {
         private readonly DoorLockConfig _config;
-        private readonly DanaLock _danaLock;
+        private readonly DanaLock.DanaLock _danaLock;
 
         public DoorLockController(DoorLockConfig config)
         {
             _config = config;
-            _danaLock = DanaLock.Instance;
+            _danaLock = DanaLock.DanaLock.Instance;
         }
 
         [UriFormat("/doorlock/{state}")]

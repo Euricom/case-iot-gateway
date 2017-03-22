@@ -1,9 +1,4 @@
 ﻿using Euricom.IoT.Api;
-using Euricom.IoT.Api.OpenZWave;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

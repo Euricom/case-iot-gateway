@@ -1,6 +1,7 @@
 ﻿using Euricom.IoT.Api.Configuration;
 using Euricom.IoT.Api.Notifications;
 using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.LazyBone;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using Restup.Webserver.Attributes;
@@ -14,11 +15,11 @@ namespace Euricom.IoT.Api.Controllers
     public sealed partial class LazyBoneController
     {
         private readonly CameraConfig _config;
-        private readonly LazyBone _lazyBone;
+        private readonly LazyBone.LazyBone _lazyBone;
 
         public LazyBoneController(LazyBoneConfig config)
         {
-            _lazyBone = new LazyBone(config);
+            _lazyBone = new LazyBone.LazyBone(config);
         }
 
         [UriFormat("/lazybone/{state}")]

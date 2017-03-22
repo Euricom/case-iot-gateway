@@ -1,15 +1,15 @@
-﻿using Euricom.IoT.Api.Configuration;
+﻿
 using Euricom.IoT.Api.Controllers;
-using Euricom.IoT.Api.OpenZWave;
+using Euricom.IoT.DataLayer;
 using Restup.Webserver.Http;
 using Restup.Webserver.Rest;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using static Euricom.IoT.Api.Configuration.ConfigReader;
+using static Euricom.IoT.DataLayer.ConfigReader;
 
 namespace Euricom.IoT.Api
 {
-    public sealed class Startup
+    public class Startup
     {
         private HttpServer _httpServer;
         private BackgroundTaskDeferral _deferral;
@@ -27,10 +27,10 @@ namespace Euricom.IoT.Api
             await InitWebServer();
         }
 
-        private async Task InitDanaLock()
-        {
-            await DanaLock.Instance.Initialize();
-        }
+        //private async Task InitDanaLock()
+        //{
+        //    //await DanaLock.Instance.Initialize();
+        //}
 
         private async Task InitWebServer()
         {
