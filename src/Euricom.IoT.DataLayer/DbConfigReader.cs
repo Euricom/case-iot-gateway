@@ -1,11 +1,14 @@
-﻿using Euricom.IoT.Api.Configuration;
-using Euricom.IoT.DanaLock;
-using Euricom.IoT.LazyBone;
+﻿using Euricom.IoT.Common;
 
 namespace Euricom.IoT.DataLayer
 {
-    public class ConfigReader
+    public class DbConfigReader
     {
+        public DbConfigReader()
+        {
+
+        }
+
         private LazyBoneConfig _lazyBoneConfig { get; set; }
         private DoorLockConfig _doorlockConfig { get; set; }
         private CameraConfig _cameraConfig { get; set; }
@@ -13,6 +16,9 @@ namespace Euricom.IoT.DataLayer
         // TODO read from database
         public DeviceConfigurations ReadConfiguration()
         {
+            //Database.Instance.ReadConfig();
+            var db = Database.Instance;
+
             _lazyBoneConfig = new LazyBoneConfig();
             _doorlockConfig = new DoorLockConfig();
             _cameraConfig = new CameraConfig();

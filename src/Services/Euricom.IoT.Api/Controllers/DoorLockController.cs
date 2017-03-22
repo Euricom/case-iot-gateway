@@ -1,5 +1,6 @@
 ﻿using Euricom.IoT.Api.Notifications;
 using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.Common;
 using Euricom.IoT.DanaLock;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;

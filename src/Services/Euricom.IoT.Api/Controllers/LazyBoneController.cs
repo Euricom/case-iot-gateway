@@ -1,7 +1,6 @@
-﻿using Euricom.IoT.Api.Configuration;
-using Euricom.IoT.Api.Notifications;
+﻿using Euricom.IoT.Api.Notifications;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.LazyBone;
+using Euricom.IoT.Common;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using Restup.Webserver.Attributes;

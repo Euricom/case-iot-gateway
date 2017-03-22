@@ -5,7 +5,7 @@ using Restup.Webserver.Http;
 using Restup.Webserver.Rest;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using static Euricom.IoT.DataLayer.ConfigReader;
+using static Euricom.IoT.DataLayer.DbConfigReader;
 
 namespace Euricom.IoT.Api
 {
@@ -18,7 +18,7 @@ namespace Euricom.IoT.Api
         public async void Run()
         {
             // Read configuration
-            _deviceConfigs = new ConfigReader().ReadConfiguration();
+            _deviceConfigs = new DbConfigReader().ReadConfiguration();
 
             // Init DanaLock
             //await InitDanaLock();

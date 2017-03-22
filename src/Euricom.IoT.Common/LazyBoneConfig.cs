@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Api.Configuration
+namespace Euricom.IoT.Common
 {
-    public class CameraConfig
+    public class LazyBoneConfig
     {
-        public string DeviceKey { get; set; }
         public string Host { get; set; }
         public string Port { get; set; }
     }

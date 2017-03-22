@@ -1,5 +1,5 @@
-﻿using Euricom.IoT.Api.Configuration;
-using Euricom.IoT.Api.Notifications;
+﻿using Euricom.IoT.Api.Notifications;
+using Euricom.IoT.Common;
 using Euricom.IoT.FileTransfer;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;

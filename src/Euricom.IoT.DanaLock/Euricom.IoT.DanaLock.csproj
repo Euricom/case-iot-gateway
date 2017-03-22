@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DanaLock.cs" />
-    <Compile Include="DoorLockConfig.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

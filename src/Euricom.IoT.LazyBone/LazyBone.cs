@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euricom.IoT.Common;
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Networking;
@@ -18,7 +19,6 @@ namespace Euricom.IoT.LazyBone
         {
             _config = config;
         }
-
 
         public async Task<bool> GetCurrentState()
         {

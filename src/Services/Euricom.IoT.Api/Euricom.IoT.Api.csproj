@@ -157,6 +157,10 @@
       <Project>{9DA8728A-EE56-48C5-92EC-087DBFC9BF18}</Project>
       <Name>Euricom.IoT.Camera</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
+      <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.DanaLock\Euricom.IoT.DanaLock.csproj">
       <Project>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</Project>
       <Name>Euricom.IoT.DanaLock</Name>

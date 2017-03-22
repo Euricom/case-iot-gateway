@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.DanaLock
+namespace Euricom.IoT.Common
 {
-    public class DoorLockConfig
+    public class CameraConfig
     {
         public string DeviceKey { get; set; }
         public string Host { get; set; }
