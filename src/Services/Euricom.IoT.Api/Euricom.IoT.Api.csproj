@@ -99,6 +99,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
     <Compile Include="Controllers\DoorLockController.cs" />

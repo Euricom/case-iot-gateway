@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public class DoorLockConfig
+    public class Camera : Device
     {
-        public string DeviceKey { get; set; }
-        public string Host { get; set; }
-        public string Port { get; set; }
+        public string Address { get; set; }
+        public string UserName { get; set; }
+        public bool Enabled { get; set; }
     }
 }

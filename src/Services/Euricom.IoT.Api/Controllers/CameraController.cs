@@ -12,18 +12,17 @@ using System.Threading.Tasks;
 namespace Euricom.IoT.Api.Controllers
 {
     [RestController(InstanceCreationType.Singleton)]
-    public sealed partial class CameraController
+    public class CameraController
     {
-        private CameraConfig _config;
-
-        public CameraController(CameraConfig config)
+        public CameraController()
         {
-            _config = config;
         }
 
-        [UriFormat("/camera/notify?url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
-        public IGetResponse Notify(string url, string timestamp, int frameNumber, int eventNumber)
+        [UriFormat("/camera/notify?device={device}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
+        public IGetResponse Notify(string device, string url, string timestamp, int frameNumber, int eventNumber)
         {
+            var config = DataLayer.Database.Instance.GetCameraConfig(device);
+
             //var imageBytes = GetMotionImage(url);
             var notification = new CameraNotification
             {
@@ -31,11 +30,11 @@ namespace Euricom.IoT.Api.Controllers
                 EventNumber = eventNumber,
                 FrameNumber = frameNumber,
                 Timestamp = timestamp,
-                //Device = "IoTGateway"
+                DeviceKey = config.DeviceKey,
             };
 
             // Publish to IoT Hub
-            PublishMotionEvent(notification);
+            PublishMotionEvent(config.DeviceKey, notification);
 
             // Send response back
             return new GetResponse(GetResponse.ResponseStatus.OK);
@@ -49,10 +48,10 @@ namespace Euricom.IoT.Api.Controllers
             return bytes;
         }
 
-        private void PublishMotionEvent(CameraNotification notification)
+        private void PublishMotionEvent(string deviceKey, CameraNotification notification)
         {
             var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(_config.DeviceKey).Publish(json);
+            new MqttMessagePublisher(deviceKey).Publish(json);
         }
     }
 }

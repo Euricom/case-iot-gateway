@@ -10,6 +10,6 @@
 
         public string Timestamp { get; set; }
 
-        public string DeviceK { get; set; }
+        public string DeviceKey { get; set; }
     }
 }

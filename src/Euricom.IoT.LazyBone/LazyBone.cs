@@ -9,18 +9,21 @@ namespace Euricom.IoT.LazyBone
 {
     public sealed class LazyBone
     {
+        private Switch _config;
+
         private readonly string COMMAND_RELAY_TO_1 = ((char)(Int16.Parse("0x65", NumberStyles.AllowHexSpecifier))).ToString();
         private readonly string COMMAND_RELAY_TO_0 = ((char)(Int16.Parse("0x6F", NumberStyles.AllowHexSpecifier))).ToString();
         private readonly string COMMAND_RELAY_STATUS = ((char)(Int16.Parse("0x5B", NumberStyles.AllowHexSpecifier))).ToString();
 
-        private LazyBoneConfig _config;
-
-        public LazyBone(LazyBoneConfig config)
+        public LazyBone()
+        {
+        }
+        public void SetConfig(Switch config)
         {
             _config = config;
         }
 
-        public async Task<bool> GetCurrentState()
+        public async Task<bool> GetCurrentState(string device)
         {
             var host = _config.Host;
             var port = _config.Port;
@@ -35,6 +38,7 @@ namespace Euricom.IoT.LazyBone
                 return true;
             }
         }
+
 
         public async void Switch(bool on)
         {

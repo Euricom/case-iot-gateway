@@ -3,7 +3,7 @@
 
   <!-- Link config files in, to include them in the output directory and application manifest. -->
   <ItemGroup>
-	<Content Include="$(MSBuildThisFileDirectory)\..\..\OpenZWave\open-zwave\config\**\*.*">
+	<Content Include="$(MSBuildThisFileDirectory)\..\..\..\open-zwave\config\**\*.*">
 	  <Link>config\%(RecursiveDir)%(Filename)%(Extension)</Link>
 	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</Content>

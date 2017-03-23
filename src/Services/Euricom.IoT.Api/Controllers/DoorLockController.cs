@@ -2,6 +2,7 @@
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
 using Euricom.IoT.DanaLock;
+using Euricom.IoT.DataLayer;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using Restup.Webserver.Attributes;
@@ -12,20 +13,20 @@ using System;
 namespace Euricom.IoT.Api.Controllers
 {
     [RestController(InstanceCreationType.Singleton)]
-    public sealed partial class DoorLockController
+    public class DoorLockController
     {
-        private readonly DoorLockConfig _config;
         private readonly DanaLock.DanaLock _danaLock;
 
-        public DoorLockController(DoorLockConfig config)
+        public DoorLockController()
         {
-            _config = config;
             _danaLock = DanaLock.DanaLock.Instance;
         }
 
         [UriFormat("/doorlock/{state}")]
-        public IGetResponse Switch(string state)
+        public IGetResponse Switch(string state) //public IGetResponse Switch(string device, string state)
         {
+            //var config = Database.Instance.GetDoorLockConfig(device);
+
             if (string.IsNullOrEmpty(state))
             {
                 return ResponseUtilities.ResponseFail("param state was null or empty");
@@ -51,13 +52,10 @@ namespace Euricom.IoT.Api.Controllers
 
                 var notification = new DoorLockNotification
                 {
-                    DeviceKey = _config.DeviceKey,
+                    DeviceKey = "test", //config,
                     Locked = state == "open" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
-
-                // Publish to IoT Hub
-                PublishDoorLockEvent(notification);
 
                 // Send response back
                 return ResponseUtilities.ResponseOk($"OK changed DanaLock device state to : {state}");
@@ -66,12 +64,6 @@ namespace Euricom.IoT.Api.Controllers
             {
                 return ResponseUtilities.ResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
-        }
-
-        private void PublishDoorLockEvent(DoorLockNotification notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(_config.DeviceKey).Publish(json);
         }
     }
 }

@@ -11,19 +11,28 @@ using System;
 namespace Euricom.IoT.Api.Controllers
 {
     [RestController(InstanceCreationType.Singleton)]
-    public sealed partial class LazyBoneController
+    public class LazyBoneController
     {
-        private readonly CameraConfig _config;
         private readonly LazyBone.LazyBone _lazyBone;
 
-        public LazyBoneController(LazyBoneConfig config)
+        public LazyBoneController()
         {
-            _lazyBone = new LazyBone.LazyBone(config);
+            _lazyBone = new LazyBone.LazyBone();
         }
 
-        [UriFormat("/lazybone/{state}")]
-        public IGetResponse Switch(string state)
+        /// <summary>
+        /// Sends a switch command to a specific LazyBone device 
+        /// </summary>
+        /// <param name="device">Guid of device</param>
+        /// <param name="state">on or off</param>
+        /// <returns></returns>
+        //[UriFormat("/lazybone/{state}")]
+        [UriFormat("/lazybone\\?device={device}&state={state}")]
+        //public IGetResponse Switch(string state)
+        public IGetResponse Switch(string device, string state)
         {
+            var config = DataLayer.Database.Instance.GetSwitchConfig(device);
+
             if (string.IsNullOrEmpty(state))
             {
                 return ResponseUtilities.ResponseFail("param state was null or empty");
@@ -49,13 +58,10 @@ namespace Euricom.IoT.Api.Controllers
 
                 var notification = new LazyBoneNotification
                 {
-                    DeviceKey = _config.DeviceKey,
+                    DeviceKey = config.DeviceKey,
                     State = state == "open" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
-
-                // Publish to IoT Hub
-                PublishLazyBoneEvent(notification);
 
                 return ResponseUtilities.ResponseOk($"OK changed LazyBone device state to : {state}");
             }
@@ -63,13 +69,6 @@ namespace Euricom.IoT.Api.Controllers
             {
                 return ResponseUtilities.ResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
-        }
-
-        private void PublishLazyBoneEvent(LazyBoneNotification notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(_config.DeviceKey).Publish(json);
-
         }
     }
 }

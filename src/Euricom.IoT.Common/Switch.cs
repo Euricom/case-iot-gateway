@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public class LazyBoneConfig
+    public class Switch : Device
     {
         public string Host { get; set; }
         public string Port { get; set; }
