@@ -10,11 +10,10 @@ namespace Euricom.IoT.Messaging
         private readonly DeviceClient _azureDeviceClient;
 
         private const string iotHubUri = "eurismartoffice.azure-devices.net";
-        private const string deviceKey = "y8VBjCDsGl7XM6UxRWfZNieYMVqC20gLSZLJN0n9rTE=";
 
-        public MqttMessagePublisher(string deviceKey)
+        public MqttMessagePublisher(string deviceName, string deviceKey)
         {
-            _azureDeviceClient = DeviceClient.Create(iotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey("myFirstDevice", deviceKey), TransportType.Mqtt);
+            _azureDeviceClient = DeviceClient.Create(iotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey("myFirstDevice", "y8VBjCDsGl7XM6UxRWfZNieYMVqC20gLSZLJN0n9rTE="), TransportType.Mqtt);
         }
 
         public async void Publish(string json)
@@ -22,7 +21,6 @@ namespace Euricom.IoT.Messaging
             try
             {
                 var message = new Message(Encoding.ASCII.GetBytes(json));
-
                 await _azureDeviceClient.SendEventAsync(message);
             }
             catch (Exception ex)

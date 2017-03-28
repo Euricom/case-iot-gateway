@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public abstract class Device
+    public class LazyBone : Device
     {
-        public string DeviceId { get; set; }
-        public string Name { get; set; }
+        public string Host { get; set; }
+        public string Port { get; set; }
     }
 }

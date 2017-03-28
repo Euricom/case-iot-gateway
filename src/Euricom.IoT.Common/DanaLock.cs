@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public class DoorLock : Device
+    public class DanaLock : Device
     {
     }
 }

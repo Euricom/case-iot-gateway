@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Api.Utilities
+namespace Euricom.IoT.Common.Utilities
 {
     public static class DateTimeHelpers
     {

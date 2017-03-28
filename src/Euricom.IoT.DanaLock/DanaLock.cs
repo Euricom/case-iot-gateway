@@ -10,7 +10,7 @@ using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Euricom.IoT.DanaLock
+namespace Euricom.IoT.Devices.DanaLock
 {
     public class DanaLock
     {

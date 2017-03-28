@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public class Switch : Device
+    public enum HardwareType
     {
-        public string Host { get; set; }
-        public string Port { get; set; }
+        Camera,
+        DanaLock,
+        LazyBoneSwitch
     }
 }

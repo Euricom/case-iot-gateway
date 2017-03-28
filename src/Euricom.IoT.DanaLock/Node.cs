@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.DanaLock
+namespace Euricom.IoT.Devices.DanaLock
 {
     public class Node
     {

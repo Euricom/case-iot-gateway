@@ -9,7 +9,7 @@ namespace Euricom.IoT.LazyBone
 {
     public sealed class LazyBone
     {
-        private Switch _config;
+        private Common.LazyBone _config;
 
         private readonly string COMMAND_RELAY_TO_1 = ((char)(Int16.Parse("0x65", NumberStyles.AllowHexSpecifier))).ToString();
         private readonly string COMMAND_RELAY_TO_0 = ((char)(Int16.Parse("0x6F", NumberStyles.AllowHexSpecifier))).ToString();
@@ -18,7 +18,7 @@ namespace Euricom.IoT.LazyBone
         public LazyBone()
         {
         }
-        public void SetConfig(Switch config)
+        public void SetConfig(Common.LazyBone config)
         {
             _config = config;
         }

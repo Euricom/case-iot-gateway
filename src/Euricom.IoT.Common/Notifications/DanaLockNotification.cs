@@ -1,6 +1,6 @@
-﻿namespace Euricom.IoT.Api.Notifications
+﻿namespace Euricom.IoT.Common.Notifications
 {
-    public sealed class DoorLockNotification
+    public sealed class DanaLockNotification
     {
         public bool Locked { get; set; }
         public string Timestamp { get; set; }

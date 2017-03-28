@@ -18,6 +18,12 @@ namespace Euricom.IoT.DataLayer
 
         private static DBreeze.DBreezeEngine _engine = null;
 
+        private const string DBREEZE_TABLE_DANALOCKS = "DanaLocks";
+        private const string DBREEZE_TABLE_CAMERAS = "Cameras";
+        private const string DBREEZE_TABLE_LAZYBONES = "LazyBones";
+        private const string DBREEZE_TABLE_LOGGING = "Log";
+
+
         private Database()
         {
             InitDB();
@@ -31,14 +37,14 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public DoorLock GetDoorLockConfig(string deviceGuid)
+        public DanaLock GetDanaLockConfig(string deviceId)
         {
             try
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>("DoorLock", deviceGuid).Value;
-                    return JsonConvert.DeserializeObject<DoorLock>(json);
+                    var json = tran.Select<string, string>("DanaLocks", deviceId).Value;
+                    return JsonConvert.DeserializeObject<DanaLock>(json);
                 }
             }
             catch (Exception ex)
@@ -49,14 +55,14 @@ namespace Euricom.IoT.DataLayer
         }
 
 
-        public Switch GetSwitchConfig(string deviceGuid)
+        public LazyBone GetLazyBoneConfig(string deviceId)
         {
             try
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>("Switches", deviceGuid).Value;
-                    return JsonConvert.DeserializeObject<Switch>(json);
+                    var json = tran.Select<string, string>("LazyBones", deviceId).Value;
+                    return JsonConvert.DeserializeObject<LazyBone>(json);
                 }
             }
             catch (Exception ex)
@@ -66,13 +72,13 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public Camera GetCameraConfig(string deviceGuid)
+        public Camera GetCameraConfig(string deviceId)
         {
             try
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>("Camera", deviceGuid).Value;
+                    var json = tran.Select<string, string>(DBREEZE_TABLE_CAMERAS, deviceId).Value;
                     var cameraConfig = JsonConvert.DeserializeObject<Camera>(json);
                     return cameraConfig;
                 }
@@ -90,7 +96,7 @@ namespace Euricom.IoT.DataLayer
             {
                 var hardware = new Hardware();
                 hardware.Cameras = GetCameras();
-                hardware.Switches = GetSwitches();
+                hardware.Switches = GetLazyBones();
                 hardware.DoorLocks = GetDoorLocks();
                 return hardware;
             }
@@ -109,7 +115,7 @@ namespace Euricom.IoT.DataLayer
                 List<LogLine> logs = new List<LogLine>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>("Log"))
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LOGGING))
                     {
                         var sequence = Int64.Parse(row.Key);
                         var logLine = JsonConvert.DeserializeObject<LogLine>(row.Value);
@@ -133,7 +139,7 @@ namespace Euricom.IoT.DataLayer
                 List<Camera> cameras = new List<Camera>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>("Cameras"))
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<Camera>(row.Value);
@@ -149,17 +155,17 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public List<DoorLock> GetDoorLocks()
+        public List<DanaLock> GetDoorLocks()
         {
             try
             {
-                List<DoorLock> doorlocks = new List<DoorLock>();
+                List<DanaLock> doorlocks = new List<DanaLock>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>("DoorLocks"))
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
                     {
                         var deviceGuid = row.Key;
-                        var deviceConfig = JsonConvert.DeserializeObject<DoorLock>(row.Value);
+                        var deviceConfig = JsonConvert.DeserializeObject<DanaLock>(row.Value);
                         doorlocks.Add(deviceConfig);
                     }
                 }
@@ -172,21 +178,21 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public List<Switch> GetSwitches()
+        public List<LazyBone> GetLazyBones()
         {
             try
             {
-                List<Switch> switches = new List<Switch>();
+                List<LazyBone> lazyBones = new List<LazyBone>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>("Switches"))
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
                     {
                         var deviceGuid = row.Key;
-                        var deviceConfig = JsonConvert.DeserializeObject<Switch>(row.Value);
-                        switches.Add(deviceConfig);
+                        var deviceConfig = JsonConvert.DeserializeObject<LazyBone>(row.Value);
+                        lazyBones.Add(deviceConfig);
                     }
                 }
-                return switches;
+                return lazyBones;
             }
             catch (Exception ex)
             {

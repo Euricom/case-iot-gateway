@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Api.Notifications
+namespace Euricom.IoT.Common.Notifications
 {
     public class LazyBoneNotification
     {

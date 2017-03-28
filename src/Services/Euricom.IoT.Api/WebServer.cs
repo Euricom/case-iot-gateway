@@ -19,7 +19,7 @@ namespace Euricom.IoT.Api
             var restRouteHandler = new RestRouteHandler();
             restRouteHandler.RegisterController<ConfigurationController>();
             restRouteHandler.RegisterController<CameraController>();
-            restRouteHandler.RegisterController<DoorLockController>();
+            restRouteHandler.RegisterController<DanaLockController>();
             restRouteHandler.RegisterController<LazyBoneController>();
 
             var configuration = new HttpServerConfiguration()

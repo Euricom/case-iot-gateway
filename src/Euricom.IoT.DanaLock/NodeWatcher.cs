@@ -15,7 +15,7 @@ using Windows.UI.Core;
 using CoreDispatcher = System.Windows.Threading.Dispatcher;
 #endif
 
-namespace Euricom.IoT.DanaLock
+namespace Euricom.IoT.Devices.DanaLock
 {
     /// <summary>
     /// This class monitors discovery, removal and changes to available devices (nodes),

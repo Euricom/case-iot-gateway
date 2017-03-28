@@ -99,17 +99,14 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\HardwareController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
-    <Compile Include="Controllers\DoorLockController.cs" />
-    <Compile Include="Notifications\DoorLockNotification.cs" />
-    <Compile Include="Notifications\CameraNotification.cs" />
-    <Compile Include="Notifications\LazyBoneNotification.cs" />
+    <Compile Include="Controllers\DanaLockController.cs" />
     <Compile Include="ResponseData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Utilities\DateTimeExtensions.cs" />
     <Compile Include="Utilities\ResponseUtilities.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
@@ -149,14 +146,13 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png">
       <InProject>false</InProject>
     </Content>
+    <Content Include="Assets\Configuration\secrets.xml" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Euricom.IoT.Camera\Euricom.IoT.Camera.csproj">
-      <Project>{9DA8728A-EE56-48C5-92EC-087DBFC9BF18}</Project>
-      <Name>Euricom.IoT.Camera</Name>
+    <ProjectReference Include="..\..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
+      <Project>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</Project>
+      <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
@@ -165,22 +161,6 @@
     <ProjectReference Include="..\..\Euricom.IoT.DanaLock\Euricom.IoT.DanaLock.csproj">
       <Project>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</Project>
       <Name>Euricom.IoT.DanaLock</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
-      <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
-      <Name>Euricom.IoT.DataLayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Euricom.IoT.LazyBone\Euricom.IoT.LazyBone.csproj">
-      <Project>{C6FD53CC-6841-4956-81DA-40BDB332705E}</Project>
-      <Name>Euricom.IoT.LazyBone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.FileTransfer\Euricom.IoT.FileTransfer.csproj">
-      <Project>{14c37d41-724e-4ffe-a319-76cf630fdc0f}</Project>
-      <Name>Euricom.IoT.FileTransfer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
-      <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>
-      <Name>Euricom.IoT.Messaging</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

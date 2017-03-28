@@ -2,7 +2,7 @@
 using OpenZWave;
 using Windows.Devices.Enumeration;
 
-namespace Euricom.IoT.DanaLock
+namespace Euricom.IoT.Devices.DanaLock
 {
 
     public sealed class SerialPortInfo

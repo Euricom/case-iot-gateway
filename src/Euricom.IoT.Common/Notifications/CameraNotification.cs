@@ -1,4 +1,4 @@
-﻿namespace Euricom.IoT.Api.Notifications
+﻿namespace Euricom.IoT.Common.Notifications
 {
     public sealed class CameraNotification
     {
