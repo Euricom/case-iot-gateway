@@ -10,6 +10,6 @@ namespace Euricom.IoT.Common
     {
         public List<Camera> Cameras { get; set; }
         public List<LazyBone> Switches { get; set; }
-        public List<DanaLock> DoorLocks { get; set; }
+        public List<DanaLock> DanaLocks { get; set; }
     }
 }

@@ -78,21 +78,28 @@ namespace Euricom.IoT.Devices.DanaLock
             GetSerialPorts();
         }
 
-        public void OpenLock()
+        public bool IsLocked(byte nodeId)
+        {
+            bool currentVal = false;
+            ZWManager.Instance.GetValueAsBool(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), out currentVal);
+            return currentVal;
+        }
+
+        public void OpenLock(byte nodeId) //nodeId = 0x4
         {
             if (_homeId > 0)
             {
                 //Unlock or lock door
-                ZWManager.Instance.SetValue(new ZWValueID(_homeId, 0x4, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
+                ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
             }
         }
 
-        public void CloseLock()
+        public void CloseLock(byte nodeId) //nodeId = 0x4
         {
             if (_homeId > 0)
             {
                 //Unlock or lock door
-                ZWManager.Instance.SetValue(new ZWValueID(_homeId, 0x4, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
+                ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
             }
         }
 

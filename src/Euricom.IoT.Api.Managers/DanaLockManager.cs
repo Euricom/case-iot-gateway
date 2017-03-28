@@ -22,36 +22,58 @@ namespace Euricom.IoT.Api.Managers
             throw new NotImplementedException();
         }
 
-        public void Switch(string device, string state)
+        public bool IsLocked(byte nodeId)
         {
-            var config = DataLayer.Database.Instance.GetLazyBoneConfig(device);
+            return _danaLock.IsLocked(nodeId);
+        }
 
+        public bool IsLocked(string deviceId)
+        {
+            try
+            {
+                //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+                //var nodeId = config.NodeId;
+                byte nodeId = 0x4;
+                return _danaLock.IsLocked(nodeId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void Switch(string deviceId, string state)
+        {
             if (string.IsNullOrEmpty(state))
             {
                 throw new Exception("param state was null or empty");
             }
-            else if (state != "on" && state != "off")
+            else if (state != "open" && state != "close")
             {
-                throw new Exception($"UNKNOWN parameter: { state}. Please use 'on' or 'off'");
+                throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
             }
+
+            //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
 
             try
             {
+                //var nodeId = config.NodeId;
+                byte nodeId = 0x4;
                 switch (state)
                 {
                     case "open":
-                        _danaLock.OpenLock();
+                        _danaLock.OpenLock(nodeId);
                         break;
                     case "close":
-                        _danaLock.CloseLock();
+                        _danaLock.CloseLock(nodeId);
                         break;
                     default:
-                        throw new InvalidOperationException($"unknown operation for DanaLock, state: {state}");
+                        throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");
                 }
 
                 var notification = new LazyBoneNotification
                 {
-                    DeviceKey = config.DeviceId,
+                    DeviceKey = deviceId,
                     State = state == "open" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };

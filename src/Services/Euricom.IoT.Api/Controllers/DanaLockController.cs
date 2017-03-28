@@ -20,14 +20,35 @@ namespace Euricom.IoT.Api.Controllers
             _danaLockManager = new DanaLockManager();
         }
 
-        public void Add(DanaLock danaLock)
+        [UriFormat("/danalock/add")]
+        public IGetResponse Add([FromContent] Common.DanaLock danaLock)
         {
-            _danaLockManager.Add(danaLock);
+            try
+            {
+                var added = _danaLockManager.Add(danaLock);
+                return ResponseUtilities.ResponseOk(added.DeviceId);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.ResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+            }
         }
 
-        //[UriFormat("/danalock\\?deviceid={deviceid}&state={state}")]
-        //[UriFormat("/danalock/device/{deviceId}/state/{state}")]
-        [UriFormat("/danalock?deviceid={deviceid}&state={state}")]
+        [UriFormat("/danalock/islocked?deviceid={deviceid}")]
+        public IGetResponse IsLocked(string deviceId)
+        {
+            try
+            {
+                var isLocked = _danaLockManager.IsLocked(deviceId);
+                return ResponseUtilities.ResponseOk(isLocked.ToString());
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.ResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/danalock/switch?deviceid={deviceid}&state={state}")]
         public IGetResponse Switch(string deviceid, string state)
         {
             try
@@ -36,11 +57,11 @@ namespace Euricom.IoT.Api.Controllers
                 _danaLockManager.Switch(deviceid, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.ResponseOk($"OK changed DanaLock device state to : {state}");
+                return ResponseUtilities.ResponseOk($"OK DanaLock switched state to : {state}");
             }
             catch (Exception ex)
             {
-                return ResponseUtilities.ResponseFail($"DanaLock failed, exception: {ex.Message}");
+                return ResponseUtilities.ResponseFail($"DanaLock switch failed, exception: {ex.Message}");
             }
         }
     }

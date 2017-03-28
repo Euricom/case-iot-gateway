@@ -97,7 +97,7 @@ namespace Euricom.IoT.DataLayer
                 var hardware = new Hardware();
                 hardware.Cameras = GetCameras();
                 hardware.Switches = GetLazyBones();
-                hardware.DoorLocks = GetDoorLocks();
+                hardware.DanaLocks = GetDanaLocks();
                 return hardware;
             }
             catch (Exception ex)
@@ -155,21 +155,21 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public List<DanaLock> GetDoorLocks()
+        public List<DanaLock> GetDanaLocks()
         {
             try
             {
-                List<DanaLock> doorlocks = new List<DanaLock>();
+                List<DanaLock> danaLocks = new List<DanaLock>();
                 using (var tran = _engine.GetTransaction())
                 {
                     foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<DanaLock>(row.Value);
-                        doorlocks.Add(deviceConfig);
+                        danaLocks.Add(deviceConfig);
                     }
                 }
-                return doorlocks;
+                return danaLocks;
             }
             catch (Exception ex)
             {

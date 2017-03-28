@@ -8,5 +8,6 @@ namespace Euricom.IoT.Common
 {
     public class DanaLock : Device
     {
+        public byte NodeId { get; set; } //Example 0x4 (node 4)
     }
 }

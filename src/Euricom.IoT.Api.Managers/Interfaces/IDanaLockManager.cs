@@ -9,8 +9,8 @@ namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface IDanaLockManager
     {
+        bool IsLocked(string deviceId);
         Common.DanaLock Add(Common.DanaLock danaLock);
-
         void Switch(string deviceid, string state);
     }
 }
