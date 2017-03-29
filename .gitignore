@@ -330,3 +330,4 @@ __pycache__/
 *.app
 
 # End of https://www.gitignore.io/api/c++
+src/Euricom\.IoT\.Common/Secrets/
