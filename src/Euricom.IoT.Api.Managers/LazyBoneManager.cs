@@ -5,6 +5,7 @@ using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
 using Newtonsoft.Json;
 using System;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -15,6 +16,7 @@ namespace Euricom.IoT.Api.Managers
 
         public LazyBoneManager()
         {
+            //_azureDeviceManager = new DeviceManager();
             _lazyBone = new LazyBone.LazyBone();
         }
 
@@ -33,9 +35,23 @@ namespace Euricom.IoT.Api.Managers
             return lazyBone;
         }
 
-        public void Switch(string device, string state)
+        public async Task<bool> GetCurrentState(string deviceId)
         {
-            var config = DataLayer.Database.Instance.GetLazyBoneConfig(device);
+            try
+            {
+                var lazybone = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
+                var switchedOn = await _lazyBone.GetCurrentState(deviceId);
+                return switchedOn;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void Switch(string deviceId, string state)
+        {
+            //var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
 
             if (string.IsNullOrEmpty(state))
             {
@@ -62,7 +78,7 @@ namespace Euricom.IoT.Api.Managers
 
                 var notification = new LazyBoneNotification
                 {
-                    DeviceKey = config.DeviceId,
+                    DeviceKey = deviceId,
                     State = state == "open" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };

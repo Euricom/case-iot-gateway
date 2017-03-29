@@ -49,11 +49,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{DB1D6C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Common", "Euricom.IoT.Common\Euricom.IoT.Common.csproj", "{AF740215-006D-4021-A019-6127B64DAE88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.AzureDeviceManager", "AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj", "{A1673557-C45C-457B-BD38-597549771075}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.AzureDeviceManager", "Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj", "{A1673557-C45C-457B-BD38-597549771075}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Api.Managers", "Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj", "{2B675E07-0441-4FA5-9F46-435EFFD17A01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Monitoring", "Euricom.IoT.Monitoring\Euricom.IoT.Monitoring.csproj", "{E2C002A8-3C66-4D75-AF99-0DD636AE1691}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.AzureBlobStorage", "Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj", "{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -300,6 +302,22 @@ Global
 		{E2C002A8-3C66-4D75-AF99-0DD636AE1691}.Release|x64.Build.0 = Release|x64
 		{E2C002A8-3C66-4D75-AF99-0DD636AE1691}.Release|x86.ActiveCfg = Release|x86
 		{E2C002A8-3C66-4D75-AF99-0DD636AE1691}.Release|x86.Build.0 = Release|x86
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|ARM.ActiveCfg = Debug|ARM
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|ARM.Build.0 = Debug|ARM
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|x64.ActiveCfg = Debug|x64
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|x64.Build.0 = Debug|x64
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|x86.ActiveCfg = Debug|x86
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Debug|x86.Build.0 = Debug|x86
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|ARM.ActiveCfg = Release|ARM
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|ARM.Build.0 = Release|ARM
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|x64.ActiveCfg = Release|x64
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|x64.Build.0 = Release|x64
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|x86.ActiveCfg = Release|x86
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,5 +337,6 @@ Global
 		{A1673557-C45C-457B-BD38-597549771075} = {26441922-0B30-43AD-BC24-CD181762FFC1}
 		{2B675E07-0441-4FA5-9F46-435EFFD17A01} = {9A34D20F-B24A-4D5B-A8A5-202BCFEC4E61}
 		{E2C002A8-3C66-4D75-AF99-0DD636AE1691} = {9A34D20F-B24A-4D5B-A8A5-202BCFEC4E61}
+		{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60} = {26441922-0B30-43AD-BC24-CD181762FFC1}
 	EndGlobalSection
 EndGlobal

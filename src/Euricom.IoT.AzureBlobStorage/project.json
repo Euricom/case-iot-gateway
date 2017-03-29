@@ -1,8 +1,7 @@
 ﻿{
   "dependencies": {
-    "Dropbox.Api": "4.2.4",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
-    "Newtonsoft.Json": "10.0.1"
+    "WindowsAzure.Storage": "8.1.1"
   },
   "frameworks": {
     "uap10.0": {}

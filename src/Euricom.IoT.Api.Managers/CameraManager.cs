@@ -7,16 +7,21 @@ using Euricom.IoT.FileTransfer;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using Euricom.IoT.AzureBlobStorage;
+using System.IO;
 
 namespace Euricom.IoT.Api.Manager
 {
     public class CameraManager : ICameraManager
     {
+        private AzureBlobStorageManager _azureBlobStorage;
         private DeviceManager _azureDeviceManager;
 
         public CameraManager()
         {
-
+            _azureBlobStorage = new IoT.AzureBlobStorage.AzureBlobStorageManager();
         }
 
         public Camera Add(Camera camera)
@@ -52,12 +57,15 @@ namespace Euricom.IoT.Api.Manager
             PublishMotionEvent(config.DeviceId, notification);
         }
 
-        private async Task<byte[]> GetMotionImage(string filePath)
+        public async void UploadFilesToBlobStorage(Dictionary<string, byte[]> files)
         {
-            var splitted = filePath.Split('/');
-            var path = "/sdcard/Camera1/" + splitted[splitted.Length - 2] + "/" + splitted[splitted.Length - 1];
-            var bytes = await FtpFileTransfer.GetFile(path);
-            return bytes;
+            foreach (var file in files)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await _azureBlobStorage.PostImage(file.Key, ms);
+                }
+            }
         }
 
         private void PublishMotionEvent(string deviceKey, CameraNotification notification)
@@ -65,6 +73,7 @@ namespace Euricom.IoT.Api.Manager
             var json = JsonConvert.SerializeObject(notification);
             new MqttMessagePublisher("", deviceKey).Publish(json);
         }
+
 
     }
 }

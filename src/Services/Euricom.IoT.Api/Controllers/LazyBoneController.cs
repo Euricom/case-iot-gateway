@@ -5,6 +5,8 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using Euricom.IoT.Api.Managers;
+
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -15,6 +17,20 @@ namespace Euricom.IoT.Api.Controllers
 
         public LazyBoneController()
         {
+            _lazyBoneManager = new LazyBoneManager();
+        }
+
+        public PostResponse Add(LazyBone lazyBone)
+        {
+            try
+            {
+                var added = _lazyBoneManager.Add(lazyBone);
+                return ResponseUtilities.PostResponseOk(added.DeviceId);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.PostResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -23,28 +39,23 @@ namespace Euricom.IoT.Api.Controllers
         /// <param name="device">Guid of device</param>
         /// <param name="state">on or off</param>
         /// <returns></returns>
-        //[UriFormat("/lazybone/{state}")]
-        [UriFormat("/lazybone\\?device={device}&state={state}")]
-        //public IGetResponse Switch(string state)
-        public IGetResponse Switch(string device, string state)
+        [UriFormat("/lazybone/switch?deviceid={deviceid}&state={state}")]
+        public IPutResponse Switch(string deviceid, string state)
         {
             try
             {
                 //Send switch command to the manager
-                _lazyBoneManager.Switch(device, state);
+                _lazyBoneManager.Switch(deviceid, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.ResponseOk($"OK changed LazyBone device state to : {state}");
+                return ResponseUtilities.PutResponseOk($"OK changed LazyBone device state to : {state}");
             }
             catch (Exception ex)
             {
-                return ResponseUtilities.ResponseFail($"LazyBone switch failed, exception: {ex.Message}");
+                return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
         }
 
-        internal void Add(LazyBone @switch)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

@@ -10,7 +10,7 @@ using Windows.Storage;
 
 namespace AzureDeviceManager
 {
-    public class DeviceManager
+    public class DeviceManager : IDeviceManager
     {
         private RegistryManager _registryManager;
 

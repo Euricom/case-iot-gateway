@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Monitoring
 {
-    public class DanaLockMonitor
+    public class LazyBoneMonitor
     {
         Dictionary<string, CancellationTokenSource> _cancellationTokenSources;
 
-        public DanaLockMonitor()
+        public LazyBoneMonitor()
         {
             _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
         }
@@ -21,20 +21,19 @@ namespace Euricom.IoT.Monitoring
             _cancellationTokenSources[deviceId] = cts;
 
             //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
-            var config = new Common.DanaLock()
+            var lazyBone = new Common.LazyBone()
             {
                 DeviceId = deviceId,
-                Name = "DanaLock1",
-                NodeId = 0x4
+                Name = "LazyBone1",
             };
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    var notification = PollDanaLock(deviceId, config.NodeId);
+                    var notification = PollLazyBone(deviceId);
 
-                    PublishNotification(config, notification);
+                    PublishNotification(lazyBone, notification);
 
                     await Task.Delay(pollingTime);
                 }
@@ -57,21 +56,21 @@ namespace Euricom.IoT.Monitoring
             }
         }
 
-        private Common.Notifications.DanaLockNotification PollDanaLock(string deviceId, byte nodeId)
+        private Common.Notifications.LazyBoneNotification PollLazyBone(string deviceId)
         {
-            var locked = new Api.Managers.DanaLockManager().IsLocked(nodeId);
-            return new Common.Notifications.DanaLockNotification()
+            //var locked = new Api.Managers.LazyBoneManager().(nodeId);
+            return new Common.Notifications.LazyBoneNotification()
             {
                 DeviceKey = deviceId,
-                Locked = locked,
+                State = false,
                 Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
             };
         }
 
-        private void PublishNotification(Common.DanaLock danaLock, Common.Notifications.DanaLockNotification notification)
+        private void PublishNotification(Common.LazyBone lazyBone, Common.Notifications.LazyBoneNotification notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
-            new Messaging.MqttMessagePublisher(danaLock.Name, danaLock.DeviceId).Publish(json);
+            new Messaging.MqttMessagePublisher(lazyBone.Name, lazyBone.DeviceId).Publish(json);
         }
     }
 }

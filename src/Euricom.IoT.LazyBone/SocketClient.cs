@@ -21,7 +21,7 @@ namespace Euricom.IoT.LazyBone
         /// <param name="port">Port number</param>
         /// <param name="message">Message to server</param>
         /// <returns>Response from server</returns>
-        public async Task connect(string host, string port, string message)
+        public async Task Connect(string host, string port, string message)
         {
             HostName hostName;
 
@@ -37,9 +37,9 @@ namespace Euricom.IoT.LazyBone
                     // Connect to the server
                     await _socket.ConnectAsync(hostName, port);
                     // Send the message
-                    await this.send(message);
+                    await this.Send(message);
                     // Read response
-                    await this.read();
+                    await this.Read();
                 }
                 catch (Exception exception)
                 {
@@ -61,7 +61,7 @@ namespace Euricom.IoT.LazyBone
         /// </summary>
         /// <param name="message">Message to server</param>
         /// <returns>void</returns>
-        public async Task send(string message)
+        public async Task Send(string message)
         {
             DataWriter writer;
 
@@ -106,7 +106,7 @@ namespace Euricom.IoT.LazyBone
         /// READ RESPONSE
         /// </summary>
         /// <returns>Response from server</returns>
-        public async Task<String> read()
+        public async Task<String> Read()
         {
             DataReader reader;
             StringBuilder strBuilder;

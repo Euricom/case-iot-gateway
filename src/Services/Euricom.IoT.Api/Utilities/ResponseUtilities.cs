@@ -7,7 +7,7 @@ namespace Euricom.IoT.Api.Utilities
     // Status code can only be NotFound or OK ?
     public static class ResponseUtilities
     {
-        public static GetResponse ResponseOk(string message)
+        public static GetResponse GetResponseOk(string message)
         {
             return new GetResponse(
             GetResponse.ResponseStatus.OK,
@@ -18,10 +18,44 @@ namespace Euricom.IoT.Api.Utilities
 
         }
 
-        public static GetResponse ResponseFail(string message)
+        public static PostResponse PostResponseOk(string message)
+        {
+            return new PostResponse(
+            PostResponse.ResponseStatus.Created);
+        }
+
+        public static PutResponse PutResponseOk(string message)
+        {
+            return new PutResponse(
+            PutResponse.ResponseStatus.OK,
+            new ResponseData()
+            {
+                Message = message
+            });
+
+        }
+
+        public static GetResponse GetResponseFail(string message)
         {
             return new GetResponse(
             GetResponse.ResponseStatus.NotFound,
+            new ResponseData()
+            {
+                Message = message
+            });
+
+        }
+
+        public static PostResponse PostResponseFail(string message)
+        {
+            return new PostResponse(
+            PostResponse.ResponseStatus.Conflict);
+        }
+
+        public static PutResponse PutResponseFail(string message)
+        {
+            return new PutResponse(
+            PutResponse.ResponseStatus.NotFound,
             new ResponseData()
             {
                 Message = message
