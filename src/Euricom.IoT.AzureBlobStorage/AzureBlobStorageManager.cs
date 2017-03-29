@@ -14,37 +14,23 @@ namespace Euricom.IoT.AzureBlobStorage
 {
     public class AzureBlobStorageManager : IAzureBlobStorageManager
     {
-        private string _connectionString = "https://mjrstorage.blob.core.windows.net/";
         private string _accountName = Secrets.AZURE_ACCOUNT_NAME;
         private string _containerName = Secrets.AZURE_CONTAINER_NAME;
         private string _azureStorageAccessKey = Secrets.AZURE_STORAGE_ACCESS_KEY;
 
-        private StorageCredentials credentials;
-        CloudStorageAccount storageAccount;
-        CloudBlobClient blobClient;
-        CloudBlobContainer container;
+        private StorageCredentials _credentials;
+        CloudStorageAccount _storageAccount;
+        CloudBlobClient _blobClient;
+        CloudBlobContainer _container;
 
         public AzureBlobStorageManager()
         {
-            if (true)
-            {
-                //get the storage account.
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_connectionString);
-
-                //blob client now
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-
-                //the container for this is companystyles
-                CloudBlobContainer container = blobClient.GetContainerReference(_containerName);
-
-                //Create a new container, if it does not exist
-                container.CreateIfNotExistsAsync();
-            }
+            CreateCredentialsConnectToClientAndGetContainer();
         }
 
         public async Task<DropboxFile> GetFileByIdAsync(String fileName)
         {
-            CloudBlockBlob blockblob = container.GetBlockBlobReference(fileName);
+            CloudBlockBlob blockblob = _container.GetBlockBlobReference(fileName);
             MemoryStream stream = new MemoryStream();
             await blockblob.DownloadToStreamAsync(stream).ConfigureAwait(false);
             DropboxFile file = new DropboxFile()
@@ -60,7 +46,7 @@ namespace Euricom.IoT.AzureBlobStorage
             try
             {
                 // Get reference to a blob with name 'imageId' if not excist create new
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(name);
+                CloudBlockBlob blockBlob = _container.GetBlockBlobReference(name);
                 //blockBlob.Properties.ContentType = MimeTypesMap.GetMimeType(name);
                 var test = blockBlob.UploadFromStreamAsync(body);
                 await test;
@@ -87,18 +73,18 @@ namespace Euricom.IoT.AzureBlobStorage
         public async Task<bool> DeleteImageByIdAsync(String imageName)
         {
             // Get reference to a blob with name 'imageId'   
-            CloudBlockBlob blockblob = container.GetBlockBlobReference(imageName);
+            CloudBlockBlob blockblob = _container.GetBlockBlobReference(imageName);
             return await blockblob.DeleteIfExistsAsync().ConfigureAwait(false);
         }
 
         private void CreateCredentialsConnectToClientAndGetContainer()
         {
-            credentials = new StorageCredentials(_containerName, _accountName, _azureStorageAccessKey);
-            storageAccount = new CloudStorageAccount(credentials, true);
+            _credentials = new StorageCredentials(_accountName, _azureStorageAccessKey);
+            _storageAccount = new CloudStorageAccount(_credentials, true);
             // Create a blob client.
-            blobClient = storageAccount.CreateCloudBlobClient();
+            _blobClient = _storageAccount.CreateCloudBlobClient();
             // Get a reference to a container named “mjr-images.”
-            container = blobClient.GetContainerReference(_containerName);
+            _container = _blobClient.GetContainerReference(_containerName);
         }
     }
 }

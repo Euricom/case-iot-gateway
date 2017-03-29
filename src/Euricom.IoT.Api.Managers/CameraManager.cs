@@ -61,7 +61,7 @@ namespace Euricom.IoT.Api.Manager
         {
             foreach (var file in files)
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (MemoryStream ms = new MemoryStream(file.Value))
                 {
                     await _azureBlobStorage.PostImage(file.Key, ms);
                 }

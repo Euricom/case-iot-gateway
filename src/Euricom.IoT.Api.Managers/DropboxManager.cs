@@ -56,6 +56,9 @@ namespace Euricom.IoT.Managers
 
                 entries = entries.Where(x => !x.IsDeleted && x.IsFile).ToList();
 
+                var cursor2 = await dropboxClient.Files.ListFolderGetLatestCursorAsync(path, recursive, includeMediaInfo, includeDeleted, includeExplicitSharedMembers);
+                _cursor = cursor2.Cursor;
+
                 return entries;
 
             }
