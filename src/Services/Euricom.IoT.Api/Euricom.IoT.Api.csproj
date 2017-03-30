@@ -169,6 +169,10 @@
       <Project>{e2c002a8-3c66-4d75-af99-0dd636ae1691}</Project>
       <Name>Euricom.IoT.Monitoring</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.UI.WebAdministration\Euricom.IoT.UI.WebAdministration.csproj">
+      <Project>{fb95c4c7-5c90-4b6d-a35d-0a96bca47e5f}</Project>
+      <Name>Euricom.IoT.UI.WebAdministration</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

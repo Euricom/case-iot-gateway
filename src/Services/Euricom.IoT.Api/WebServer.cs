@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Euricom.IoT.Api.Controllers;
+using Restup.Webserver.File;
 
 namespace Euricom.IoT.Api
 {
@@ -25,6 +26,7 @@ namespace Euricom.IoT.Api
             var configuration = new HttpServerConfiguration()
               .ListenOnPort(8800)
               .RegisterRoute("api", restRouteHandler)
+              .RegisterRoute(new StaticFileRouteHandler(@"Euricom.IoT.UI.WebAdministration\Web"))
               .EnableCors();
 
             _httpServer = new HttpServer(configuration);
