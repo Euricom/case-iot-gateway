@@ -33,7 +33,7 @@ namespace Euricom.IoT.Api
             //MonitorLazyBones();
 
             // Start a task that monitors the dropbox account for new files
-            MonitorDropBoxFolder();
+            //MonitorDropBoxFolder();
         }
 
         private void MonitorDanaLocks()

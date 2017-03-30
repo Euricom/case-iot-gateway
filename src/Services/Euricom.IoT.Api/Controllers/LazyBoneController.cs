@@ -6,7 +6,7 @@ using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
 using Euricom.IoT.Api.Managers;
-
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -40,12 +40,12 @@ namespace Euricom.IoT.Api.Controllers
         /// <param name="state">on or off</param>
         /// <returns></returns>
         [UriFormat("/lazybone/switch?deviceid={deviceid}&state={state}")]
-        public IPutResponse Switch(string deviceid, string state)
+        public async Task<IPutResponse> Switch(string deviceid, string state)
         {
             try
             {
                 //Send switch command to the manager
-                _lazyBoneManager.Switch(deviceid, state);
+                await _lazyBoneManager.Switch(deviceid, state);
 
                 //If it works, send response back to client
                 return ResponseUtilities.PutResponseOk($"OK changed LazyBone device state to : {state}");

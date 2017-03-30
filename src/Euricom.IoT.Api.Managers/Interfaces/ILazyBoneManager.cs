@@ -9,6 +9,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     public interface ILazyBoneManager
     {
         Common.LazyBone Add(Common.LazyBone lazyBone);
-        void Switch(string device, string state);
+        Task Switch(string device, string state);
     }
 }

@@ -42,7 +42,7 @@ namespace Euricom.IoT.LazyBone
             }
         }
 
-        public async void Switch(bool on)
+        public async Task Switch(bool on)
         {
             //var host = _config.Host;
             //var port = _config.Port;

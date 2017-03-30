@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Common
 {
-    public abstract class Device
+    public class Device
     {
         public string DeviceId { get; set; }
         public string Name { get; set; }
+        public HardwareType Type { get; set; } 
     }
 }

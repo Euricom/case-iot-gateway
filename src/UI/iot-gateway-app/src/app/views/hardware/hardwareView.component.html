@@ -1,1 +1,35 @@
 <h2>HARDWARE</h2>
+
+<p>
+  devices: {{devices | json}}
+</p>
+
+<p>
+  new device name: {{device.name | json}} <br />
+  new device type: {{device.type | json}} <br />
+</p>
+
+<table>
+  <tr *ngFor="let device of devices">
+    <td>{{device.name}}</td>
+    <td>{{device.type}}</td>
+    <td>{{device.guid}}</td>
+  </tr>
+</table>
+
+<h3>Add hardware (test)</h3>
+
+<form>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" name="name" id="name" [(ngModel)]="device.name" placeholder="">
+  </div>
+  <div class="form-group">
+    <label for="type">Type</label>
+    <select required [(ngModel)]="device.type" name="deviceType" id="deviceType" class="form-control">
+      <option value="">--</option>
+      <option *ngFor="let deviceType of deviceTypes" value="{{deviceType.id}}">{{deviceType.name}}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-default">Save</button>
+</form>

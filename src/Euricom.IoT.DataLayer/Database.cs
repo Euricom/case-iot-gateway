@@ -1,22 +1,17 @@
 ﻿using DBreeze;
-using DBreeze.Utils;
 using Euricom.IoT.Common;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace Euricom.IoT.DataLayer
 {
-    public class Database : IDisposable
+    public class Database : IDisposable, IDatabase
     {
         private static readonly Database _instance = new Database();
 
-        private static DBreeze.DBreezeEngine _engine = null;
+        private static DBreeze.DBreezeEngine _engine;
 
         private const string DBREEZE_TABLE_DANALOCKS = "DanaLocks";
         private const string DBREEZE_TABLE_CAMERAS = "Cameras";
@@ -54,7 +49,6 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-
         public LazyBone GetLazyBoneConfig(string deviceId)
         {
             try
@@ -64,6 +58,87 @@ namespace Euricom.IoT.DataLayer
                     var json = tran.Select<string, string>("LazyBones", deviceId).Value;
                     return JsonConvert.DeserializeObject<LazyBone>(json);
                 }
+            }
+            catch (Exception ex)
+            {
+                //TODO add logging to file ?
+                throw;
+            }
+        }
+
+        public Device FindDevice(string deviceid)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            var camera = JsonConvert.DeserializeObject<Camera>(row.Value);
+                            return camera;
+                        }
+                    }
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            var danalock = JsonConvert.DeserializeObject<DanaLock>(row.Value);
+                            return danalock;
+                        }
+                    }
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            var lazybone = JsonConvert.DeserializeObject<LazyBone>(row.Value);
+                            return lazybone;
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                //TODO add logging to file ?
+                throw;
+            }
+        }
+
+        public bool RemoveDevice(string deviceid)
+        {
+            try
+            {
+                bool removed = false;
+                using (var tran = _engine.GetTransaction())
+                {
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            tran.RemoveKey(DBREEZE_TABLE_CAMERAS, row.Key);
+                            removed = true;
+                        }
+                    }
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            tran.RemoveKey(DBREEZE_TABLE_DANALOCKS, row.Key);
+                            removed = true;
+                        }
+                    }
+                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
+                    {
+                        if (row.Key == deviceid)
+                        {
+                            tran.RemoveKey(DBREEZE_TABLE_LAZYBONES, row.Key);
+                            removed = true;
+                        }
+                    }
+                }
+                return removed;
             }
             catch (Exception ex)
             {

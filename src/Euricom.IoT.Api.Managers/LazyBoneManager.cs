@@ -49,7 +49,7 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public void Switch(string deviceId, string state)
+        public async Task Switch(string deviceId, string state)
         {
             //var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
 
@@ -67,10 +67,10 @@ namespace Euricom.IoT.Api.Managers
                 switch (state)
                 {
                     case "on":
-                        _lazyBone.Switch(true);
+                        await _lazyBone.Switch(true);
                         break;
                     case "off":
-                        _lazyBone.Switch(false);
+                        await _lazyBone.Switch(false);
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for LazyBone, state: {state}");

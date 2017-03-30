@@ -10,6 +10,9 @@ import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http'
 import '../styles.less'
 import { routes } from './app.routes'
 
+import { HardwareService } from './services/hardwareService'
+import { Config } from '../config'
+
 import { AppComponent } from './app.component'
 import { PageNotFoundComponent } from './components/pageNotFound/pageNotFound.component'
 import { NavigationComponent } from './components/navigation/navigation.component'
@@ -45,7 +48,10 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
     ToastModule.forRoot(),
     HttpModule,
   ],
-  providers: [],
+  providers: [
+    Config,
+    HardwareService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

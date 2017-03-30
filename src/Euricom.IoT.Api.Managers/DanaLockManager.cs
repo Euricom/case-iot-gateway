@@ -5,6 +5,7 @@ using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -42,7 +43,7 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public void Switch(string deviceId, string state)
+        public async Task Switch(string deviceId, string state)
         {
             if (string.IsNullOrEmpty(state))
             {

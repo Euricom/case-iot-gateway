@@ -7,6 +7,7 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -49,12 +50,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/danalock/switch?deviceid={deviceid}&state={state}")]
-        public IPutResponse Switch(string deviceid, string state)
+        public async Task<IPutResponse> Switch(string deviceid, string state)
         {
             try
             {
                 //Send switch command to the manager
-                _danaLockManager.Switch(deviceid, state);
+                await _danaLockManager.Switch(deviceid, state);
 
                 //If it works, send response back to client
                 return ResponseUtilities.PutResponseOk($"OK DanaLock switched state to : {state}");

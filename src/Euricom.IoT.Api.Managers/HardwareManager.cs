@@ -2,6 +2,7 @@
 using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using System;
+using System.Collections.Generic;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -16,39 +17,82 @@ namespace Euricom.IoT.Api.Managers
         {
 
         }
+
+        public IEnumerable<Device> GetHardwareDevices()
+        {
+            var devices = new List<Device>();
+            var hardware = GetHardware();
+
+            foreach (var hardwareItem in hardware.Cameras)
+            {
+                devices.Add(new Device()
+                {
+                    DeviceId = hardwareItem.DeviceId,
+                    Name = hardwareItem.Name,
+                    Type = HardwareType.Camera
+                });
+            }
+
+            foreach (var hardwareItem in hardware.Switches)
+            {
+                devices.Add(new Device()
+                {
+                    DeviceId = hardwareItem.DeviceId,
+                    Name = hardwareItem.Name,
+                    Type = HardwareType.LazyBoneSwitch
+                });
+            }
+
+            foreach (var hardwareItem in hardware.DanaLocks)
+            {
+                devices.Add(new Device()
+                {
+                    DeviceId = hardwareItem.DeviceId,
+                    Name = hardwareItem.Name,
+                    Type = HardwareType.DanaLock
+                });
+            }
+
+            return devices;
+        }
+
         public Hardware GetHardware()
         {
             var hardware = Database.Instance.GetHardware();
             return hardware;
         }
 
-        public void AddHardware(string name, string type)
+        public Device AddHardware(Device device)
         {
-            switch (type)
+            switch (device.Type)
             {
-                case "camera":
-                    _cameraManager.Add(new Camera()
+                case HardwareType.Camera:
+                    device = _cameraManager.Add(new Camera()
                     {
-                        Name = name
-                    });
-
-                    break;
-                case "danalock":
-                    _danaLockManager.Add(new Common.DanaLock()
-                    {
-                        Name = name
+                        Name = device.Name
                     });
                     break;
-                case "lazybone":
-                    _lazyBoneManager.Add(new Common.LazyBone()
+                case HardwareType.DanaLock:
+                    device = _danaLockManager.Add(new Common.DanaLock()
                     {
-                        Name = name
+                        Name = device.Name
+                    });
+                    break;
+                case HardwareType.LazyBoneSwitch:
+                    device = _lazyBoneManager.Add(new Common.LazyBone()
+                    {
+                        Name = device.Name
                     });
                     break;
                 default:
-                    throw new ArgumentException($"type: {type} has no implementation..");
+                    throw new ArgumentException($"type: {device.Type} has no implementation..");
             }
+            return device;
+        }
 
+        public bool DeleteHardware(string deviceid)
+        {
+            return Database.Instance.RemoveDevice(deviceid);
         }
     }
 }
