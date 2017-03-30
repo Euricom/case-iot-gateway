@@ -10,7 +10,7 @@ namespace Euricom.IoT.Messaging
     {
         private readonly DeviceClient _azureDeviceClient;
 
-        private const string iotHubUri = Secrets.IOT_HUB_CONNECTIONSTRING;
+        private const string iotHubUri = Secrets.AZURE_IOT_HUB_URI;
 
         public MqttMessagePublisher(string deviceName, string deviceKey)
         {

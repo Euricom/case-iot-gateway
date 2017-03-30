@@ -13,11 +13,6 @@ namespace Euricom.IoT.DataLayer
 
         private static DBreeze.DBreezeEngine _engine;
 
-        private const string DBREEZE_TABLE_DANALOCKS = "DanaLocks";
-        private const string DBREEZE_TABLE_CAMERAS = "Cameras";
-        private const string DBREEZE_TABLE_LAZYBONES = "LazyBones";
-        private const string DBREEZE_TABLE_LOGGING = "Log";
-
 
         private Database()
         {
@@ -72,7 +67,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
                     {
                         if (row.Key == deviceid)
                         {
@@ -80,7 +75,7 @@ namespace Euricom.IoT.DataLayer
                             return camera;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
                     {
                         if (row.Key == deviceid)
                         {
@@ -88,7 +83,7 @@ namespace Euricom.IoT.DataLayer
                             return danalock;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
                     {
                         if (row.Key == deviceid)
                         {
@@ -113,27 +108,27 @@ namespace Euricom.IoT.DataLayer
                 bool removed = false;
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
                     {
                         if (row.Key == deviceid)
                         {
-                            tran.RemoveKey(DBREEZE_TABLE_CAMERAS, row.Key);
+                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, row.Key);
                             removed = true;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
                     {
                         if (row.Key == deviceid)
                         {
-                            tran.RemoveKey(DBREEZE_TABLE_DANALOCKS, row.Key);
+                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, row.Key);
                             removed = true;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
                     {
                         if (row.Key == deviceid)
                         {
-                            tran.RemoveKey(DBREEZE_TABLE_LAZYBONES, row.Key);
+                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, row.Key);
                             removed = true;
                         }
                     }
@@ -153,7 +148,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>(DBREEZE_TABLE_CAMERAS, deviceId).Value;
+                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId).Value;
                     var cameraConfig = JsonConvert.DeserializeObject<Camera>(json);
                     return cameraConfig;
                 }
@@ -190,7 +185,7 @@ namespace Euricom.IoT.DataLayer
                 List<LogLine> logs = new List<LogLine>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LOGGING))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LOGGING))
                     {
                         var sequence = Int64.Parse(row.Key);
                         var logLine = JsonConvert.DeserializeObject<LogLine>(row.Value);
@@ -214,7 +209,7 @@ namespace Euricom.IoT.DataLayer
                 List<Camera> cameras = new List<Camera>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<Camera>(row.Value);
@@ -237,7 +232,7 @@ namespace Euricom.IoT.DataLayer
                 List<DanaLock> danaLocks = new List<DanaLock>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<DanaLock>(row.Value);
@@ -260,7 +255,7 @@ namespace Euricom.IoT.DataLayer
                 List<LazyBone> lazyBones = new List<LazyBone>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<LazyBone>(row.Value);

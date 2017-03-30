@@ -1,6 +1,6 @@
-﻿using AzureDeviceManager;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureBlobStorage;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.DataLayer;
@@ -13,12 +13,13 @@ namespace Euricom.IoT.Api.Manager
 {
     public class CameraManager : ICameraManager
     {
-        private AzureBlobStorageManager _azureBlobStorage;
-        private DeviceManager _azureDeviceManager;
+        private readonly IAzureBlobStorageManager _azureBlobStorage;
+        private readonly IAzureDeviceManager _azureDeviceManager;
 
         public CameraManager()
         {
             _azureBlobStorage = new IoT.AzureBlobStorage.AzureBlobStorageManager();
+            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
         }
 
         public Camera Add(Camera camera)

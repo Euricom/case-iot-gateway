@@ -55,7 +55,12 @@ namespace Euricom.IoT.Api.Utilities
         public static PostResponse PostResponseFail(string message)
         {
             return new PostResponse(
-            PostResponse.ResponseStatus.Conflict);
+            PostResponse.ResponseStatus.Conflict,
+            "",
+            new ResponseData()
+            {
+                Message = message
+            });
         }
 
         public static DeleteResponse DeleteResponseFail(string message)

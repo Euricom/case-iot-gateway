@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Dropbox.Api.Files;
+using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.Devices.DanaLock;
-using System.Collections.Generic;
+using Euricom.IoT.Managers;
 using Euricom.IoT.Monitoring;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Euricom.IoT.Api.Manager;
-using Dropbox.Api.Files;
-using Euricom.IoT.Managers;
-using Euricom.IoT.Common.Secrets;
 
 namespace Euricom.IoT.Api
 {
@@ -25,8 +24,6 @@ namespace Euricom.IoT.Api
 
             // Init Webserver
             await new WebServer().InitializeWebServer();
-
-
 
             // Set up monitoring devices
             //MonitorDanaLocks();

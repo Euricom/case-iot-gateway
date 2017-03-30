@@ -19,7 +19,7 @@
 
 <h3>Add hardware (test)</h3>
 
-<form>
+<form (ngSubmit)="onSubmit(form)" novalidate>
   <div class="form-group">
     <label for="name">Name</label>
     <input type="text" class="form-control" name="name" id="name" [(ngModel)]="device.name" placeholder="">

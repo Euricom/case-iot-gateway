@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Devices;
+﻿using Euricom.IoT.Common.Secrets;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.Storage;
 
-namespace AzureDeviceManager
+namespace Euricom.IoT.AzureDeviceManager
 {
-    public class DeviceManager : IDeviceManager
+    public class AzureDeviceManager : IAzureDeviceManager
     {
         private RegistryManager _registryManager;
 
-        public DeviceManager()
+        public AzureDeviceManager()
         {
-            string connectionString = GetConnectionString().Result;
+            string connectionString = GetConnectionString();
             _registryManager = RegistryManager.CreateFromConnectionString(connectionString);
         }
 
@@ -38,18 +39,24 @@ namespace AzureDeviceManager
             {
                 throw;
             }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        private async Task<string> GetConnectionString()
+        private string GetConnectionString()
         {
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(
-                                 new Uri(String.Format("ms-appx:///Assets/Configuration/secrets.xml")));
+            return Secrets.AZURE_IOT_HUB_CONNECTIONSTRING;
 
-            XmlDocument xmlSecrets = await XmlDocument.LoadFromFileAsync(file);
+            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(
+            //                     new Uri(String.Format("ms-appx:///Assets/Configuration/secrets.xml")));
 
-            var children = xmlSecrets.ChildNodes;
+            //XmlDocument xmlSecrets = await XmlDocument.LoadFromFileAsync(file);
 
-            return "";
+            //var children = xmlSecrets.ChildNodes;
+
+            //return "";
         }
 
 

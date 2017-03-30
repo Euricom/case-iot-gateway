@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseTableNames.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="Notifications\CameraNotification.cs" />
     <Compile Include="DanaLock.cs" />

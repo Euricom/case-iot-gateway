@@ -1,5 +1,6 @@
 import { OnInit, Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
+import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 // import { FormGroup, FormBuilder, FormControl } from '@angular/forms'
 import { Location } from '@angular/common'
 import { Device } from '../../models/device'
@@ -26,16 +27,27 @@ export class HardwareViewComponent implements OnInit {
     private location: Location,
     // private formBuilder: FormBuilder,
     private hardwareService: HardwareService,
+    private toastr: ToastsManager,
   ) {
-    hardwareService.getAll().subscribe(devices => this.devices = devices)
+    this.refresh()
   }
 
   onSubmit(): void {
-
     this.hardwareService.create(this.device)
-      .subscribe((res) => {
-        this.router.navigate(['/hardware'])
-      })
+      .subscribe(
+        data => function() {
+          debugger;
+          this.toastr.info('device created')
+        },
+        err => function() {
+          debugger;
+          this.toastr.error(`could not create device, err: ${err._body}`)
+        },
+        () => function() {
+          debugger;
+          console.log('yay')
+        }
+      )
   }
 
   ngOnInit(): void {
@@ -56,6 +68,10 @@ export class HardwareViewComponent implements OnInit {
         name: 'LazyBone Switch',
       }),
     ]
+  }
+
+  refresh() {
+    this.hardwareService.getAll().subscribe(devices => this.devices = devices)
   }
 
   onClickCancel() {

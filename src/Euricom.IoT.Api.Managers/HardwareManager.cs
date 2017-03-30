@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using System;
@@ -15,7 +16,9 @@ namespace Euricom.IoT.Api.Managers
 
         public HardwareManager()
         {
-
+            _cameraManager = new CameraManager();
+            _danaLockManager = new DanaLockManager();
+            _lazyBoneManager = new LazyBoneManager();
         }
 
         public IEnumerable<Device> GetHardwareDevices()

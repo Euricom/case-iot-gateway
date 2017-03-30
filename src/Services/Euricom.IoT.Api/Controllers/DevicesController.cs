@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Api.Managers;
+﻿using Euricom.IoT.Api.Dtos;
+using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
@@ -26,15 +27,20 @@ namespace Euricom.IoT.Api.Controllers
             return new GetResponse(GetResponse.ResponseStatus.OK, hardware);
         }
 
-        [UriFormat("/hardware/add?name={name}&type={type}")]
-        public IPostResponse AddHardware(string name, string type)
+        [UriFormat("/hardware")]
+        public IPostResponse AddHardware([FromContent] DeviceDto deviceDto)
         {
             try
             {
+                if (deviceDto == null)
+                {
+                    throw new ArgumentNullException("deviceDto");
+                }
+
                 var newDevice = _hardwareManager.AddHardware(new Device()
                 {
-                    Name = name,
-                    Type = (HardwareType) Enum.Parse(typeof(HardwareType), type),
+                    Name = deviceDto.Name,
+                    Type = GetDeviceTypeFromDto(deviceDto),
                 });
                 return ResponseUtilities.PostResponseOk(newDevice.DeviceId);
             }
@@ -56,6 +62,21 @@ namespace Euricom.IoT.Api.Controllers
             {
                 return ResponseUtilities.DeleteResponseFail($"Could not add hardware: exception: {ex.Message}");
             }
+        }
+
+        private HardwareType GetDeviceTypeFromDto(DeviceDto deviceDto)
+        {
+            switch (deviceDto.Type.ToLower())
+            {
+                case "camera":
+                    return HardwareType.Camera;
+                case "danalock":
+                    return HardwareType.DanaLock;
+                case "lazybone":
+                    return HardwareType.LazyBoneSwitch;
+            }
+
+            throw new ArgumentException($"Cannot add unknown type: {deviceDto.Type}");
         }
     }
 }

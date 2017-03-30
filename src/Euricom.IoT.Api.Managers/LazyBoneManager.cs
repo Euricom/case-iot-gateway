@@ -1,5 +1,5 @@
-﻿using AzureDeviceManager;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
@@ -11,12 +11,12 @@ namespace Euricom.IoT.Api.Managers
 {
     public class LazyBoneManager : ILazyBoneManager
     {
-        private DeviceManager _azureDeviceManager;
+        private IAzureDeviceManager _azureDeviceManager;
         private readonly LazyBone.LazyBone _lazyBone;
 
         public LazyBoneManager()
         {
-            //_azureDeviceManager = new DeviceManager();
+            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
             _lazyBone = new LazyBone.LazyBone();
         }
 
