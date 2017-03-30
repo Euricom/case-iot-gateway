@@ -1,15 +1,12 @@
 ﻿using AzureDeviceManager;
 using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.AzureBlobStorage;
 using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.DataLayer;
-using Euricom.IoT.FileTransfer;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System;
 using System.Collections.Generic;
-using Euricom.IoT.AzureBlobStorage;
 using System.IO;
 
 namespace Euricom.IoT.Api.Manager

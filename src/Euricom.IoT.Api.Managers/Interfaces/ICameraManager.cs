@@ -10,5 +10,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     public interface ICameraManager
     {
         Camera Add(Camera camera);
+        void Notify(string device, string url, string timestamp, int frameNumber, int eventNumber);
     }
 }

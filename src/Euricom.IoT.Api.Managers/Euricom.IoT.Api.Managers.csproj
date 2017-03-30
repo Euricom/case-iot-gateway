@@ -149,10 +149,6 @@
       <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
       <Name>Euricom.IoT.LazyBone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Infrastructure\Euricom.IoT.FileTransfer\Euricom.IoT.FileTransfer.csproj">
-      <Project>{14c37d41-724e-4ffe-a319-76cf630fdc0f}</Project>
-      <Name>Euricom.IoT.FileTransfer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
       <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>
       <Name>Euricom.IoT.Messaging</Name>

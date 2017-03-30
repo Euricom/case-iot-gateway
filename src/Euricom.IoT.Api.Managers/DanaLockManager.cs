@@ -71,10 +71,10 @@ namespace Euricom.IoT.Api.Managers
                         throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");
                 }
 
-                var notification = new LazyBoneNotification
+                var notification = new DanaLockNotification
                 {
                     DeviceKey = deviceId,
-                    State = state == "open" ? true : false,
+                    Locked = state == "closed" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
 

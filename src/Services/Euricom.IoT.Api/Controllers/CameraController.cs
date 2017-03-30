@@ -32,9 +32,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/camera/notify?device={device}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
-        public IGetResponse Notify(string device, string url, string timestamp, int frameNumber, int eventNumber)
+        [UriFormat("/camera/notify?deviceid={deviceid}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
+        public IGetResponse Notify(string deviceid, string url, string timestamp, int frameNumber, int eventNumber)
         {
+            //Send notification to IoT hub
+            _cameraManager.Notify(deviceid, url, timestamp, frameNumber, eventNumber);
+
             // Send response back
             return new GetResponse(GetResponse.ResponseStatus.OK);
         }
