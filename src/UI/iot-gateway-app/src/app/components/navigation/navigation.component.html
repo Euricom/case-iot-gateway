@@ -1,0 +1,35 @@
+<nav class="navbar navbar-default">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" (click)="isCollapsed = !isCollapsed" data-target="#bs-example-navbar-collapse-1"
+      aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+  </div>
+  <div class="navbar-collapse" id="bs-example-navbar-collapse-1" [collapse]="false">
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/'>Home</a></li>
+    </ul>
+     <ul class="nav navbar-nav">
+      <li><a routerLink='/settings'> Settings </a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/hardware'> Hardware </a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/cameras'> Cameras </a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/switches'> Switches </a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/danalocks'> DanaLocks </a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+      <li><a routerLink='/log'> Log </a></li>
+    </ul>
+  </div>
+</nav>
+

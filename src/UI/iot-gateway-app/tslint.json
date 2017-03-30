@@ -3,6 +3,8 @@
     "node_modules/codelyzer"
   ],
   "rules": {
+    // trailing-comma added
+    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
     "callable-types": true,
     "class-name": true,
     "comment-format": [
@@ -22,7 +24,7 @@
     "label-position": true,
     "max-line-length": [
       true,
-      140
+      150
     ],
     "member-access": false,
     "member-ordering": [
@@ -33,7 +35,7 @@
     "no-arg": true,
     "no-bitwise": true,
     "no-console": [
-      true,
+      false,
       "debug",
       "info",
       "time",
@@ -46,7 +48,7 @@
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
-    "no-inferrable-types": [true, "ignore-params"],
+    "no-inferrable-types": [true],
     "no-shadowed-variable": true,
     "no-string-literal": false,
     "no-string-throw": true,
@@ -69,8 +71,9 @@
       "single"
     ],
     "radix": true,
+    // semicolon overruled: 'never'
     "semicolon": [
-      "always"
+      true, "never"
     ],
     "triple-equals": [
       true,
@@ -97,9 +100,10 @@
       "check-separator",
       "check-type"
     ],
-
-    "directive-selector": [true, "attribute", "app", "camelCase"],
-    "component-selector": [true, "element", "app", "kebab-case"],
+    // directive-selector overruled: true
+    "directive-selector": [false, "attribute", "app", "camelCase"],
+    // component-selector overruled: true
+    "component-selector": [false, "element", "app", "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
@@ -114,3 +118,4 @@
     "invoke-injectable": true
   }
 }
+
