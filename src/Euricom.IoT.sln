@@ -56,7 +56,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Monitoring", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.AzureBlobStorage", "Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj", "{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.UI.WebAdministration", "UI\Euricom.IoT.UI.WebAdministration\Euricom.IoT.UI.WebAdministration.csproj", "{FB95C4C7-5C90-4B6D-A35D-0A96BCA47E5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.UI.WebAdministration", "Euricom.IoT.UI.WebAdministration\Euricom.IoT.UI.WebAdministration.csproj", "{FB95C4C7-5C90-4B6D-A35D-0A96BCA47E5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
