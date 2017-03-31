@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Sockets;
@@ -10,50 +9,53 @@ using Windows.Storage.Streams;
 namespace Euricom.IoT.LazyBone
 {
     //http://donatas.xyz/streamsocket-tcpip-client.html
-    public class SocketClient : IDisposable
+    public class SocketClient
     {
-        StreamSocket _socket;
-
-        /// <summary>
-        /// Connect to server on port and send message
-        /// </summary>
-        /// <param name="host">Host name/IP address</param>
-        /// <param name="port">Port number</param>
-        /// <param name="message">Message to server</param>
-        /// <returns>Response from server</returns>
-        public async Task Connect(string host, string port, string message)
+        private Timer _timer;
+        private StreamSocket _socket;
+        private async Task<StreamSocket> GetSocket()
         {
-            HostName hostName;
-
-            using (_socket = new StreamSocket())
+            if (_socket != null)
             {
-                hostName = new HostName(host);
-
-                // Set NoDelay to false so that the Nagle algorithm is not disabled
-                _socket.Control.NoDelay = false;
-
-                try
-                {
-                    // Connect to the server
-                    await _socket.ConnectAsync(hostName, port);
-                    // Send the message
-                    await this.Send(message);
-                    // Read response
-                    await this.Read();
-                }
-                catch (Exception exception)
-                {
-                    switch (SocketError.GetStatus(exception.HResult))
-                    {
-                        case SocketErrorStatus.HostNotFound:
-                            // Handle HostNotFound Error
-                            throw;
-                        default:
-                            // If this is an unknown status it means that the error is fatal and retry will likely fail.
-                            throw;
-                    }
-                }
+                _timer?.Change(TimeSpan.FromSeconds(30), new TimeSpan(-1));
+                return _socket;
             }
+            _socket = await CreateNewSocket();
+            return _socket;
+        }
+
+        private async Task<StreamSocket> CreateNewSocket()
+        {
+            var host = "10.0.1.127";
+            var port = "2000";
+            var hostName = new HostName(host);
+
+            _timer = new Timer(CloseSocket, null, TimeSpan.FromSeconds(30), new TimeSpan(-1));
+            var socket = new StreamSocket();
+
+            // Set NoDelay to false so that the Nagle algorithm is not disabled
+            socket.Control.NoDelay = false;
+
+            // Connect to the server
+            await socket.ConnectAsync(hostName, port);
+
+            await Task.Delay(1000);
+            return socket;
+        }
+
+        private void CloseSocket(object state)
+        {
+            StreamSocket socket = null;
+            Interlocked.Exchange(ref socket, _socket);
+            socket.Dispose();
+        }
+
+        private static SocketClient _instance;
+
+        public static SocketClient Instance => _instance ?? (_instance = new SocketClient());
+
+        private SocketClient()
+        {
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace Euricom.IoT.LazyBone
             DataWriter writer;
 
             // Create the data writer object backed by the in-memory stream. 
-            using (writer = new DataWriter(_socket.OutputStream))
+            using (writer = new DataWriter((await GetSocket()).OutputStream))
             {
                 // Set the Unicode character encoding for the output stream
                 writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
@@ -82,6 +84,7 @@ namespace Euricom.IoT.LazyBone
                 try
                 {
                     await writer.StoreAsync();
+                    await writer.FlushAsync();
                 }
                 catch (Exception exception)
                 {
@@ -96,7 +99,6 @@ namespace Euricom.IoT.LazyBone
                     }
                 }
 
-                await writer.FlushAsync();
                 // In order to prolong the lifetime of the stream, detach it from the DataWriter
                 writer.DetachStream();
             }
@@ -111,7 +113,7 @@ namespace Euricom.IoT.LazyBone
             DataReader reader;
             StringBuilder strBuilder;
 
-            using (reader = new DataReader(_socket.InputStream))
+            using (reader = new DataReader((await GetSocket()).InputStream))
             {
                 strBuilder = new StringBuilder();
 
@@ -134,14 +136,6 @@ namespace Euricom.IoT.LazyBone
 
                 reader.DetachStream();
                 return strBuilder.ToString();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_socket != null)
-            {
-                _socket.Dispose();
             }
         }
     }

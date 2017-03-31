@@ -5,6 +5,7 @@ using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
@@ -68,9 +69,11 @@ namespace Euricom.IoT.Api.Managers
                 {
                     case "on":
                         await _lazyBone.Switch(true);
+                        Debug.WriteLine("switched lazybone to ON");
                         break;
                     case "off":
                         await _lazyBone.Switch(false);
+                        Debug.WriteLine("switched lazybone to OFF");
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for LazyBone, state: {state}");

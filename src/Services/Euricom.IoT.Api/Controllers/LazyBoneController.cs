@@ -7,6 +7,7 @@ using Restup.Webserver.Models.Schemas;
 using System;
 using Euricom.IoT.Api.Managers;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -44,8 +45,12 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
+                Debug.WriteLine("LazyBoneController: Switch()");
+
                 //Send switch command to the manager
                 await _lazyBoneManager.Switch(deviceid, state);
+
+                Debug.WriteLine("LazyBoneController: Switch() completed");
 
                 //If it works, send response back to client
                 return ResponseUtilities.PutResponseOk($"OK changed LazyBone device state to : {state}");

@@ -1,5 +1,6 @@
 ﻿using Euricom.IoT.Common;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Networking;
@@ -32,14 +33,12 @@ namespace Euricom.IoT.LazyBone
             var port = "2000";
             string response;
 
-            using (SocketClient client = new SocketClient())
-            {
-                await client.Connect(_config.Host, _config.Port, HexToString(COMMAND_RELAY_STATUS));
-                response = await client.Read(); //Response should be a single byte .. If bit is high , relay is in pos 1
+            SocketClient client = SocketClient.Instance;
+            await client.Send(HexToString(COMMAND_RELAY_STATUS));
+            response = await client.Read(); //Response should be a single byte .. If bit is high , relay is in pos 1
 
-                // TODO debug response and check whether response is bit high
-                return true;
-            }
+            // TODO debug response and check whether response is bit high
+            return true;
         }
 
         public async Task Switch(bool on)
@@ -48,14 +47,13 @@ namespace Euricom.IoT.LazyBone
             //var port = _config.Port;
             var host = "10.0.1.127";
             var port = "2000";
-            string response;
+            // string response;
 
-            using (SocketClient client = new SocketClient())
-            {
-                var command = on == true ? COMMAND_RELAY_TO_1 : COMMAND_RELAY_TO_0;
-                await client.Connect(host, port, HexToString(command));
-                response = await client.Read();
-            }
+            SocketClient client = SocketClient.Instance;
+            var command = on == true ? COMMAND_RELAY_TO_1 : COMMAND_RELAY_TO_0;
+            await client.Send(HexToString(command));
+            Debug.WriteLine("LazyBone: sent switch command!: " + on);
+            // response = await client.Read();
         }
 
         private string HexToString(int hex)
