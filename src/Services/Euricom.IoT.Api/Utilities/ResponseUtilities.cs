@@ -7,21 +7,20 @@ namespace Euricom.IoT.Api.Utilities
     // Status code can only be NotFound or OK ?
     public static class ResponseUtilities
     {
-        public static GetResponse GetResponseOk(string message)
+        public static GetResponse GetResponseOk(object data)
         {
             return new GetResponse(
             GetResponse.ResponseStatus.OK,
-            new ResponseData()
-            {
-                Message = message
-            });
-
+            data
+            );
         }
 
-        public static PostResponse PostResponseOk(string message)
+        public static PostResponse PostResponseOk(object data)
         {
             return new PostResponse(
-            PostResponse.ResponseStatus.Created);
+            PostResponse.ResponseStatus.Created,
+            "",
+            data);
         }
 
         public static DeleteResponse DeleteResponseOk(string message)

@@ -132,6 +132,7 @@ namespace Euricom.IoT.DataLayer
                             removed = true;
                         }
                     }
+                    tran.Commit();
                 }
                 return removed;
             }
@@ -277,8 +278,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    string json = JsonConvert.SerializeObject(value);
-                    tran.Insert<string, string>(table, key, json);
+                    tran.Insert<string, string>(table, key, value);
                     tran.Commit();
                 }
             }

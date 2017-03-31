@@ -1,15 +1,15 @@
 import { Config } from '../../config'
 
 export class Device {
-  guid?: String
-  name?: String
-  type?: String
+  DeviceId?: String
+  Name?: String
+  Type?: String
 
   constructor(resource) {
     Object.assign(this, resource)
   }
 
   isNew(): boolean {
-    return !(this.guid)
+    return !(this.DeviceId)
   }
 }

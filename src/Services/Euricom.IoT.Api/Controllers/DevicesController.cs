@@ -23,8 +23,15 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/hardware")]
         public IGetResponse GetHardware()
         {
-            var hardware = _hardwareManager.GetHardwareDevices();
-            return new GetResponse(GetResponse.ResponseStatus.OK, hardware);
+            try
+            {
+                var hardware = _hardwareManager.GetHardwareDevices();
+                return ResponseUtilities.GetResponseOk(hardware);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not add hardware: exception: {ex.Message}");
+            }
         }
 
         [UriFormat("/hardware")]
@@ -42,7 +49,7 @@ namespace Euricom.IoT.Api.Controllers
                     Name = deviceDto.Name,
                     Type = GetDeviceTypeFromDto(deviceDto),
                 });
-                return ResponseUtilities.PostResponseOk(newDevice.DeviceId);
+                return ResponseUtilities.PostResponseOk(newDevice);
             }
             catch (Exception ex)
             {

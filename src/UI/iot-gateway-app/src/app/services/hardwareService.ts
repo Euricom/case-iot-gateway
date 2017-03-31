@@ -21,7 +21,7 @@ export class HardwareService {
 
   getById(id: String): Observable<Device> {
     return this.http.get(`${this.config.baseUrl}/api/hardware/${id}`)
-      .map((res: Response)  => (res.json()))
+      .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }
 
@@ -29,25 +29,23 @@ export class HardwareService {
     if (device.isNew()) {
       return this.create(device)
     } else {
-      return this.update(device.guid, device)
+      return this.update(device.DeviceId, device)
     }
   }
 
   update(id: String, device: Device): Observable<Device> {
     return this.http.put(`${this.config.baseUrl}/api/hardware/${id}`, device)
-      .map((res: Response)  => (res.json()))
+      .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }
 
   delete(id: String) {
     return this.http.delete(`${this.config.baseUrl}/api/hardware/${id}`)
-      .map((res: Response)  => (res.json()))
-      .map((data) => new Device(data))
   }
 
   create(device: Device) {
     return this.http.post(`${this.config.baseUrl}/api/hardware`, device)
-      .map((res: Response)  => (res.json()))
+      .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }
 }

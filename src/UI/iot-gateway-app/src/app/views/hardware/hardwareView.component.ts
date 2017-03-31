@@ -4,7 +4,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 // import { FormGroup, FormBuilder, FormControl } from '@angular/forms'
 import { Location } from '@angular/common'
 import { Device } from '../../models/device'
-import { DeviceType } from '../../models/deviceType';
+import { DeviceType } from '../../models/deviceType'
 import { HardwareService } from '../../services/hardwareService'
 
 @Component({
@@ -35,19 +35,13 @@ export class HardwareViewComponent implements OnInit {
   onSubmit(): void {
     this.hardwareService.create(this.device)
       .subscribe(
-        data => function() {
-          debugger;
-          this.toastr.info('device created')
-        },
-        err => function() {
-          debugger;
-          this.toastr.error(`could not create device, err: ${err._body}`)
-        },
-        () => function() {
-          debugger;
-          console.log('yay')
-        }
-      )
+      (data) => {
+        this.toastr.info('device created successfully')
+        this.refresh()
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
   }
 
   ngOnInit(): void {
@@ -70,8 +64,28 @@ export class HardwareViewComponent implements OnInit {
     ]
   }
 
+  deleteDevice(device: Device) {
+    this.hardwareService.delete(device.DeviceId)
+      .subscribe(
+      (data) => {
+        this.toastr.info('device deleted successfully')
+        this.refresh()
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
+  }
+
   refresh() {
-    this.hardwareService.getAll().subscribe(devices => this.devices = devices)
+    console.log('in refresh')
+    this.hardwareService.getAll()
+      .subscribe(
+      (data) => {
+        this.devices = data
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
   }
 
   onClickCancel() {

@@ -6,6 +6,7 @@ using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -25,14 +26,14 @@ namespace Euricom.IoT.Api.Manager
         public Camera Add(Camera camera)
         {
             //Add device to Azure Device IoT
-            var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
-            camera.DeviceId = deviceId;
+            //var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
+            camera.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
             var json = JsonConvert.SerializeObject(camera);
 
             //Save to database
-            Database.Instance.SetValue("Cameras", camera.DeviceId, json);
+            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
             return camera;
         }
