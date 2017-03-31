@@ -1,5 +1,6 @@
 ﻿using DBreeze;
 using Euricom.IoT.Common;
+using Euricom.IoT.Common.Secrets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Euricom.IoT.DataLayer
         private Database()
         {
             InitDB();
+
+            //TODO remove once settings page in angular works
+            InitializeSettings();
         }
 
         public static Database Instance
@@ -33,7 +37,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>("DanaLocks", deviceId).Value;
+                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, deviceId).Value;
                     return JsonConvert.DeserializeObject<DanaLock>(json);
                 }
             }
@@ -44,13 +48,38 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
+        public Settings GetConfigSettings()
+        {
+            var settings = new Settings();
+            settings.HistoryLog = Int32.Parse(GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog"));
+            settings.AzureIotHubUri = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri");
+            settings.AzureIotHubUriConnectionString = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString");
+            settings.AzureAccountName = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName");
+            settings.AzureStorageAccessKey = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey");
+            settings.DropboxAccessToken = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken");
+            return settings;
+        }
+
+        public void SaveConfigSettings(Common.Settings settings)
+        {
+            if (settings != null)
+            {
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
+            }
+        }
+
         public LazyBone GetLazyBoneConfig(string deviceId)
         {
             try
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>("LazyBones", deviceId).Value;
+                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, deviceId).Value;
                     return JsonConvert.DeserializeObject<LazyBone>(json);
                 }
             }
@@ -272,6 +301,24 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
+        public string GetValue(string table, string key)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    return tran.Select<string, string>(table, key).Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO add logging to file ?
+                throw new Exception($"Could not get value for table: {table}, key: {key}, exception: " + ex);
+            }
+        }
+
+
+
         public void SetValue(string table, string key, string value)
         {
             try
@@ -285,7 +332,7 @@ namespace Euricom.IoT.DataLayer
             catch (Exception ex)
             {
                 //TODO add logging to file ?
-                throw;
+                throw new Exception($"Could not set value for table: {table}, key: {key}, exception: " + ex);
             }
         }
 
@@ -322,6 +369,16 @@ namespace Euricom.IoT.DataLayer
                 //TODO add logging to file ?
                 throw;
             }
+        }
+
+        private void InitializeSettings()
+        {
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", 365.ToString());
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", Secrets.AZURE_IOT_HUB_URI);
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", Secrets.AZURE_IOT_HUB_CONNECTIONSTRING);
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", Secrets.AZURE_ACCOUNT_NAME);
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", Secrets.AZURE_STORAGE_ACCESS_KEY);
+            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", Secrets.DROPBOX_ACCESS_TOKEN);
         }
 
         public void Dispose()

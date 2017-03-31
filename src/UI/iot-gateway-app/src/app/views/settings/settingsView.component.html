@@ -1,44 +1,70 @@
-<form class="form-horizontal">
+<!--Settings: {{settings | json }}
+
+<br />
+<br /> {{settings.historyLog | json }}-->
+
+<!--<form class="form-horizontal" (ngSubmit)="onSubmit(form)">
+  <input type="number" name="inputHistoryLog" class="form-control" [(ngModel)]="settings.historyLog" id="inputHistoryLog" placeholder="">
+</form>-->
+
+<form class="form-horizontal" (ngSubmit)="onSubmit(form)" novalidate>
 
   <fieldset>
     <legend>System</legend>
     <div class="form-group">
-      <label for="inputHistoryLog" class="col-sm-2 control-label">History log</label>
+      <label for="inputHistoryLog" class="col-sm-2 control-label">History log (days)</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputHistoryLog" placeholder="1 Week">
+        <input type="number" class="form-control" [(ngModel)]="settings.historyLog" id="inputHistoryLog" name="inputHistoryLog" placeholder="366">
       </div>
     </div>
   </fieldset>
 
   <fieldset>
     <legend>Azure</legend>
-    <div class="form-group">
-      <label for="inputAzureIotHub" class="col-sm-2 control-label">Azure IoT Hub</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputAzureIotHub" placeholder="?">
+
+    <div class="">
+      <h4>IoT Hub settings</h4>
+      <div class="form-group">
+        <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Azure IoT Hub URI</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" [(ngModel)]="settings.azureIotHubUri" id="inputAzureIotHubUri" name="inputAzureIotHubUri" placeholder="?">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputAzureIotHubConnectionString" class="col-sm-2 control-label">Azure IoT Hub Connectionstring</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="inputAzureIotHubConnectionString" name="inputAzureIotHubConnectionString" [(ngModel)]="settings.azureIotHubUriConnectionString" placeholder="?">
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="inputUsername" class="col-sm-2 control-label">Username</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputUsername" placeholder="Admin">
+
+    <div class="">
+      <h4>Blob storage settings</h4>
+      <div class="form-group">
+        <label for="inputAzureIotHub" class="col-sm-2 control-label">Azure account name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="inputAzureAccountName" name="inputAzureAccountName" [(ngModel)]="settings.azureAccountName" placeholder="?">
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-      <div class="col-sm-10">
-        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+      <div class="form-group">
+        <label for="inputUsername" class="col-sm-2 control-label">Azure storage access key</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="inputAzureStorageAccessKey" name="inputAzureStorageAccessKey" [(ngModel)]="settings.azureStorageAccessKey" placeholder="Admin">
+        </div>
       </div>
     </div>
   </fieldset>
 
   <fieldset>
-    <legend></legend>
+    <legend>Dropbox</legend>
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Save</button>
+      <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Dropbox Access token</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputDropboxAccessToken" name="inputDropboxAccessToken" [(ngModel)]="settings.dropboxAccessToken" placeholder="?">
       </div>
     </div>
   </fieldset>
+
+  <button type="submit" class="btn btn-default">Save</button>
 
 </form>

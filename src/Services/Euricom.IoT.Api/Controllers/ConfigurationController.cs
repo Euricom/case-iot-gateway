@@ -1,4 +1,6 @@
-﻿using Restup.Webserver.Attributes;
+﻿using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.DataLayer;
+using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
@@ -12,11 +14,32 @@ namespace Euricom.IoT.Api.Controllers
         {
         }
 
-        [UriFormat("/config/update\\?table={table}&key={key}&value={value}")]
-        public IPutResponse UpdateConfig(string table, string key, string value)
+        [UriFormat("/settings")]
+        public IGetResponse GetConfig()
         {
-            //Database.Instance.SetValue(table, key, value);
-            return new PutResponse(PutResponse.ResponseStatus.OK);
+            try
+            {
+                var settings = Database.Instance.GetConfigSettings();
+                return ResponseUtilities.GetResponseOk(settings);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail(ex.Message);
+            }
+        }
+
+        [UriFormat("/settings")]
+        public IPutResponse SaveConfig([FromContent] Common.Settings settings)
+        {
+            try
+            {
+                Database.Instance.SaveConfigSettings(settings);
+                return new PutResponse(PutResponse.ResponseStatus.OK);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.PutResponseFail(ex.Message);
+            }
         }
 
     }

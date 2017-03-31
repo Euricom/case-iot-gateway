@@ -8,9 +8,11 @@ namespace Euricom.IoT.Common
 {
     public class Settings
     {
-        public short PreserveHistoryLog { get; set; } //in weeks
-        public string AzureIotHubName { get; set; }
-        public string AzureUsername { get; set; }
-
+        public int HistoryLog { get; set; }
+        public string AzureIotHubUri { get; set; }
+        public string AzureIotHubUriConnectionString { get; set; }
+        public string AzureAccountName { get; set; }
+        public string AzureStorageAccessKey { get; set; }
+        public string DropboxAccessToken { get; set; }
     }
 }

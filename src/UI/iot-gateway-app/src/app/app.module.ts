@@ -11,6 +11,7 @@ import '../styles.less'
 import { routes } from './app.routes'
 
 import { HardwareService } from './services/hardwareService'
+import { SettingsService } from './services/settingsService'
 import { Config } from '../config'
 
 import { AppComponent } from './app.component'
@@ -51,6 +52,7 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
   providers: [
     Config,
     HardwareService,
+    SettingsService
   ],
   bootstrap: [AppComponent]
 })

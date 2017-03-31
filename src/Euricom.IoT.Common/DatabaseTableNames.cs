@@ -8,6 +8,7 @@ namespace Euricom.IoT.Common
 {
     public static class DatabaseTableNames
     {
+        public const string DBREEZE_TABLE_SETTINGS = "Settings";
         public const string DBREEZE_TABLE_DANALOCKS = "DanaLocks";
         public const string DBREEZE_TABLE_CAMERAS = "Cameras";
         public const string DBREEZE_TABLE_LAZYBONES = "LazyBones";

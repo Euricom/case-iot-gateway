@@ -1,7 +1,6 @@
 import { OnInit, Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
-// import { FormGroup, FormBuilder, FormControl } from '@angular/forms'
 import { Location } from '@angular/common'
 import { Device } from '../../models/device'
 import { DeviceType } from '../../models/deviceType'
@@ -77,7 +76,6 @@ export class HardwareViewComponent implements OnInit {
   }
 
   refresh() {
-    console.log('in refresh')
     this.hardwareService.getAll()
       .subscribe(
       (data) => {
