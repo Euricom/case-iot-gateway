@@ -22,16 +22,42 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/danalock/add")]
-        public IPostResponse Add([FromContent] Common.DanaLock danaLock)
+        public async Task<IPostResponse> Add([FromContent] Common.DanaLock danaLock)
         {
             try
             {
-                var added = _danaLockManager.Add(danaLock);
-                return ResponseUtilities.PostResponseOk(added.DeviceId);
+                var newDanaLock = await _danaLockManager.Add(danaLock);
+                return ResponseUtilities.PostResponseOk(newDanaLock.DeviceId);
             }
             catch (Exception ex)
             {
                 return ResponseUtilities.PostResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+            }
+        }
+
+        public async Task<IPutResponse> Edit(Common.DanaLock danaLock)
+        {
+            try
+            {
+                var danaLockEdited = await _danaLockManager.Edit(danaLock);
+                return ResponseUtilities.PutResponseOk(danaLockEdited);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.PutResponseFail($"Could not edit danaLock: exception: {ex.Message}");
+            }
+        }
+
+        public async Task<IDeleteResponse> Delete(string deviceId)
+        {
+            try
+            {
+                var removed = await _danaLockManager.Remove(deviceId);
+                return ResponseUtilities.DeleteResponseOk(removed.ToString());
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.DeleteResponseFail($"Could not remove danaLock: exception: {ex.Message}");
             }
         }
 

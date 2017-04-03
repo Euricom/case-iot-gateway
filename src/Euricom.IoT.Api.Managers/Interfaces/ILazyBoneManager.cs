@@ -8,7 +8,11 @@ namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface ILazyBoneManager
     {
-        Common.LazyBone Add(Common.LazyBone lazyBone);
+        Task<IEnumerable<Common.LazyBone>> GetAll();
+        Task<Common.LazyBone> Get(string deviceId);
+        Task<Common.LazyBone> Add(Common.LazyBone danaLock);
+        Task<Common.LazyBone> Edit(Common.LazyBone danaLock);
         Task Switch(string device, string state);
+        Task<bool> Remove(string deviceId);
     }
 }

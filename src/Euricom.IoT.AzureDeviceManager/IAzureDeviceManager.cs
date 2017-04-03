@@ -6,7 +6,8 @@ namespace Euricom.IoT.AzureDeviceManager
 {
     public interface IAzureDeviceManager
     {
-        Task<string> AddDeviceAsync(string deviceName);
         Task<IEnumerable<Device>> GetDevicesAsync();
+        Task<string> AddDeviceAsync(string deviceName);
+        Task RemoveDeviceAsync(string deviceName);
     }
 }

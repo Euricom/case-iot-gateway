@@ -9,7 +9,12 @@ namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface ICameraManager
     {
-        Camera Add(Camera camera);
-        void Notify(string device, string url, string timestamp, int frameNumber, int eventNumber);
+        Task<IEnumerable<Camera>> GetAll();
+        Task<Camera> Get(string deviceId);
+        Task<Camera> Add(Camera camera);
+        Task<Camera> Edit(Camera camera);
+        Task<bool> Remove(string deviceId);
+        void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber);
+        bool TestConnection(string deviceId);
     }
 }

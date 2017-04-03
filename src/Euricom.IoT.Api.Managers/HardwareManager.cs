@@ -4,6 +4,8 @@ using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -65,24 +67,29 @@ namespace Euricom.IoT.Api.Managers
             return hardware;
         }
 
-        public Device AddHardware(Device device)
+        public Device GetDevice(string deviceId)
+        {
+            return GetHardwareDevices().SingleOrDefault(x => x.DeviceId == deviceId);
+        }
+
+        public async Task<Device> AddHardware(Device device)
         {
             switch (device.Type)
             {
                 case HardwareType.Camera:
-                    device = _cameraManager.Add(new Camera()
+                    device = await _cameraManager.Add(new Camera()
                     {
                         Name = device.Name
                     });
                     break;
                 case HardwareType.DanaLock:
-                    device = _danaLockManager.Add(new Common.DanaLock()
+                    device = await _danaLockManager.Add(new Common.DanaLock()
                     {
                         Name = device.Name
                     });
                     break;
                 case HardwareType.LazyBoneSwitch:
-                    device = _lazyBoneManager.Add(new Common.LazyBone()
+                    device = await _lazyBoneManager.Add(new Common.LazyBone()
                     {
                         Name = device.Name
                     });
@@ -93,9 +100,20 @@ namespace Euricom.IoT.Api.Managers
             return device;
         }
 
-        public bool DeleteHardware(string deviceid)
+        public async Task<bool> DeleteHardware(string deviceId)
         {
-            return Database.Instance.RemoveDevice(deviceid);
+            var device = GetDevice(deviceId);
+            switch (device.Type)
+            {
+                case HardwareType.Camera:
+                    return await _cameraManager.Remove(deviceId);
+                case HardwareType.DanaLock:
+                    return await _danaLockManager.Remove(deviceId);
+                case HardwareType.LazyBoneSwitch:
+                    return await _lazyBoneManager.Remove(deviceId);
+                default:
+                    throw new ArgumentException($"type: {device.Type} has no implementation..");
+            }
         }
     }
 }

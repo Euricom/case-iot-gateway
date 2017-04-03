@@ -3,11 +3,7 @@ using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Data.Xml.Dom;
-using Windows.Storage;
 
 namespace Euricom.IoT.AzureDeviceManager
 {
@@ -36,6 +32,22 @@ namespace Euricom.IoT.AzureDeviceManager
                 return device.Authentication.SymmetricKey.PrimaryKey;
             }
             catch (DeviceAlreadyExistsException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemoveDeviceAsync(string deviceName)
+        {
+            try
+            {
+                await _registryManager.RemoveDeviceAsync(new Device(deviceName));
+            }
+            catch (DeviceNotFoundException)
             {
                 throw;
             }

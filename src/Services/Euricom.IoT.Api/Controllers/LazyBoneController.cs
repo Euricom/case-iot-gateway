@@ -21,16 +21,42 @@ namespace Euricom.IoT.Api.Controllers
             _lazyBoneManager = new LazyBoneManager();
         }
 
-        public PostResponse Add(LazyBone lazyBone)
+        public async Task<PostResponse> Add(LazyBone lazyBone)
         {
             try
             {
-                var added = _lazyBoneManager.Add(lazyBone);
-                return ResponseUtilities.PostResponseOk(added.DeviceId);
+                var newLazyBone = await _lazyBoneManager.Add(lazyBone);
+                return ResponseUtilities.PostResponseOk(newLazyBone.DeviceId);
             }
             catch (Exception ex)
             {
-                return ResponseUtilities.PostResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+                return ResponseUtilities.PostResponseFail($"Could not add lazyBone: exception: {ex.Message}");
+            }
+        }
+
+        public async Task<IPutResponse> Edit(LazyBone lazyBone)
+        {
+            try
+            {
+                var lazyBoneEdited = await _lazyBoneManager.Edit(lazyBone);
+                return ResponseUtilities.PutResponseOk(lazyBoneEdited);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.PutResponseFail($"Could not edit lazyBone: exception: {ex.Message}");
+            }
+        }
+
+        public async Task<IDeleteResponse> Delete(string deviceId)
+        {
+            try
+            {
+                var removed = await _lazyBoneManager.Remove(deviceId);
+                return ResponseUtilities.DeleteResponseOk(removed.ToString());
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
 

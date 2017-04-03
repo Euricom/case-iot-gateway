@@ -12,6 +12,7 @@ import { routes } from './app.routes'
 
 import { HardwareService } from './services/hardwareService'
 import { SettingsService } from './services/settingsService'
+import { CameraService } from './services/cameraService'
 import { Config } from '../config'
 
 import { AppComponent } from './app.component'
@@ -52,7 +53,8 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
   providers: [
     Config,
     HardwareService,
-    SettingsService
+    SettingsService,
+    CameraService,
   ],
   bootstrap: [AppComponent]
 })

@@ -2,6 +2,7 @@ import { OnInit, Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
+
 import { Device } from '../../models/device'
 import { DeviceType } from '../../models/deviceType'
 import { HardwareService } from '../../services/hardwareService'

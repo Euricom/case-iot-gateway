@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Euricom.IoT.Common;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -21,7 +24,19 @@ namespace Euricom.IoT.Api.Managers
             _lazyBone = new LazyBone.LazyBone();
         }
 
-        public Common.LazyBone Add(Common.LazyBone lazyBone)
+        public Task<IEnumerable<Common.LazyBone>> GetAll()
+        {
+            var cameras = Database.Instance.GetLazyBones();
+            return Task.FromResult(cameras.AsEnumerable());
+        }
+
+        public Task<Common.LazyBone> Get(string deviceId)
+        {
+            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Common.LazyBone>(json));
+        }
+
+        public async Task<Common.LazyBone> Add(Common.LazyBone lazyBone)
         {
             //Add device to Azure Device IoT
             var deviceId = _azureDeviceManager.AddDeviceAsync(lazyBone.Name).Result;
@@ -36,6 +51,24 @@ namespace Euricom.IoT.Api.Managers
             return lazyBone;
         }
 
+        public async Task<Common.LazyBone> Edit(Common.LazyBone lazyBone)
+        {
+            if (lazyBone == null)
+            {
+                throw new ArgumentNullException("lazyBone");
+            }
+            else if (String.IsNullOrEmpty(lazyBone.DeviceId))
+            {
+                throw new ArgumentException("lazyBone.DeviceId");
+            }
+
+            var json = JsonConvert.SerializeObject(lazyBone);
+
+            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
+
+            return await Get(lazyBone.DeviceId);
+        }
+
         public async Task<bool> GetCurrentState(string deviceId)
         {
             try
@@ -43,6 +76,24 @@ namespace Euricom.IoT.Api.Managers
                 var lazybone = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
                 var switchedOn = await _lazyBone.GetCurrentState(deviceId);
                 return switchedOn;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Remove(string deviceId)
+        {
+            try
+            {
+                // Remove device from Azure
+                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+
+                // Remove device from  database
+                Database.Instance.RemoveDevice(deviceId);
+
+                return true;
             }
             catch (Exception)
             {
@@ -91,6 +142,11 @@ namespace Euricom.IoT.Api.Managers
             {
                 throw;
             }
+        }
+
+        Task<Common.LazyBone> ILazyBoneManager.Add(Common.LazyBone danaLock)
+        {
+            throw new NotImplementedException();
         }
     }
 }

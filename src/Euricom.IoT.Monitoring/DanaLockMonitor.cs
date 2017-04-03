@@ -32,7 +32,7 @@ namespace Euricom.IoT.Monitoring
             {
                 while (true)
                 {
-                    var notification = PollDanaLock(deviceId, config.NodeId);
+                    var notification = await PollDanaLock(deviceId, config.NodeId);
 
                     PublishNotification(config, notification);
 
@@ -57,9 +57,9 @@ namespace Euricom.IoT.Monitoring
             }
         }
 
-        private Common.Notifications.DanaLockNotification PollDanaLock(string deviceId, byte nodeId)
+        private async Task<Common.Notifications.DanaLockNotification> PollDanaLock(string deviceId, byte nodeId)
         {
-            var locked = new Api.Managers.DanaLockManager().IsLocked(nodeId);
+            var locked = await new Api.Managers.DanaLockManager().IsLocked(nodeId);
             return new Common.Notifications.DanaLockNotification()
             {
                 DeviceKey = deviceId,

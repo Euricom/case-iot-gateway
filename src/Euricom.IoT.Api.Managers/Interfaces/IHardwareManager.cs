@@ -1,5 +1,6 @@
 ﻿using Euricom.IoT.Common;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         IEnumerable<Device> GetHardwareDevices();
         Hardware GetHardware();
-        Device AddHardware(Device device);
-        bool DeleteHardware(string deviceid);
+        Task<Device> AddHardware(Device device);
+        Task<bool> DeleteHardware(string deviceid);
     }
 }

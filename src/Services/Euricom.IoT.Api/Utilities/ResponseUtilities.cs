@@ -29,25 +29,18 @@ namespace Euricom.IoT.Api.Utilities
             DeleteResponse.ResponseStatus.OK);
         }
 
-        public static PutResponse PutResponseOk(string message)
+        public static PutResponse PutResponseOk(object data)
         {
             return new PutResponse(
             PutResponse.ResponseStatus.OK,
-            new ResponseData()
-            {
-                Message = message
-            });
-
+            data);
         }
 
-        public static GetResponse GetResponseFail(string message)
+        public static GetResponse GetResponseFail(object data)
         {
             return new GetResponse(
             GetResponse.ResponseStatus.NotFound,
-            new ResponseData()
-            {
-                Message = message
-            });
+            data);
 
         }
 

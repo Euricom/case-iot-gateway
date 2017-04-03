@@ -1,34 +1,82 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.AzureDeviceManager;
+using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
+using Euricom.IoT.DataLayer;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class DanaLockManager : IDanaLockManager
     {
-        private readonly DanaLock _danaLock;
+        private readonly Devices.DanaLock.DanaLock _danaLock;
+        private readonly IAzureDeviceManager _azureDeviceManager;
 
         public DanaLockManager()
         {
-            _danaLock = DanaLock.Instance;
+            _danaLock = Devices.DanaLock.DanaLock.Instance;
+            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
         }
 
-        public Common.DanaLock Add(Common.DanaLock danaLock)
+        public Task<IEnumerable<Common.DanaLock>> GetAll()
         {
-            throw new NotImplementedException();
+            var cameras = Database.Instance.GetDanaLocks();
+            return Task.FromResult(cameras.AsEnumerable());
         }
 
-        public bool IsLocked(byte nodeId)
+        public Task<Common.DanaLock> Get(string deviceId)
+        {
+            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Common.DanaLock>(json));
+        }
+
+        public async Task<Common.DanaLock> Add(Common.DanaLock danaLock)
+        {
+            //Add device to Azure Device IoT
+            //var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
+            danaLock.DeviceId = Guid.NewGuid().ToString();
+
+            //Convert to json
+            var json = JsonConvert.SerializeObject(danaLock);
+
+            //Save to database
+            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
+
+            return await Get(danaLock.DeviceId);
+        }
+
+        public async Task<Common.DanaLock> Edit(Common.DanaLock danaLock)
+        {
+            if (danaLock == null)
+            {
+                throw new ArgumentNullException("danaLock");
+            }
+            else if (String.IsNullOrEmpty(danaLock.DeviceId))
+            {
+                throw new ArgumentException("danaLock.DeviceId");
+            }
+
+            var json = JsonConvert.SerializeObject(danaLock);
+
+            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
+
+            return await Get(danaLock.DeviceId);
+        }
+
+
+        public async Task<bool> IsLocked(byte nodeId)
         {
             return _danaLock.IsLocked(nodeId);
         }
 
-        public bool IsLocked(string deviceId)
+        public async Task<bool> IsLocked(string deviceId)
         {
             try
             {
@@ -36,6 +84,24 @@ namespace Euricom.IoT.Api.Managers
                 //var nodeId = config.NodeId;
                 byte nodeId = 0x4;
                 return _danaLock.IsLocked(nodeId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Remove(string deviceId)
+        {
+            try
+            {
+                // Remove device from Azure
+                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+
+                // Remove device from  database
+                Database.Instance.RemoveDevice(deviceId);
+
+                return true;
             }
             catch (Exception)
             {

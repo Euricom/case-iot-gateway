@@ -12,6 +12,7 @@ import { LogViewComponent } from './views/log/logView.component'
 // resolvers
 
 export const routes: Routes = [
+  { path: '', component: SettingsViewComponent },
   { path: 'settings', component: SettingsViewComponent },
   { path: 'hardware', component: HardwareViewComponent },
   { path: 'cameras', component: CameraViewComponent },

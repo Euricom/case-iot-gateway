@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Manager
 {
@@ -23,7 +25,19 @@ namespace Euricom.IoT.Api.Manager
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
         }
 
-        public Camera Add(Camera camera)
+        public Task<IEnumerable<Camera>> GetAll()
+        {
+            var cameras = Database.Instance.GetCameras();
+            return Task.FromResult(cameras.AsEnumerable());
+        }
+
+        public Task<Camera> Get(string deviceId)
+        {
+            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
+        }
+
+        public async Task<Camera> Add(Camera camera)
         {
             //Add device to Azure Device IoT
             //var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
@@ -35,12 +49,48 @@ namespace Euricom.IoT.Api.Manager
             //Save to database
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
-            return camera;
+            return await Get(camera.DeviceId);
         }
 
-        public void Notify(string device, string url, string timestamp, int frameNumber, int eventNumber)
+        public async Task<Camera> Edit(Camera camera)
         {
-            var config = DataLayer.Database.Instance.GetCameraConfig(device);
+            if (camera == null)
+            {
+                throw new ArgumentNullException("camera");
+            }
+            else if (String.IsNullOrEmpty(camera.DeviceId))
+            {
+                throw new ArgumentException("camera.DeviceId");
+            }
+
+            var json = JsonConvert.SerializeObject(camera);
+
+            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
+
+            return await Get(camera.DeviceId);
+        }
+
+        public async Task<bool> Remove(string deviceId)
+        {
+            try
+            {
+                // Remove device from Azure
+                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+
+                // Remove device from  database
+                Database.Instance.RemoveDevice(deviceId);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
+        {
+            var config = DataLayer.Database.Instance.GetCameraConfig(deviceId);
 
             //var imageBytes = GetMotionImage(url);
             var notification = new CameraNotification
@@ -65,6 +115,11 @@ namespace Euricom.IoT.Api.Manager
                     await _azureBlobStorage.PostImage(file.Key, ms);
                 }
             }
+        }
+
+        public bool TestConnection(string deviceId)
+        {
+            throw new NotImplementedException();
         }
 
         private void PublishMotionEvent(string deviceKey, CameraNotification notification)
