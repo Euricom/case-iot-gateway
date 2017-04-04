@@ -1,59 +1,56 @@
-﻿using Euricom.IoT.Common;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Threading.Tasks;
-using Windows.Networking;
-using Windows.Networking.Sockets;
 
 namespace Euricom.IoT.LazyBone
 {
     public sealed class LazyBone
     {
-        private Common.LazyBone _config;
+        //private string _hostName;
+        //private short _port;
 
         private readonly int COMMAND_RELAY_TO_1 = 0x65;
         private readonly int COMMAND_RELAY_TO_0 = 0x6F;
         private readonly int COMMAND_RELAY_STATUS = 0x5B;
 
-        public LazyBone()
+        private readonly object _syncRoot = new object();
+        private SocketClient _client;
+
+        public LazyBone(SocketClient socketClient)
         {
+            _client = socketClient;
         }
 
-        public void SetConfig(Common.LazyBone config)
+        public async Task<bool> TestConnection()
         {
-            _config = config;
+            lock (_syncRoot)
+            {
+                var response = _client.Connect();
+                Debug.WriteLine(response);
+                return true;
+            }
         }
 
-        public async Task<bool> GetCurrentState(string deviceId)
+        public async Task<bool> GetCurrentState()
         {
-            //var host = _config.Host;
-            //var port = _config.Port;
-            var host = "10.0.1.127";
-            var port = "2000";
-            string response;
 
-            SocketClient client = SocketClient.Instance;
-            await client.Send(HexToString(COMMAND_RELAY_STATUS));
-            response = await client.Read(); //Response should be a single byte .. If bit is high , relay is in pos 1
-
-            // TODO debug response and check whether response is bit high
-            return true;
+            lock (_syncRoot)
+            {
+                var response = _client.Send(HexToString(COMMAND_RELAY_STATUS)).Result;
+                Debug.WriteLine(response);
+                return true;
+            }
         }
 
         public async Task Switch(bool on)
         {
-            //var host = _config.Host;
-            //var port = _config.Port;
-            var host = "10.0.1.127";
-            var port = "2000";
-            // string response;
-
-            SocketClient client = SocketClient.Instance;
-            var command = on == true ? COMMAND_RELAY_TO_1 : COMMAND_RELAY_TO_0;
-            await client.Send(HexToString(command));
-            Debug.WriteLine("LazyBone: sent switch command!: " + on);
-            // response = await client.Read();
+            lock (_syncRoot)
+            {
+                string message = HexToString(on == true ? COMMAND_RELAY_TO_1 : COMMAND_RELAY_TO_0);
+                var response = _client.Send(message).Result;
+                Debug.WriteLine(response);
+            }
         }
 
         private string HexToString(int hex)

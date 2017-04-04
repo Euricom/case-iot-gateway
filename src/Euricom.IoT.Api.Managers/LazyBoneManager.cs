@@ -10,24 +10,23 @@ using System.Threading.Tasks;
 using Euricom.IoT.Common;
 using System.Collections.Generic;
 using System.Linq;
+using Euricom.IoT.LazyBone;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class LazyBoneManager : ILazyBoneManager
     {
         private IAzureDeviceManager _azureDeviceManager;
-        private readonly LazyBone.LazyBone _lazyBone;
 
         public LazyBoneManager()
         {
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
-            _lazyBone = new LazyBone.LazyBone();
         }
 
         public Task<IEnumerable<Common.LazyBone>> GetAll()
         {
-            var cameras = Database.Instance.GetLazyBones();
-            return Task.FromResult(cameras.AsEnumerable());
+            var lazyBones = Database.Instance.GetLazyBones();
+            return Task.FromResult(lazyBones.AsEnumerable());
         }
 
         public Task<Common.LazyBone> Get(string deviceId)
@@ -39,8 +38,8 @@ namespace Euricom.IoT.Api.Managers
         public async Task<Common.LazyBone> Add(Common.LazyBone lazyBone)
         {
             //Add device to Azure Device IoT
-            var deviceId = _azureDeviceManager.AddDeviceAsync(lazyBone.Name).Result;
-            lazyBone.DeviceId = deviceId;
+            //var deviceId = await _azureDeviceManager.AddDeviceAsync(lazyBone.Name).Result;
+            lazyBone.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
             var json = JsonConvert.SerializeObject(lazyBone);
@@ -73,8 +72,10 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
-                var lazybone = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
-                var switchedOn = await _lazyBone.GetCurrentState(deviceId);
+
+                var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
+                var lazyBone = new LazyBone.LazyBone(new SocketClient(config.Host, config.Port.ToString()));
+                var switchedOn = await lazyBone.GetCurrentState();
                 return switchedOn;
             }
             catch (Exception)
@@ -101,29 +102,46 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
+        public async Task<bool> TestConnection(string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
+            }
+
+            var config = Database.Instance.GetLazyBoneConfig(deviceId);
+            //var lazyBone = CreateLazyBone(deviceId);
+            //return await lazyBone.GetCurrentState(deviceId);
+            return await LazyBoneConnectionManager.Instance.TestConnection(deviceId, config);
+        }
+
         public async Task Switch(string deviceId, string state)
         {
-            //var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
-
-            if (string.IsNullOrEmpty(state))
+            if (string.IsNullOrEmpty(deviceId))
             {
-                throw new Exception("param state was null or empty");
+                throw new ArgumentNullException("deviceId");
+            }
+            else if (string.IsNullOrEmpty(state))
+            {
+                throw new ArgumentNullException("state");
             }
             else if (state != "on" && state != "off")
             {
-                throw new Exception($"UNKNOWN parameter: { state}. Please use 'on' or 'off'");
+                throw new ArgumentException($"UNKNOWN parameter: { state}. Please use 'on' or 'off'");
             }
 
             try
             {
+                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                var lazyBone = LazyBoneConnectionManager.Instance.GetLazyBone(deviceId, config);
                 switch (state)
                 {
                     case "on":
-                        await _lazyBone.Switch(true);
+                        await lazyBone.Switch(true);
                         Debug.WriteLine("switched lazybone to ON");
                         break;
                     case "off":
-                        await _lazyBone.Switch(false);
+                        await lazyBone.Switch(false);
                         Debug.WriteLine("switched lazybone to OFF");
                         break;
                     default:
@@ -144,9 +162,11 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        Task<Common.LazyBone> ILazyBoneManager.Add(Common.LazyBone danaLock)
-        {
-            throw new NotImplementedException();
-        }
+        //private static LazyBone.LazyBone CreateLazyBone(string deviceId)
+        //{
+        //    var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
+        //    var lazyBone = new LazyBone.LazyBone(config.Host, config.Port);
+        //    return lazyBone;
+        //}
     }
 }

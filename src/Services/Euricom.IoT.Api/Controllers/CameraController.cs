@@ -40,16 +40,16 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var cameras = await _cameraManager.Get(deviceid);
-                return ResponseUtilities.GetResponseOk(cameras);
+                var camera = await _cameraManager.Get(deviceid);
+                return ResponseUtilities.GetResponseOk(camera);
             }
             catch (Exception ex)
             {
-                return ResponseUtilities.GetResponseFail($"Could not get cameras: exception: {ex.Message}");
+                return ResponseUtilities.GetResponseFail($"Could not get camera: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/camera/{deviceid}")]
+        [UriFormat("/camera")]
         public async Task<IPostResponse> Add([FromContent] CameraDto camera)
         {
             try
@@ -95,11 +95,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera/{deviceid}")]
-        public async Task<IDeleteResponse> Delete(string deviceId)
+        public async Task<IDeleteResponse> Delete(string deviceid)
         {
             try
             {
-                var removed = await _cameraManager.Remove(deviceId);
+                var removed = await _cameraManager.Remove(deviceid);
                 return ResponseUtilities.DeleteResponseOk(removed.ToString());
             }
             catch (Exception ex)
@@ -109,11 +109,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera/testconnection/{deviceid}")]
-        public IGetResponse TestConnection(string deviceid)
+        public async Task<IGetResponse> TestConnection(string deviceid)
         {
             try
             {
-                bool succeeded = _cameraManager.TestConnection(deviceid);
+                bool succeeded = await _cameraManager.TestConnection(deviceid);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)

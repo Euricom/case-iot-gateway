@@ -1,13 +1,17 @@
-﻿using Euricom.IoT.Api.Managers.Interfaces;
+﻿using AutoMapper;
+using Euricom.IoT.Api.Dtos;
+using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
-using Euricom.IoT.Api.Managers;
-using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -21,12 +25,44 @@ namespace Euricom.IoT.Api.Controllers
             _lazyBoneManager = new LazyBoneManager();
         }
 
-        public async Task<PostResponse> Add(LazyBone lazyBone)
+        [UriFormat("/lazybone")]
+        public async Task<IGetResponse> GetAll()
         {
             try
             {
+                var lazyBones = await _lazyBoneManager.GetAll();
+                var lazyBonesDto = Mapper.Map<IEnumerable<LazyBoneDto>>(lazyBones);
+                return ResponseUtilities.GetResponseOk(lazyBonesDto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not get lazyBones: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/lazybone/{deviceid}")]
+        public async Task<IGetResponse> GetByDeviceId(string deviceid)
+        {
+            try
+            {
+                var lazyBone = await _lazyBoneManager.Get(deviceid);
+                var lazyBoneDto = Mapper.Map<LazyBoneDto>(lazyBone);
+                return ResponseUtilities.GetResponseOk(lazyBone);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not get lazybone: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/lazybone")]
+        public async Task<PostResponse> Add([FromContent] LazyBoneDto lazyBoneDto)
+        {
+            try
+            {
+                var lazyBone = Mapper.Map<LazyBone>(lazyBoneDto);
                 var newLazyBone = await _lazyBoneManager.Add(lazyBone);
-                return ResponseUtilities.PostResponseOk(newLazyBone.DeviceId);
+                return ResponseUtilities.PostResponseOk(newLazyBone);
             }
             catch (Exception ex)
             {
@@ -34,10 +70,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        public async Task<IPutResponse> Edit(LazyBone lazyBone)
+        [UriFormat("/lazybone")]
+        public async Task<IPutResponse> Edit([FromContent] LazyBoneDto lazyBoneDto)
         {
             try
             {
+                var lazyBone = Mapper.Map<LazyBone>(lazyBoneDto);
                 var lazyBoneEdited = await _lazyBoneManager.Edit(lazyBone);
                 return ResponseUtilities.PutResponseOk(lazyBoneEdited);
             }
@@ -47,16 +85,31 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        public async Task<IDeleteResponse> Delete(string deviceId)
+        [UriFormat("/lazybone/{deviceid}")]
+        public async Task<IDeleteResponse> Delete(string deviceid)
         {
             try
             {
-                var removed = await _lazyBoneManager.Remove(deviceId);
+                var removed = await _lazyBoneManager.Remove(deviceid);
                 return ResponseUtilities.DeleteResponseOk(removed.ToString());
             }
             catch (Exception ex)
             {
                 return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/lazybone/testconnection/{deviceid}")]
+        public async Task<IGetResponse> TestConnection(string deviceid)
+        {
+            try
+            {
+                bool succeeded = await _lazyBoneManager.TestConnection(deviceid);
+                return ResponseUtilities.GetResponseOk(succeeded);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
 

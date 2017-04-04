@@ -1,5 +1,7 @@
-﻿using Dropbox.Api.Files;
+﻿using AutoMapper;
+using Dropbox.Api.Files;
 using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Api.Mappings;
 using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Managers;
@@ -19,6 +21,10 @@ namespace Euricom.IoT.Api
 
         public async void Run()
         {
+            Mapper.Initialize(cfg => {
+                cfg.AddProfile<LazyBoneMappingProfile>();
+            });
+
             // Init DanaLock
             await DanaLock.Instance.Initialize();
 

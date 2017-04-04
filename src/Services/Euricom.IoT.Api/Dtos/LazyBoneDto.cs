@@ -1,17 +1,17 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Common
+namespace Euricom.IoT.Api.Dtos
 {
-    public class Device
+    public class LazyBoneDto
     {
         public string DeviceId { get; set; }
         public string Name { get; set; }
-        public HardwareType Type { get; set; } 
+        public string Address { get; set; }
+        public short Port { get; set; }
         public bool Enabled { get; set; }
     }
 }

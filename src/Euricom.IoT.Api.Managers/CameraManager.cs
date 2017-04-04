@@ -117,7 +117,7 @@ namespace Euricom.IoT.Api.Manager
             }
         }
 
-        public bool TestConnection(string deviceId)
+        public async Task<bool> TestConnection(string deviceId)
         {
             throw new NotImplementedException();
         }

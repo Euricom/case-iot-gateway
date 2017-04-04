@@ -9,6 +9,6 @@ namespace Euricom.IoT.Common
     public class LazyBone : Device
     {
         public string Host { get; set; }
-        public string Port { get; set; }
+        public short Port { get; set; }
     }
 }

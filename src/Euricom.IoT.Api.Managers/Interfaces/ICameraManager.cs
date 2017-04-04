@@ -14,7 +14,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Camera> Add(Camera camera);
         Task<Camera> Edit(Camera camera);
         Task<bool> Remove(string deviceId);
+        Task<bool> TestConnection(string deviceId);
         void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber);
-        bool TestConnection(string deviceId);
     }
 }

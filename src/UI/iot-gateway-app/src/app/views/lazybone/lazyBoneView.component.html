@@ -1,1 +1,69 @@
-<h2>LAZYBONE / SWITCHES</h2>
+<h2>Switches</h2>
+
+<style type="text/css">
+  .table tr.active td {
+    background-color: #123456 !important;
+    color: white;
+  }
+
+</style>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>IP Address</th>
+      <th>Port</th>
+      <th>Enabled</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let lazyBone of lazyBones; let i=index" (click)="setClickedRow(i, lazyBone)" [class.active]="i == selectedRowIndex">
+      <td>{{lazyBone.Name}}</td>
+      <td>{{lazyBone.Address}}</td>
+      <td>{{lazyBone.Enabled}}</td>
+      <td>
+        <button type="button" (click)="testConnection(lazyBone)" class="btn btn-default">Test Connection</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<div style="max-width:600px;padding:40px 20px;background:#ebeff2">
+  <h3>Edit Lazy Bone</h3>
+  <form class="form-horizontal" role="form" (ngSubmit)="onSubmit(form)" novalidate>
+    <div class="form-group">
+      <label for="name" class="control-label col-sm-4">Lazy Bone name</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="name" id="name" [(ngModel)]="lazyBone.Name" placeholder="Enter Lazy Bone name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="address" class="control-label col-sm-4">Ip address</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="address" id="address" [(ngModel)]="lazyBone.Address" placeholder="Enter ip address or hostname">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="address" class="control-label col-sm-4">Port</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="port" id="port" [(ngModel)]="lazyBone.port" placeholder="Enter port number (for example 2000)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="enabled" class="control-label col-sm-4">Enabled</label>
+      <div class=" col-sm-8">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="lazyBone.Enabled">
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-offset-2 col-sm-8">
+      <button type="submit" class="btn btn-default">Save</button>
+    </div>
+  </form>
+</div>
