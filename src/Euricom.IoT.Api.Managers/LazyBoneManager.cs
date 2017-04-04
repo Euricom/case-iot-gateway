@@ -68,22 +68,6 @@ namespace Euricom.IoT.Api.Managers
             return await Get(lazyBone.DeviceId);
         }
 
-        public async Task<bool> GetCurrentState(string deviceId)
-        {
-            try
-            {
-
-                var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
-                var lazyBone = new LazyBone.LazyBone(new SocketClient(config.Host, config.Port.ToString()));
-                var switchedOn = await lazyBone.GetCurrentState();
-                return switchedOn;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public async Task<bool> Remove(string deviceId)
         {
             try
@@ -102,7 +86,8 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public async Task<bool> TestConnection(string deviceId)
+
+        public async Task<string> TestConnection(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
@@ -110,9 +95,18 @@ namespace Euricom.IoT.Api.Managers
             }
 
             var config = Database.Instance.GetLazyBoneConfig(deviceId);
-            //var lazyBone = CreateLazyBone(deviceId);
-            //return await lazyBone.GetCurrentState(deviceId);
             return await LazyBoneConnectionManager.Instance.TestConnection(deviceId, config);
+        }
+
+        public async Task<bool> GetCurrentState(string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
+            }
+
+            var config = Database.Instance.GetLazyBoneConfig(deviceId);
+            return await LazyBoneConnectionManager.Instance.GetCurrentState(deviceId, config);
         }
 
         public async Task Switch(string deviceId, string state)
@@ -133,16 +127,13 @@ namespace Euricom.IoT.Api.Managers
             try
             {
                 var config = Database.Instance.GetLazyBoneConfig(deviceId);
-                var lazyBone = LazyBoneConnectionManager.Instance.GetLazyBone(deviceId, config);
                 switch (state)
                 {
                     case "on":
-                        await lazyBone.Switch(true);
-                        Debug.WriteLine("switched lazybone to ON");
+                        await LazyBoneConnectionManager.Instance.Switch(deviceId, config, true);
                         break;
                     case "off":
-                        await lazyBone.Switch(false);
-                        Debug.WriteLine("switched lazybone to OFF");
+                        await LazyBoneConnectionManager.Instance.Switch(deviceId, config, false);
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for LazyBone, state: {state}");
@@ -154,19 +145,11 @@ namespace Euricom.IoT.Api.Managers
                     State = state == "open" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
-
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-        //private static LazyBone.LazyBone CreateLazyBone(string deviceId)
-        //{
-        //    var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
-        //    var lazyBone = new LazyBone.LazyBone(config.Host, config.Port);
-        //    return lazyBone;
-        //}
     }
 }

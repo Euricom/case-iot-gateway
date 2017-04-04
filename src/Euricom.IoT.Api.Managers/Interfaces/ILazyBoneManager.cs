@@ -12,7 +12,8 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Common.LazyBone> Get(string deviceId);
         Task<Common.LazyBone> Add(Common.LazyBone danaLock);
         Task<Common.LazyBone> Edit(Common.LazyBone danaLock);
-        Task<bool> TestConnection(string deviceId);
+        Task<string> TestConnection(string deviceId);
+        Task<bool> GetCurrentState(string deviceId);
         Task Switch(string device, string state);
         Task<bool> Remove(string deviceId);
     }

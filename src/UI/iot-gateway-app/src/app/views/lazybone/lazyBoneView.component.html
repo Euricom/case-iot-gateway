@@ -22,6 +22,7 @@
     <tr *ngFor="let lazyBone of lazyBones; let i=index" (click)="setClickedRow(i, lazyBone)" [class.active]="i == selectedRowIndex">
       <td>{{lazyBone.Name}}</td>
       <td>{{lazyBone.Address}}</td>
+      <td>{{lazyBone.Port}}</td>
       <td>{{lazyBone.Enabled}}</td>
       <td>
         <button type="button" (click)="testConnection(lazyBone)" class="btn btn-default">Test Connection</button>

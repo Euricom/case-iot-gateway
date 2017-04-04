@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking;
@@ -13,137 +17,111 @@ namespace Euricom.IoT.LazyBone
         private string _hostname;
         private string _port;
 
-        //StreamSocket _socket;
+        private TcpClient _tcpclnt;
 
         public SocketClient(string hostname, string port)
         {
+            _tcpclnt = new TcpClient();
             _hostname = hostname;
             _port = port;
         }
 
-        /// <summary>
-        /// Connect to server on port and send message
-        /// </summary>
-        /// <param name="host">Host name/IP address</param>
-        /// <param name="port">Port number</param>
-        /// <param name="message">Message to server</param>
-        /// <returns>Response from server</returns>
-        public async Task Connect()
+        public async Task<byte[]> Send(string message, bool readResponse)
         {
-            HostName hostName;
-
-            var socket = new StreamSocket();
-
-            hostName = new HostName(_hostname);
-
-            // Set NoDelay to false so that the Nagle algorithm is not disabled
-            socket.Control.NoDelay = false;
-
-            try
+            lock (_tcpclnt)
             {
-                // Connect to the server
-                await socket.ConnectAsync(hostName, _port);
-            }
-            catch (Exception exception)
-            {
-                switch (SocketError.GetStatus(exception.HResult))
+                Stream stream = null;
+                try
                 {
-                    case SocketErrorStatus.HostNotFound:
-                        // Handle HostNotFound Error
-                        throw;
-                    default:
-                        // If this is an unknown status it means that the error is fatal and retry will likely fail.
-                        throw;
+                    _tcpclnt = new TcpClient();
+                    _tcpclnt.NoDelay = true;
+
+
+                    _tcpclnt.ConnectAsync("10.0.1.127", 2000).Wait();
+                    Task.Delay(1500).Wait();
+
+                    stream = _tcpclnt.GetStream();
+
+                    ASCIIEncoding asen = new ASCIIEncoding();
+                    byte[] ba = asen.GetBytes(message);
+                    stream.Write(ba, 0, ba.Length);
+                    stream.Flush();
+
+                    Task.Delay(2000).Wait();
+
+                    if (readResponse)
+                    {
+                        var inputStr = stream.AsInputStream().AsStreamForRead();
+                        var response = ReadFully(inputStr, 100);
+                        return response;
+                    }
+                    return null;
                 }
-            }
-            finally
-            {
-                socket.Dispose();
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                finally
+                {
+                    stream.Dispose();
+                    _tcpclnt.Dispose();
+                    Task.Delay(1000).Wait();
+                }
             }
         }
 
+
         /// <summary>
-        /// SEND DATA
+        /// http://www.yoda.arachsys.com/csharp/readbinary.html
+        /// Reads data from a stream until the end is reached. The
+        /// data is returned as a byte array. An IOException is
+        /// thrown if any of the underlying IO calls fail.
         /// </summary>
-        /// <param name="message">Message to server</param>
-        /// <returns>void</returns>
-        public async Task<string> Send(string message)
+        /// <param name="stream">The stream to read data from</param>
+        /// <param name="initialLength">The initial buffer length</param>
+        private static byte[] ReadFully(Stream stream, int initialLength)
         {
-            DataWriter writer;
-            DataReader reader;
-
-            var socket = new StreamSocket();
-            socket.Control.NoDelay = true;
-            await socket.ConnectAsync(new HostName(_hostname), _port);
-
-            //Delay
-            await Task.Delay(1500);
-
-            // Create the data writer object backed by the in-memory stream. 
-            writer = new DataWriter(socket.OutputStream);
-            reader = new DataReader(socket.InputStream);
-
-            // Set the DataReader to only wait for available data (so that we don't have to know the data size)
-            reader.InputStreamOptions = Windows.Storage.Streams.InputStreamOptions.Partial;
-            // The encoding and byte order need to match the settings of the writer we previously used.
-            reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-            reader.ByteOrder = Windows.Storage.Streams.ByteOrder.LittleEndian;
-
-            // Set the Unicode character encoding for the output stream
-            writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-            // Specify the byte order of a stream.
-            writer.ByteOrder = Windows.Storage.Streams.ByteOrder.LittleEndian;
-
-            // Gets the size of UTF-8 string.
-            writer.MeasureString(message);
-            // Write a string value to the output stream.
-            writer.WriteString(message);
-
-            // Send the contents of the writer to the backing stream.
-            try
+            // If we've been passed an unhelpful initial length, just
+            // use 32K.
+            if (initialLength < 1)
             {
-                await writer.StoreAsync();
-                await writer.FlushAsync();
-                // In order to prolong the lifetime of the stream, detach it from the DataWriter
-                writer.DetachStream();
-
-                var strBuilder = new StringBuilder();
-
-                // Send the contents of the writer to the backing stream. 
-                // Get the size of the buffer that has not been read.
-                await reader.LoadAsync(256);
-
-                // Keep reading until we consume the complete stream.
-                while (reader.UnconsumedBufferLength > 0)
-                {
-                    strBuilder.Append(reader.ReadString(reader.UnconsumedBufferLength));
-                    await reader.LoadAsync(256);
-                }
-
-                reader.DetachStream();
-
-                var str =  strBuilder.ToString();
-
-                byte[] buffer = Encoding.ASCII.GetBytes(str.ToString());
-                return str;
+                initialLength = 32768;
             }
-            catch (Exception exception)
+
+            byte[] buffer = new byte[initialLength];
+            long read = 0;
+
+            int chunk;
+            while ((chunk = stream.Read(buffer, (int) read, (int)( buffer.Length - read))) > 0)
             {
-                switch (SocketError.GetStatus(exception.HResult))
+                read += chunk;
+
+                // If we've reached the end of our buffer, check to see if there's
+                // any more information
+                if (read == buffer.Length)
                 {
-                    case SocketErrorStatus.HostNotFound:
-                        // Handle HostNotFound Error
-                        throw;
-                    default:
-                        // If this is an unknown status it means that the error is fatal and retry will likely fail.
-                        throw;
+                    int nextByte = stream.ReadByte();
+
+                    // End of stream? If so, we're done
+                    if (nextByte == -1)
+                    {
+                        return buffer;
+                    }
+
+                    // Nope. Resize the buffer, put in the byte we've just
+                    // read, and continue
+                    byte[] newBuffer = new byte[buffer.Length * 2];
+                    Array.Copy(buffer, newBuffer, buffer.Length);
+                    newBuffer[read] = (byte)nextByte;
+                    buffer = newBuffer;
+                    read++;
                 }
             }
-            finally
-            {
-                writer.Dispose();
-                socket.Dispose();
-            }
+            // Buffer is now too big. Shrink it.
+            byte[] ret = new byte[read];
+            Array.Copy(buffer, ret, (int) read);
+            return ret;
         }
     }
+
 }

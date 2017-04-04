@@ -104,12 +104,26 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                bool succeeded = await _lazyBoneManager.TestConnection(deviceid);
-                return ResponseUtilities.GetResponseOk(succeeded);
+                string softwareVersion = await _lazyBoneManager.TestConnection(deviceid);
+                return ResponseUtilities.GetResponseOk(softwareVersion);
             }
             catch (Exception ex)
             {
                 return ResponseUtilities.GetResponseFail(ex.Message);
+            }
+        }
+
+        [UriFormat("/lazybone/getstate/{deviceid}")]
+        public async Task<IGetResponse> GetState(string deviceid)
+        {
+            try
+            {
+                var isRelayOn = await _lazyBoneManager.GetCurrentState(deviceid);
+                return ResponseUtilities.GetResponseOk(isRelayOn.ToString());
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
 
