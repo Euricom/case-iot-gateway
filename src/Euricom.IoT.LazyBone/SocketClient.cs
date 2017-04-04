@@ -47,10 +47,10 @@ namespace Euricom.IoT.LazyBone
                     stream.Write(ba, 0, ba.Length);
                     stream.Flush();
 
-                    Task.Delay(2000).Wait();
-
                     if (readResponse)
                     {
+                        Task.Delay(2000).Wait();
+
                         var inputStr = stream.AsInputStream().AsStreamForRead();
                         var response = ReadFully(inputStr, 100);
                         return response;

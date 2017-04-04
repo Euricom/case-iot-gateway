@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euricom.IoT.Api.Managers;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,63 +8,37 @@ namespace Euricom.IoT.Monitoring
 {
     public class DanaLockMonitor
     {
-        Dictionary<string, CancellationTokenSource> _cancellationTokenSources;
-
         public DanaLockMonitor()
         {
-            _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
         }
 
-        public void StartMonitor(String deviceId, int pollingTime)
+        public CancellationTokenSource StartMonitor(Common.DanaLock danaLock, int pollingTime)
         {
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
-            _cancellationTokenSources[deviceId] = cts;
-
-            //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
-            var config = new Common.DanaLock()
-            {
-                DeviceId = deviceId,
-                Name = "DanaLock1",
-                NodeId = 0x4
-            };
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    var notification = await PollDanaLock(deviceId, config.NodeId);
+                    var notification = await PollDanaLock(danaLock.DeviceId);
 
-                    PublishNotification(config, notification);
+                    PublishNotification(danaLock, notification);
 
                     await Task.Delay(pollingTime);
                 }
             }, ct);
+
+            return cts;
         }
 
-        public void StopMonitor(string deviceId)
+        private async Task<Common.Notifications.DanaLockNotification> PollDanaLock(string deviceId)
         {
-            if (_cancellationTokenSources.ContainsKey(deviceId))
-            {
-                _cancellationTokenSources[deviceId].Cancel();
-            }
-        }
-
-        public void StopAllMonitors()
-        {
-            foreach (var cts in _cancellationTokenSources)
-            {
-                cts.Value.Cancel();
-            }
-        }
-
-        private async Task<Common.Notifications.DanaLockNotification> PollDanaLock(string deviceId, byte nodeId)
-        {
-            var locked = await new Api.Managers.DanaLockManager().IsLocked(nodeId);
+            var isLocked = await new DanaLockManager().IsLocked(deviceId);
             return new Common.Notifications.DanaLockNotification()
             {
                 DeviceKey = deviceId,
-                Locked = locked,
+                Locked = isLocked,
                 Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
             };
         }

@@ -14,6 +14,7 @@
       <th>Name</th>
       <th>IP Address</th>
       <th>Port</th>
+      <th>PollingTime</th>
       <th>Enabled</th>
       <th> </th>
     </tr>
@@ -23,6 +24,7 @@
       <td>{{lazyBone.Name}}</td>
       <td>{{lazyBone.Address}}</td>
       <td>{{lazyBone.Port}}</td>
+      <td>{{lazyBone.PollingTime}}</td>
       <td>{{lazyBone.Enabled}}</td>
       <td>
         <button type="button" (click)="testConnection(lazyBone)" class="btn btn-default">Test Connection</button>
@@ -48,9 +50,15 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="address" class="control-label col-sm-4">Port</label>
+      <label for="port" class="control-label col-sm-4">Port</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" name="port" id="port" [(ngModel)]="lazyBone.port" placeholder="Enter port number (for example 2000)">
+        <input type="text" class="form-control" name="port" id="port" [(ngModel)]="lazyBone.Port" placeholder="Enter port number (for example 2000)">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="pollingtime" class="control-label col-sm-4">Polling time</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="lazyBone.PollingTime" placeholder="Enter polling time in milliseconds">
       </div>
     </div>
     <div class="form-group">

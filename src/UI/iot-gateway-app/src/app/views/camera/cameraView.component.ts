@@ -57,7 +57,16 @@ export class CameraViewComponent implements OnInit {
   testConnection(camera: Camera) {
     if (!camera.Address) {
       this.toastr.error('Cannot test connection without valid ip address')
+      return
     }
+    this.cameraService.testConnection(camera.DeviceId)
+    .subscribe(
+      (data) => {
+        this.toastr.info(data)
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
   }
 
   setClickedRow(i: Number, camera: Camera) {

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Manager
@@ -91,19 +92,20 @@ namespace Euricom.IoT.Api.Manager
         public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
         {
             var config = DataLayer.Database.Instance.GetCameraConfig(deviceId);
-
-            //var imageBytes = GetMotionImage(url);
-            var notification = new CameraNotification
+            if (config.Enabled)
             {
-                FilePath = url,
-                EventNumber = eventNumber,
-                FrameNumber = frameNumber,
-                Timestamp = timestamp,
-                DeviceKey = config.DeviceId,
-            };
+                var notification = new CameraNotification
+                {
+                    FilePath = url,
+                    EventNumber = eventNumber,
+                    FrameNumber = frameNumber,
+                    Timestamp = timestamp,
+                    DeviceKey = config.DeviceId,
+                };
 
-            // Publish to IoT Hub
-            PublishMotionEvent(config.DeviceId, notification);
+                // Publish to IoT Hub
+                PublishMotionEvent(config.DeviceId, notification);
+            }
         }
 
         public async void UploadFilesToBlobStorage(Dictionary<string, byte[]> files)
@@ -119,7 +121,50 @@ namespace Euricom.IoT.Api.Manager
 
         public async Task<bool> TestConnection(string deviceId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var config = DataLayer.Database.Instance.GetCameraConfig(deviceId);
+
+                HttpWebRequest request = (HttpWebRequest)GetAddress(config);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    if (response.Headers["server"].Contains("motionEye"))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("A request to the server succeeded, but couldn't determine if server is motionEye");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Could not get a valid response from {request.RequestUri}");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private static WebRequest GetAddress(Camera config)
+        {
+            if (String.IsNullOrEmpty(config.Address))
+            {
+                throw new ArgumentNullException("config.Address");
+            }
+            else
+            {
+                if (config.Address.Contains("http://"))
+                {
+                    return WebRequest.Create(config.Address);
+                }
+                return WebRequest.Create("http://" + config.Address);
+            }
         }
 
         private void PublishMotionEvent(string deviceKey, CameraNotification notification)

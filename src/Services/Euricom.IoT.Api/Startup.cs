@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Dropbox.Api.Files;
 using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Managers;
-using Euricom.IoT.Monitoring;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +13,12 @@ namespace Euricom.IoT.Api
 {
     public class Startup
     {
-        private DanaLockMonitor _danaLockMonitor = new DanaLockMonitor();
-        private LazyBoneMonitor _lazyBoneMonitor = new LazyBoneMonitor();
         private DropboxManager _dropBoxManager = new DropboxManager();
-
 
         public async void Run()
         {
-            Mapper.Initialize(cfg => {
+            Mapper.Initialize(cfg =>
+            {
                 cfg.AddProfile<LazyBoneMappingProfile>();
             });
 
@@ -33,7 +30,7 @@ namespace Euricom.IoT.Api
 
             // Set up monitoring devices
             //MonitorDanaLocks();
-            //MonitorLazyBones();
+            MonitorLazyBones();
 
             // Start a task that monitors the dropbox account for new files
             //MonitorDropBoxFolder();
@@ -41,33 +38,12 @@ namespace Euricom.IoT.Api
 
         private void MonitorDanaLocks()
         {
-            //Get all danalocks configs from db (nodeIds)
-            //var nodeIds = new List<byte>() { 0x4 };
-            //var danalocks = DataLayer.Database.Instance.GetDanaLocks();
-
-            //foreach (var danalock in danalocks)
-            //{ 
-            //    var pollingTime = 5000; // TODO: get from config
-            //    _danaLockMonitor.StartMonitor(danalock.DeviceId, pollingTime);
-            //}
-
-            var pollingTime = 5000; // TODO: get from config
-            _danaLockMonitor.StartMonitor(Secrets.DANALOCK_DEVICE_KEY, pollingTime);
+            var inst = Monitoring.MonitoringSystem.Instance;
         }
 
         private void MonitorLazyBones()
         {
-            //Get all lazybone configs from db (nodeIds)
-            //var lazyBones = DataLayer.Database.Instance.GetLazyBones();
-
-            //foreach (var lazybone in danalocks)
-            //{ 
-            //    var pollingTime = 5000; // TODO: get from config
-            //    _danaLockMonitor.StartMonitor(danalock.DeviceId, pollingTime);
-            //}
-
-            var pollingTime = 5000; // TODO: get from config
-            _lazyBoneMonitor.StartMonitor("todo fill in", pollingTime);
+            var inst = Monitoring.MonitoringSystem.Instance;
         }
 
         private void MonitorDropBoxFolder()

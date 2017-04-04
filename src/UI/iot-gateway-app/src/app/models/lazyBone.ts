@@ -6,6 +6,7 @@ export class LazyBone {
   Type?: String
   Address?: String
   Enabled?: boolean
+  PollingTime?: Number
 
   constructor(resource) {
     Object.assign(this, resource)

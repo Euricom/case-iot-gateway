@@ -57,6 +57,7 @@ export class LazyBonesViewComponent implements OnInit {
   testConnection(lazyBone: LazyBone) {
     if (!lazyBone.Address) {
       this.toastr.error('Cannot test connection without valid ip address')
+      return
     }
     this.lazyBoneService.testConnection(lazyBone.DeviceId)
     .subscribe(

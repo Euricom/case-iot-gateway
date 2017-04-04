@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euricom.IoT.Api.Managers;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,62 +8,37 @@ namespace Euricom.IoT.Monitoring
 {
     public class LazyBoneMonitor
     {
-        Dictionary<string, CancellationTokenSource> _cancellationTokenSources;
-
         public LazyBoneMonitor()
         {
-            _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
         }
 
-        public void StartMonitor(String deviceId, int pollingTime)
+        public CancellationTokenSource StartMonitor(Common.LazyBone lazyBone, int pollingTime)
         {
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
-            _cancellationTokenSources[deviceId] = cts;
-
-            //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
-            var lazyBone = new Common.LazyBone()
-            {
-                DeviceId = deviceId,
-                Name = "LazyBone1",
-            };
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    var notification = PollLazyBone(deviceId);
+                    var notification = await PollLazyBone(lazyBone.DeviceId);
 
                     PublishNotification(lazyBone, notification);
 
                     await Task.Delay(pollingTime);
                 }
             }, ct);
+
+            return cts;
         }
 
-        public void StopMonitor(string deviceId)
+        private async Task<Common.Notifications.LazyBoneNotification> PollLazyBone(string deviceId)
         {
-            if (_cancellationTokenSources.ContainsKey(deviceId))
-            {
-                _cancellationTokenSources[deviceId].Cancel();
-            }
-        }
-
-        public void StopAllMonitors()
-        {
-            foreach (var cts in _cancellationTokenSources)
-            {
-                cts.Value.Cancel();
-            }
-        }
-
-        private Common.Notifications.LazyBoneNotification PollLazyBone(string deviceId)
-        {
-            //var locked = new Api.Managers.LazyBoneManager().(nodeId);
+            var currentState = await new LazyBoneManager().GetCurrentState(deviceId);
             return new Common.Notifications.LazyBoneNotification()
             {
                 DeviceKey = deviceId,
-                State = false,
+                State = currentState,
                 Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
             };
         }

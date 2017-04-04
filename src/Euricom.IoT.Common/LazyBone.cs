@@ -10,5 +10,6 @@ namespace Euricom.IoT.Common
     {
         public string Host { get; set; }
         public short Port { get; set; }
+        public int PollingTime { get; set; }
     }
 }

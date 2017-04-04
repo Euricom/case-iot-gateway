@@ -1,16 +1,15 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureDeviceManager;
+using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.LazyBone;
 using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Euricom.IoT.Common;
 using System.Collections.Generic;
 using System.Linq;
-using Euricom.IoT.LazyBone;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -47,6 +46,12 @@ namespace Euricom.IoT.Api.Managers
             //Save to database
             Database.Instance.SetValue("LazyBones", lazyBone.DeviceId, json);
 
+            ////Set up a monitor 
+            //if (lazyBone.Enabled)
+            //{
+            //    Monitoring.MonitoringSystem.Instance.StartMonitor(lazyBone.DeviceId);
+            //}
+
             return lazyBone;
         }
 
@@ -60,6 +65,12 @@ namespace Euricom.IoT.Api.Managers
             {
                 throw new ArgumentException("lazyBone.DeviceId");
             }
+
+            //var currentConfig = Database.Instance.GetLazyBoneConfig(lazyBone.DeviceId);
+            //if (currentConfig.PollingTime != lazyBone.PollingTime)
+            //{
+            //    MonitoringSystem.Instance.ChangePollingTime(currentConfig.Host, lazyBone.PollingTime);
+            //}
 
             var json = JsonConvert.SerializeObject(lazyBone);
 
@@ -77,6 +88,9 @@ namespace Euricom.IoT.Api.Managers
 
                 // Remove device from  database
                 Database.Instance.RemoveDevice(deviceId);
+
+                //// Do not poll this device anymore
+                //MonitoringSystem.Instance.RemoveMonitor(deviceId);
 
                 return true;
             }

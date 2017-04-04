@@ -48,4 +48,9 @@ export class CameraService {
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
+
+  testConnection(id: String) {
+    return this.http.get(`${this.config.baseUrl}/api/camera/testconnection/${id}`)
+      .map((res: Response) => (res.json()))
+  }
 }

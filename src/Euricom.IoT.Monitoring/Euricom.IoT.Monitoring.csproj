@@ -109,12 +109,13 @@
   <ItemGroup>
     <Compile Include="LazyBoneMonitor.cs" />
     <Compile Include="DanaLockMonitor.cs" />
+    <Compile Include="MonitoringSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Monitoring.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
-      <Project>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</Project>
+      <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
