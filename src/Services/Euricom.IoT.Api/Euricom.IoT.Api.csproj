@@ -104,9 +104,12 @@
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
     <Compile Include="Controllers\DanaLockController.cs" />
+    <Compile Include="Dtos\DanaLockDto.cs" />
     <Compile Include="Dtos\LazyBoneDto.cs" />
     <Compile Include="Dtos\CameraDto.cs" />
     <Compile Include="Dtos\DeviceDto.cs" />
+    <Compile Include="Mappings\DanaLockMappingProfile.cs" />
+    <Compile Include="Mappings\CameraMappingProfile.cs" />
     <Compile Include="Mappings\LazyBoneMappingProfile.cs" />
     <Compile Include="ResponseData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

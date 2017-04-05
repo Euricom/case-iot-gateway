@@ -14,6 +14,7 @@ import { HardwareService } from './services/hardwareService'
 import { SettingsService } from './services/settingsService'
 import { CameraService } from './services/cameraService'
 import { LazyBoneService } from './services/lazyBoneService'
+import { DanaLockService } from './services/danaLockService'
 import { Config } from '../config'
 
 import { AppComponent } from './app.component'
@@ -57,6 +58,7 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
     SettingsService,
     CameraService,
     LazyBoneService,
+    DanaLockService,
   ],
   bootstrap: [AppComponent]
 })

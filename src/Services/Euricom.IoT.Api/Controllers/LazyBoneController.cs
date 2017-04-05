@@ -47,11 +47,11 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var lazyBone = await _lazyBoneManager.Get(deviceid);
                 var lazyBoneDto = Mapper.Map<LazyBoneDto>(lazyBone);
-                return ResponseUtilities.GetResponseOk(lazyBone);
+                return ResponseUtilities.GetResponseOk(lazyBoneDto);
             }
             catch (Exception ex)
             {
-                return ResponseUtilities.GetResponseFail($"Could not get lazybone: exception: {ex.Message}");
+                return ResponseUtilities.GetResponseFail($"Could not get lazybone with deviceId {deviceid} , exception: {ex.Message}");
             }
         }
 

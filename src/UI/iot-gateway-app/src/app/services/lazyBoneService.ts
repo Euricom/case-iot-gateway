@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/catch'
 
-import { LazyBone } from '../models/lazyBone';
+import { LazyBone } from '../models/lazyBone'
 import { Config } from '../../config'
 
 @Injectable()
@@ -51,6 +51,16 @@ export class LazyBoneService {
 
   testConnection(id: String) {
     return this.http.get(`${this.config.baseUrl}/api/lazyBone/testconnection/${id}`)
+      .map((res: Response) => (res.json()))
+  }
+
+  getCurrentState(id: String) {
+    return this.http.get(`${this.config.baseUrl}/api/lazyBone/getstate/${id}`)
+      .map((res: Response) => (res.json()))
+  }
+
+  switch(id: String, state: String) {
+    return this.http.get(`${this.config.baseUrl}/api/lazyBone/switch?deviceid=${id}&state=${state}`)
       .map((res: Response) => (res.json()))
   }
 }

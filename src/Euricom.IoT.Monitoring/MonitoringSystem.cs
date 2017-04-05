@@ -14,6 +14,8 @@ namespace Euricom.IoT.Monitoring
         private Dictionary<string, CancellationTokenSource> _cancellationTokenSources;
         private Dictionary<string, int> _pollingTimesCache;
 
+        private const int MIN_POLLING_TIME = 5000;
+
         private MonitoringSystem()
         {
             _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
@@ -97,14 +99,20 @@ namespace Euricom.IoT.Monitoring
                 {
                     case Common.HardwareType.LazyBoneSwitch:
                         var configLazyBone = ((Common.LazyBone)config);
-                        var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
-                        _cancellationTokenSources[deviceId] = ctsLazyBone;
+                        if (configLazyBone.PollingTime >= MIN_POLLING_TIME)
+                        {
+                            var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
+                            _cancellationTokenSources[deviceId] = ctsLazyBone;
+                        }
                         break;
 
                     case Common.HardwareType.DanaLock:
                         var configDanaLock = ((Common.DanaLock)config);
-                        var ctsDanaLock = new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
-                        _cancellationTokenSources[deviceId] = ctsDanaLock;
+                        if (configDanaLock.PollingTime >= MIN_POLLING_TIME)
+                        {
+                            var ctsDanaLock = new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
+                            _cancellationTokenSources[deviceId] = ctsDanaLock;
+                        }
                         break;
                 }
             }

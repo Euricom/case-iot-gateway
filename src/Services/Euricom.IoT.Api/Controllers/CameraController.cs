@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Api.Dtos;
+﻿using AutoMapper;
+using Euricom.IoT.Api.Dtos;
 using Euricom.IoT.Api.Manager;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
@@ -7,6 +8,7 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
@@ -27,7 +29,8 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var cameras = await _cameraManager.GetAll();
-                return ResponseUtilities.GetResponseOk(cameras);
+                var camerasDto = Mapper.Map<IEnumerable<CameraDto>>(cameras);
+                return ResponseUtilities.GetResponseOk(camerasDto);
             }
             catch (Exception ex)
             {
@@ -41,7 +44,8 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var camera = await _cameraManager.Get(deviceid);
-                return ResponseUtilities.GetResponseOk(camera);
+                var cameraDto = Mapper.Map<CameraDto>(camera);
+                return ResponseUtilities.GetResponseOk(cameraDto);
             }
             catch (Exception ex)
             {
@@ -50,19 +54,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera")]
-        public async Task<IPostResponse> Add([FromContent] CameraDto camera)
+        public async Task<IPostResponse> Add([FromContent] CameraDto cameraDto)
         {
             try
             {
-                var newCamera = await _cameraManager.Add(new Camera()
-                {
-                    Address = camera.Address,
-                    Enabled = camera.Enabled,
-                    Name = camera.Name,
-                    Password = camera.Password,
-                    Type = HardwareType.Camera,
-                    Username = camera.Username
-                });
+                var camera = Mapper.Map<Camera>(cameraDto);
+                var newCamera = await _cameraManager.Add(camera);
                 return ResponseUtilities.PostResponseOk(newCamera);
             }
             catch (Exception ex)
@@ -72,20 +69,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera")]
-        public async Task<IPutResponse> Edit([FromContent] CameraDto camera)
+        public async Task<IPutResponse> Edit([FromContent] CameraDto cameraDto)
         {
             try
             {
-                var cameraEdited = await _cameraManager.Edit(new Camera()
-                {
-                    DeviceId = camera.DeviceId,
-                    Address = camera.Address,
-                    Enabled = camera.Enabled,
-                    Name = camera.Name,
-                    Password = camera.Password,
-                    Type = HardwareType.Camera,
-                    Username = camera.Username
-                });
+                var camera = Mapper.Map<Camera>(cameraDto);
+                var cameraEdited = await _cameraManager.Edit(camera);
                 return ResponseUtilities.PutResponseOk(cameraEdited);
             }
             catch (Exception ex)

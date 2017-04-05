@@ -70,6 +70,32 @@ namespace Euricom.IoT.Api.Managers
             return await Get(danaLock.DeviceId);
         }
 
+        public async Task<bool> Remove(string deviceId)
+        {
+            try
+            {
+                // Remove device from Azure
+                // await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+
+                // Remove device from  database
+                Database.Instance.RemoveDevice(deviceId);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+        public async Task<bool> TestConnection(string deviceId)
+        {
+            var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+            var nodeId = config.NodeId;
+            return _danaLock.TestConnection(nodeId);
+        }
 
         public async Task<bool> IsLocked(byte nodeId)
         {
@@ -80,28 +106,9 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
-                //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
-                //var nodeId = config.NodeId;
-                byte nodeId = 0x4;
+                var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+                var nodeId = config.NodeId;
                 return _danaLock.IsLocked(nodeId);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<bool> Remove(string deviceId)
-        {
-            try
-            {
-                // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
-
-                // Remove device from  database
-                Database.Instance.RemoveDevice(deviceId);
-
-                return true;
             }
             catch (Exception)
             {

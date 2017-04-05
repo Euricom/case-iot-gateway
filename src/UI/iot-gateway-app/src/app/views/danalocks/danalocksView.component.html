@@ -1,1 +1,82 @@
-<h2>DANALOCKS</h2>
+<h2>Danalocks</h2>
+
+<style type="text/css">
+  .table tr.active td {
+    background-color: #123456 !important;
+    color: white;
+  }
+
+</style>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Node ID</th>
+      <th>PollingTime</th>
+      <th>Enabled</th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let danaLock of danalocks; let i=index" (click)="setClickedRow(i, danaLock)" [class.active]="i == selectedRowIndex">
+      <td>{{danaLock.Name}}</td>
+      <td>{{danaLock.NodeId}}</td>
+      <td>{{danaLock.PollingTime}}</td>
+      <td>{{danaLock.Enabled}}</td>
+      <td>
+        <button type="button" (click)="testConnection(danaLock)" class="btn btn-default">Test Connection</button>
+      </td>
+      <td>
+        <button type="button" (click)="getCurrentState(danaLock)" class="btn btn-default">Get door lock state (open or closed)</button>
+      </td>
+      <td>
+        <button type="button" (click)="switch(danaLock, 'off')" class="btn btn-default">Open door</button>
+      </td>
+      <td>
+        <button type="button" (click)="switch(danaLock, 'on')" class="btn btn-default">Close door</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<div style="max-width:600px;padding:40px 20px;background:#ebeff2">
+  <h3>Edit Danalock</h3>
+  <form class="form-horizontal" role="form" (ngSubmit)="onSubmit(form)" novalidate>
+    <div class="form-group">
+      <label for="name" class="control-label col-sm-4">DanaLock name</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="name" id="name" [(ngModel)]="danaLock.Name" placeholder="Enter DanaLock name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="port" class="control-label col-sm-4"> (OpenZWave) Node ID</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="nodeId" id="nodeId" [(ngModel)]="danaLock.NodeId" placeholder="Enter DanaLock Node Id">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="pollingtime" class="control-label col-sm-4">Polling time</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="danaLock.PollingTime" placeholder="Enter polling time in milliseconds">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="enabled" class="control-label col-sm-4">Enabled</label>
+      <div class=" col-sm-8">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="danaLock.Enabled">
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-offset-2 col-sm-8">
+      <button type="submit" class="btn btn-default">Save</button>
+    </div>
+  </form>
+</div>

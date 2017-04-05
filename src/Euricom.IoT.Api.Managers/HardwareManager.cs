@@ -79,19 +79,22 @@ namespace Euricom.IoT.Api.Managers
                 case HardwareType.Camera:
                     device = await _cameraManager.Add(new Camera()
                     {
-                        Name = device.Name
+                        Name = device.Name,
+                        Type = HardwareType.Camera
                     });
                     break;
                 case HardwareType.DanaLock:
                     device = await _danaLockManager.Add(new Common.DanaLock()
                     {
-                        Name = device.Name
+                        Name = device.Name,
+                        Type = HardwareType.DanaLock
                     });
                     break;
                 case HardwareType.LazyBoneSwitch:
                     device = await _lazyBoneManager.Add(new Common.LazyBone()
                     {
-                        Name = device.Name
+                        Name = device.Name,
+                        Type = HardwareType.LazyBoneSwitch
                     });
                     break;
                 default:

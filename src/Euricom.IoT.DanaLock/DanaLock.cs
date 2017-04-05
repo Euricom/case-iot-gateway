@@ -78,8 +78,18 @@ namespace Euricom.IoT.Devices.DanaLock
             GetSerialPorts();
         }
 
+        public bool TestConnection(byte nodeId)
+        {
+            return IsLocked(nodeId);
+        }
+
         public bool IsLocked(byte nodeId)
         {
+            if (_homeId == 0)
+            {
+                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
+            }
+
             bool currentVal = false;
             ZWManager.Instance.GetValueAsBool(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), out currentVal);
             return currentVal;
@@ -87,20 +97,24 @@ namespace Euricom.IoT.Devices.DanaLock
 
         public void OpenLock(byte nodeId) //nodeId = 0x4
         {
-            if (_homeId > 0)
+            if (_homeId == 0)
             {
-                //Unlock or lock door
-                ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
+                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
             }
+
+            //Unlock or lock door
+            ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
         }
 
         public void CloseLock(byte nodeId) //nodeId = 0x4
         {
-            if (_homeId > 0)
+            if (_homeId == 0)
             {
-                //Unlock or lock door
-                ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
+                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
             }
+
+            //Unlock or lock door
+            ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
         }
 
         private async Task Init()

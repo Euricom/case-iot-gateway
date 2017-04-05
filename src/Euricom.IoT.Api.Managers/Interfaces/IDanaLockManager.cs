@@ -13,6 +13,8 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Common.DanaLock> Get(string deviceId);
         Task<Common.DanaLock> Add(Common.DanaLock danaLock);
         Task<Common.DanaLock> Edit(Common.DanaLock danaLock);
+
+        Task<bool> TestConnection(string deviceid);
         Task<bool> IsLocked(string deviceId);
         Task Switch(string deviceid, string state);
         Task<bool> Remove(string deviceId);

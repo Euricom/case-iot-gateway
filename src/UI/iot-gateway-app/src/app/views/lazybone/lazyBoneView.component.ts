@@ -69,6 +69,36 @@ export class LazyBonesViewComponent implements OnInit {
       })
   }
 
+  getCurrentState(lazyBone: LazyBone) {
+    if (!lazyBone.Address) {
+      this.toastr.error('Cannot get lazy bone state without valid ip address')
+      return
+    }
+    this.lazyBoneService.getCurrentState(lazyBone.DeviceId)
+    .subscribe(
+      (data) => {
+        this.toastr.info(data)
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
+  }
+
+  switch(lazyBone: LazyBone, state: String) {
+    if (!lazyBone.Address) {
+      this.toastr.error('Cannot switch without valid ip address')
+      return
+    }
+    this.lazyBoneService.switch(lazyBone.DeviceId, state)
+    .subscribe(
+      (data) => {
+        this.toastr.info(data)
+      },
+      (err) => {
+        this.toastr.error('error occurred' + err)
+      })
+  }
+
   setClickedRow(i: Number, lazyBone: LazyBone) {
     this.selectedRowIndex = i
     this.lazyBone = lazyBone

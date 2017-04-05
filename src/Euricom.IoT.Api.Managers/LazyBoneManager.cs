@@ -46,12 +46,6 @@ namespace Euricom.IoT.Api.Managers
             //Save to database
             Database.Instance.SetValue("LazyBones", lazyBone.DeviceId, json);
 
-            ////Set up a monitor 
-            //if (lazyBone.Enabled)
-            //{
-            //    Monitoring.MonitoringSystem.Instance.StartMonitor(lazyBone.DeviceId);
-            //}
-
             return lazyBone;
         }
 
@@ -66,12 +60,6 @@ namespace Euricom.IoT.Api.Managers
                 throw new ArgumentException("lazyBone.DeviceId");
             }
 
-            //var currentConfig = Database.Instance.GetLazyBoneConfig(lazyBone.DeviceId);
-            //if (currentConfig.PollingTime != lazyBone.PollingTime)
-            //{
-            //    MonitoringSystem.Instance.ChangePollingTime(currentConfig.Host, lazyBone.PollingTime);
-            //}
-
             var json = JsonConvert.SerializeObject(lazyBone);
 
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
@@ -84,7 +72,7 @@ namespace Euricom.IoT.Api.Managers
             try
             {
                 // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+                // await _azureDeviceManager.RemoveDeviceAsync(deviceId);
 
                 // Remove device from  database
                 Database.Instance.RemoveDevice(deviceId);

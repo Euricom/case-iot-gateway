@@ -20,6 +20,8 @@ namespace Euricom.IoT.Api
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<LazyBoneMappingProfile>();
+                cfg.AddProfile<DanaLockMappingProfile>();
+                cfg.AddProfile<CameraMappingProfile>();
             });
 
             // Init DanaLock

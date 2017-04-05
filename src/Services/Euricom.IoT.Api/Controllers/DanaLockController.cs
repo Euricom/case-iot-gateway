@@ -1,4 +1,6 @@
-﻿using Euricom.IoT.Api.Managers;
+﻿using AutoMapper;
+using Euricom.IoT.Api.Dtos;
+using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
@@ -7,6 +9,7 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
@@ -21,13 +24,44 @@ namespace Euricom.IoT.Api.Controllers
             _danaLockManager = new DanaLockManager();
         }
 
-        [UriFormat("/danalock/add")]
-        public async Task<IPostResponse> Add([FromContent] Common.DanaLock danaLock)
+        [UriFormat("/danalock")]
+        public async Task<IGetResponse> GetAll()
         {
             try
             {
-                var newDanaLock = await _danaLockManager.Add(danaLock);
-                return ResponseUtilities.PostResponseOk(newDanaLock.DeviceId);
+                var danaLocks = await _danaLockManager.GetAll();
+                var danaLocksDto = Mapper.Map<IEnumerable<DanaLockDto>>(danaLocks);
+                return ResponseUtilities.GetResponseOk(danaLocksDto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not get danaLocks: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/danalock/{deviceid}")]
+        public async Task<IGetResponse> GetByDeviceId(string deviceid)
+        {
+            try
+            {
+                var danaLock = await _danaLockManager.Get(deviceid);
+                var danaLockDto = Mapper.Map<DanaLockDto>(danaLock);
+                return ResponseUtilities.GetResponseOk(danaLockDto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail($"Could not get danaLock with deviceId: {deviceid} , exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/danalock")]
+        public async Task<IPostResponse> Add([FromContent] DanaLockDto danaLockDto)
+        {
+            try
+            {
+                var danaLock = Mapper.Map<DanaLock>(danaLockDto);
+                var newLazyBone = await _danaLockManager.Add(danaLock);
+                return ResponseUtilities.PostResponseOk(newLazyBone);
             }
             catch (Exception ex)
             {
@@ -35,10 +69,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        public async Task<IPutResponse> Edit(Common.DanaLock danaLock)
+        [UriFormat("/danalock")]
+        public async Task<IPutResponse> Edit([FromContent] DanaLockDto danaLockDto)
         {
             try
             {
+                var danaLock = Mapper.Map<DanaLock>(danaLockDto);
                 var danaLockEdited = await _danaLockManager.Edit(danaLock);
                 return ResponseUtilities.PutResponseOk(danaLockEdited);
             }
@@ -48,6 +84,7 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
+        [UriFormat("/danalock/{deviceid}")]
         public async Task<IDeleteResponse> Delete(string deviceId)
         {
             try
@@ -58,6 +95,20 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 return ResponseUtilities.DeleteResponseFail($"Could not remove danaLock: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/danalock/testconnection/{deviceid}")]
+        public async Task<IGetResponse> TestConnection(string deviceid)
+        {
+            try
+            {
+                bool succeeded = await _danaLockManager.TestConnection(deviceid);
+                return ResponseUtilities.GetResponseOk(succeeded);
+            }
+            catch (Exception ex)
+            {
+                return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
 

@@ -76,7 +76,7 @@ namespace Euricom.IoT.Api.Manager
             try
             {
                 // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+                // await _azureDeviceManager.RemoveDeviceAsync(deviceId);
 
                 // Remove device from  database
                 Database.Instance.RemoveDevice(deviceId);
