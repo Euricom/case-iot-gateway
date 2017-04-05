@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraMonitor.cs" />
     <Compile Include="LazyBoneMonitor.cs" />
     <Compile Include="DanaLockMonitor.cs" />
     <Compile Include="MonitoringSystem.cs" />

@@ -5,8 +5,8 @@ export class DanaLock {
   Name?: String
   Type?: String
   NodeId?: Number
-  Enabled?: boolean
   PollingTime?: Number
+  Enabled?: boolean
 
   constructor(resource) {
     Object.assign(this, resource)

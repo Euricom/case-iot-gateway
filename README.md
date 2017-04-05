@@ -1,5 +1,10 @@
 # case-iot-gateway
 
+
+MotionEye:
+
+under file storage: enter /Apps/EuricomIoT/camera1 for Dropbox Service
+
 DanaLock
 
 https://github.com/OpenZWave/open-zwave/wiki/Adding-Security-Devices-to-OZW

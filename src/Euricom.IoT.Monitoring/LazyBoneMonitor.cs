@@ -27,19 +27,27 @@ namespace Euricom.IoT.Monitoring
             {
                 while (true)
                 {
-                    Debug.WriteLine($"MONITOR lazyBone {lazyBone.DeviceId} is running");
+                    try
+                    {
+                        Debug.WriteLine($"MONITOR lazyBone {lazyBone.DeviceId} is running");
 
-                    var notification = await PollLazyBone(lazyBone.DeviceId);
+                        var notification = await PollLazyBone(lazyBone.DeviceId);
 
-                    Debug.WriteLine($"MONITOR polling lazyBone {lazyBone.DeviceId} was done");
+                        Debug.WriteLine($"MONITOR polling lazyBone {lazyBone.DeviceId} was done");
 
-                    PublishNotification(lazyBone, notification);
+                        PublishNotification(lazyBone, notification);
 
-                    Debug.WriteLine($"MONITOR pushing notification lazyBone {lazyBone.DeviceId} was done");
+                        Debug.WriteLine($"MONITOR pushing notification lazyBone {lazyBone.DeviceId} was done");
 
-                    await Task.Delay(pollingTime);
+                        await Task.Delay(pollingTime);
 
-                    Debug.WriteLine($"MONITOR waiting {lazyBone.DeviceId} was done");
+                        Debug.WriteLine($"MONITOR waiting {lazyBone.DeviceId} was done");
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO add logging
+                        Debug.WriteLine($"Exception occurred while monitoring LazyBone device {lazyBone.DeviceId}, exception message: {ex.Message}");
+                    }
                 }
             }, ct);
 

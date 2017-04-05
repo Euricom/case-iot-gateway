@@ -18,22 +18,23 @@ namespace Euricom.IoT.Managers
     {
         private string _accessToken = Secrets.DROPBOX_ACCESS_TOKEN;
         private DropboxClientConfig _config;
-        private string _cursor;
+        private Dictionary<string, string> _latestDropboxCursorPerPath;
 
         public DropboxManager()
         {
             _config = new DropboxClientConfig("SimpleTestApp");
+            _latestDropboxCursorPerPath = new Dictionary<string, string>();
         }
 
         /// <summary>
         /// Get latest file changes (entries) from DropBox folder
         /// </summary>
         /// <param name="cursor"></param>
-        public async Task<IList<Metadata>> PollDropboxNewFiles()
+        public async Task<IList<Metadata>> PollDropboxNewFiles(string path)
         {
             try
             {
-                string path = @"/camera";
+                // string path = @"/camera";
                 bool recursive = true;
                 bool includeMediaInfo = true;
                 bool includeDeleted = true;
@@ -45,19 +46,22 @@ namespace Euricom.IoT.Managers
 
                 var dropboxClient = new DropboxClient(_accessToken, _config);
 
-                if (String.IsNullOrEmpty(_cursor))
+                //The cursor is a sort of GUID which we pass to the dropbox api for getting changed files
+                
+                // This if happens only once
+                if (!_latestDropboxCursorPerPath.ContainsKey(path))
                 {
                     var cursor = await dropboxClient.Files.ListFolderGetLatestCursorAsync(path, recursive, includeMediaInfo, includeDeleted, includeExplicitSharedMembers);
-                    _cursor = cursor.Cursor;
+                    _latestDropboxCursorPerPath[path] = cursor.Cursor;
                 }
 
-                var result = await dropboxClient.Files.ListFolderContinueAsync(_cursor);
+                var result = await dropboxClient.Files.ListFolderContinueAsync(_latestDropboxCursorPerPath[path]);
                 var entries = result.Entries;
 
                 entries = entries.Where(x => !x.IsDeleted && x.IsFile).ToList();
 
-                var cursor2 = await dropboxClient.Files.ListFolderGetLatestCursorAsync(path, recursive, includeMediaInfo, includeDeleted, includeExplicitSharedMembers);
-                _cursor = cursor2.Cursor;
+                var cursorLatest = await dropboxClient.Files.ListFolderGetLatestCursorAsync(path, recursive, includeMediaInfo, includeDeleted, includeExplicitSharedMembers);
+                _latestDropboxCursorPerPath[path] = cursorLatest.Cursor;
 
                 return entries;
 
@@ -71,7 +75,6 @@ namespace Euricom.IoT.Managers
                 {
                     Debug.WriteLine("    Request uri: {0}", ex.RequestUri);
                 }
-
                 throw;
             }
         }

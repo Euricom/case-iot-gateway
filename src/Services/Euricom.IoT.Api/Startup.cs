@@ -13,7 +13,6 @@ namespace Euricom.IoT.Api
 {
     public class Startup
     {
-        private DropboxManager _dropBoxManager = new DropboxManager();
 
         public async void Run()
         {
@@ -34,49 +33,11 @@ namespace Euricom.IoT.Api
 
             // Set up monitoring devices
             MonitorDevices();
-
-            // Start a task that monitors the dropbox account for new files
-            //MonitorDropBoxFolder();
         }
 
         private void MonitorDevices()
         {
             var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
-        }
-
-        private void MonitorDropBoxFolder()
-        {
-            var pollingTime = 1000 * 30; // TODO: get from config
-
-            var cts = new CancellationTokenSource();
-            var ct = cts.Token;
-
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    var entries = await _dropBoxManager.PollDropboxNewFiles();
-                    if (entries != null && entries.Count > 0)
-                    {
-                        var files = await _dropBoxManager.DownloadFiles(entries);
-                        new CameraManager().UploadFilesToBlobStorage(files);
-                    }
-                    await Task.Delay(pollingTime);
-                }
-            }, ct);
-        }
-
-        private List<string> GetFileNames(IList<Metadata> entries)
-        {
-            List<string> results = new List<string>();
-            foreach (var entry in entries)
-            {
-                if (entry.IsFile && !entry.IsDeleted)
-                {
-                    results.Add(entry.Name);
-                }
-            }
-            return results;
         }
     }
 }

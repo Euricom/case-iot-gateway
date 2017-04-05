@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Euricom.IoT.Common;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Euricom.IoT.Common;
-using System.Diagnostics;
 
 namespace Euricom.IoT.Monitoring
 {
@@ -79,32 +78,6 @@ namespace Euricom.IoT.Monitoring
             });
         }
 
-        //public void MonitorLazyBones()
-        //{
-        //    //Get all lazybone configs from db 
-        //    var lazyBones = DataLayer.Database.Instance.GetLazyBones();
-        //    lazyBones = lazyBones.Where(x => !String.IsNullOrEmpty(x.Host) && x.Port > 0 && x.PollingTime >= 5000 && x.Enabled).ToList();
-
-        //    foreach (var lazybone in lazyBones)
-        //    {
-        //        var pollingTime = lazybone.PollingTime;
-        //        StartMonitor(lazybone.DeviceId);
-        //    }
-        //}
-
-        //public void MonitorDanaLocks()
-        //{
-        //    //Get all lazybone configs from db 
-        //    var danaLocks = DataLayer.Database.Instance.GetDanaLocks();
-        //    danaLocks = danaLocks.Where(x => x.NodeId > 0x0 && x.Enabled).ToList();
-
-        //    foreach (var danaLock in danaLocks)
-        //    {
-        //        var pollingTime = danaLock.PollingTime;
-        //        StartMonitor(danaLock.DeviceId);
-        //    }
-        //}
-
         public void StartMonitor(string deviceId)
         {
             var config = DataLayer.Database.Instance.FindDevice(deviceId);
@@ -112,23 +85,38 @@ namespace Euricom.IoT.Monitoring
             {
                 switch (config.Type)
                 {
-                    case Common.HardwareType.LazyBoneSwitch:
+                    case HardwareType.LazyBoneSwitch:
                         var configLazyBone = ((Common.LazyBone)config);
                         if (configLazyBone.Enabled && configLazyBone.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
+                            _pollingTimesCache[deviceId] = configLazyBone.PollingTime;
                             _cancellationTokenSources[deviceId] = ctsLazyBone;
                         }
                         break;
 
-                    case Common.HardwareType.DanaLock:
+                    case HardwareType.DanaLock:
                         var configDanaLock = ((Common.DanaLock)config);
                         if (configDanaLock.Enabled && configDanaLock.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsDanaLock = new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
+                            _pollingTimesCache[deviceId] = configDanaLock.PollingTime;
                             _cancellationTokenSources[deviceId] = ctsDanaLock;
                         }
                         break;
+
+                    case HardwareType.Camera:
+                        var configCamera = ((Common.Camera)config);
+                        if (configCamera.Enabled && configCamera.PollingTime >= MIN_POLLING_TIME)
+                        {
+                            var ctsCamera = new CameraMonitor().StartMonitor(configCamera, configCamera.PollingTime);
+                            _pollingTimesCache[deviceId] = configCamera.PollingTime;
+                            _cancellationTokenSources[deviceId] = ctsCamera;
+                        }
+                        break;
+
+                    default:
+                        throw new Exception("Unsupported hardware type");
                 }
             }
         }
@@ -137,6 +125,11 @@ namespace Euricom.IoT.Monitoring
         {
             // Stop
             _cancellationTokenSources[deviceId].Cancel();
+
+            if (_pollingTimesCache.ContainsKey(deviceId))
+            {
+                _pollingTimesCache.Remove(deviceId);
+            }
         }
 
         public void ChangePollingTime(string deviceId)
@@ -145,22 +138,7 @@ namespace Euricom.IoT.Monitoring
             _cancellationTokenSources[deviceId].Cancel();
 
             // Start
-            var config = DataLayer.Database.Instance.FindDevice(deviceId);
-            if (config != null)
-            {
-                switch (config.Type)
-                {
-                    case Common.HardwareType.LazyBoneSwitch:
-                        var configLazyBone = (Common.LazyBone)config;
-                        new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
-                        break;
-
-                    case Common.HardwareType.DanaLock:
-                        var configDanaLock = (Common.DanaLock)config;
-                        new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
-                        break;
-                }
-            }
+            StartMonitor(deviceId);
         }
 
         public void ChangePollingTime(string deviceId, int pollingTime)

@@ -5,8 +5,7 @@ export class Camera {
   Name?: String
   Type?: String
   Address?: String
-  Username?: String
-  Password?: String
+  PollingTime?: Number
   Enabled?: boolean
 
   constructor(resource) {

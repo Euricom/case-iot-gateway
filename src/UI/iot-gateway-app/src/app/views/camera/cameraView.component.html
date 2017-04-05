@@ -13,8 +13,10 @@
     <tr>
       <th>Name</th>
       <th>IP Address</th>
-      <th>Username</th>
-      <th>Password</th>
+      <!--<th>Username</th>
+      <th>Password</th>-->
+      <th>Dropbox folder location</th>
+      <th>PollingTime</th>
       <th>Enabled</th>
       <th> </th>
     </tr>
@@ -23,8 +25,10 @@
     <tr *ngFor="let camera of cameras; let i=index" (click)="setClickedRow(i, camera)" [class.active]="i == selectedRowIndex">
       <td>{{camera.Name}}</td>
       <td>{{camera.Address}}</td>
-      <td>{{camera.Username}}</td>
-      <td>{{camera.Password}}</td>
+      <!--<td>{{camera.Username}}</td>
+      <td>{{camera.Password}}</td>-->
+      <td>{{camera.DropboxPath}}</td>
+      <td>{{camera.PollingTime}}</td>
       <td>{{camera.Enabled}}</td>
       <td>
         <button type="button" (click)="testConnection(camera)" class="btn btn-default">Test Connection</button>
@@ -49,7 +53,7 @@
         <input type="text" class="form-control" name="address" id="address" [(ngModel)]="camera.Address" placeholder="Enter ip address or hostname">
       </div>
     </div>
-    <div class="form-group">
+    <!--<div class="form-group">
       <label for="username" class="control-label col-sm-4">Username</label>
       <div class="col-sm-8">
         <input type="text" class="form-control" name="username" id="username" [(ngModel)]="camera.Username" placeholder="Enter username">
@@ -59,6 +63,18 @@
       <label for="password" class="control-label col-sm-4">Password</label>
       <div class="col-sm-8">
         <input type="password" class="form-control" name="password" id="password" [(ngModel)]="camera.Password" placeholder="Enter password">
+      </div>
+    </div>-->
+    <div class="form-group">
+      <label for="address" class="control-label col-sm-4">Dropbox folder location</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="dropboxPath" id="dropboxPath" [(ngModel)]="camera.DropboxPath" placeholder="Enter Dropbox folder location, example: /camera1">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="pollingtime" class="control-label col-sm-4">Polling time (dropbox)</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="camera.PollingTime" placeholder="Enter polling time in milliseconds">
       </div>
     </div>
     <div class="form-group">

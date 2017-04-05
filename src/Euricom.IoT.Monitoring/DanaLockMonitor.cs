@@ -1,6 +1,7 @@
 ﻿using Euricom.IoT.Api.Managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,11 +22,19 @@ namespace Euricom.IoT.Monitoring
             {
                 while (true)
                 {
-                    var notification = await PollDanaLock(danaLock.DeviceId);
+                    try
+                    {
+                        var notification = await PollDanaLock(danaLock.DeviceId);
 
-                    PublishNotification(danaLock, notification);
+                        PublishNotification(danaLock, notification);
 
-                    await Task.Delay(pollingTime);
+                        await Task.Delay(pollingTime);
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO add logging
+                        Debug.WriteLine($"Exception occurred while monitoring DanaLock device {danaLock.DeviceId}, exception message: {ex.Message}");
+                    }
                 }
             }, ct);
 

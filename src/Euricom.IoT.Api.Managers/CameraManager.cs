@@ -108,13 +108,13 @@ namespace Euricom.IoT.Api.Manager
             }
         }
 
-        public async void UploadFilesToBlobStorage(Dictionary<string, byte[]> files)
+        public async void UploadFilesToBlobStorage(string path, Dictionary<string, byte[]> files)
         {
             foreach (var file in files)
             {
                 using (MemoryStream ms = new MemoryStream(file.Value))
                 {
-                    await _azureBlobStorage.PostImage(file.Key, ms);
+                    await _azureBlobStorage.PostImage(path, file.Key, ms);
                 }
             }
         }
