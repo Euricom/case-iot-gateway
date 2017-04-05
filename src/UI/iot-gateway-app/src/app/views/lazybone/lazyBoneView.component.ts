@@ -62,7 +62,9 @@ export class LazyBonesViewComponent implements OnInit {
     this.lazyBoneService.testConnection(lazyBone.DeviceId)
     .subscribe(
       (data) => {
-        this.toastr.info(data)
+        if (data) {
+          this.toastr.info('Connection succesfull')
+        }
       },
       (err) => {
         this.toastr.error('error occurred' + err)

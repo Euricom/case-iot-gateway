@@ -7,8 +7,8 @@
     <ProjectGuid>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Euricom.IoT.DanaLock</RootNamespace>
-    <AssemblyName>Euricom.IoT.DanaLock</AssemblyName>
+    <RootNamespace>Euricom.IoT.ZWave</RootNamespace>
+    <AssemblyName>Euricom.IoT.ZWave</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -60,11 +60,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
-    <DebugSymbols>false</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
@@ -107,7 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DanaLock.cs" />
+    <Compile Include="ZWaveManager.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

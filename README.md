@@ -1,5 +1,9 @@
 # case-iot-gateway
 
+DanaLock
+
+https://github.com/OpenZWave/open-zwave/wiki/Adding-Security-Devices-to-OZW
+
 Step 1
 Download the drivers here: http://aeotec.com/z-wave-usb-stick/1358-z-wave-drivers.html
 

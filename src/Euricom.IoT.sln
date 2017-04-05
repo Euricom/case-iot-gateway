@@ -34,7 +34,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenZWaveUWP", "UWP\OpenZWa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Devices", "Devices", "{3A0ABAA4-C65D-4625-9D9B-934D4FA706A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.DanaLock", "Euricom.IoT.DanaLock\Euricom.IoT.DanaLock.csproj", "{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.ZWave", "Euricom.IoT.DanaLock\Euricom.IoT.ZWave.csproj", "{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{A9AC4793-AD7F-4D72-9F67-18838F92AD51}"
 EndProject

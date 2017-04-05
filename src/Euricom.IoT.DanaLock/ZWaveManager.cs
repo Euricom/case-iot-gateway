@@ -10,11 +10,11 @@ using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Euricom.IoT.Devices.DanaLock
+namespace Euricom.IoT.ZWave
 {
-    public class DanaLock
+    public class ZWaveManager
     {
-        private static readonly DanaLock _instance = new DanaLock();
+        private static readonly ZWaveManager _instance = new ZWaveManager();
 
         private uint _homeId;
 
@@ -25,11 +25,11 @@ namespace Euricom.IoT.Devices.DanaLock
         private ObservableCollection<Node> m_nodeList = new ObservableCollection<Node>();
 
 
-        private DanaLock()
+        private ZWaveManager()
         {
         }
 
-        public static DanaLock Instance
+        public static ZWaveManager Instance
         {
             get
             {
@@ -80,7 +80,11 @@ namespace Euricom.IoT.Devices.DanaLock
 
         public bool TestConnection(byte nodeId)
         {
-            return IsLocked(nodeId);
+            if (_homeId > 0 && m_nodeList != null && m_nodeList.Any(x=> x.ID == nodeId))
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool IsLocked(byte nodeId)

@@ -137,9 +137,9 @@
       <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
       <Name>Euricom.IoT.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.DanaLock\Euricom.IoT.DanaLock.csproj">
+    <ProjectReference Include="..\Euricom.IoT.DanaLock\Euricom.IoT.ZWave.csproj">
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
-      <Name>Euricom.IoT.DanaLock</Name>
+      <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
       <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>

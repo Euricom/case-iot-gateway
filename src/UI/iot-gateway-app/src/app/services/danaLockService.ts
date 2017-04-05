@@ -54,13 +54,13 @@ export class DanaLockService {
       .map((res: Response) => (res.json()))
   }
 
-  getCurrentState(id: String) {
-    return this.http.get(`${this.config.baseUrl}/api/danalock/getstate/${id}`)
+  isLocked(id: String) {
+    return this.http.get(`${this.config.baseUrl}/api/danalock/isLocked/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.http.get(`${this.config.baseUrl}/api/danalock/switch?deviceid=${id}&state=${state}`)
+    return this.http.put(`${this.config.baseUrl}/api/danalock/switch?deviceid=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

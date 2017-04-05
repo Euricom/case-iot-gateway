@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Dropbox.Api.Files;
 using Euricom.IoT.Api.Manager;
-using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Managers;
+using Euricom.IoT.ZWave;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,27 +25,23 @@ namespace Euricom.IoT.Api
             });
 
             // Init DanaLock
-            // await DanaLock.Instance.Initialize();
+            await ZWaveManager.Instance.Initialize();
+            Debug.WriteLine("OpenZWave initialized");
 
             // Init Webserver
             await new WebServer().InitializeWebServer();
+            Debug.WriteLine("Restup Web Server initialized, listening on default port 8800");
 
             // Set up monitoring devices
-            //MonitorDanaLocks();
-            MonitorLazyBones();
+            MonitorDevices();
 
             // Start a task that monitors the dropbox account for new files
             //MonitorDropBoxFolder();
         }
 
-        private void MonitorDanaLocks()
+        private void MonitorDevices()
         {
-            var inst = Monitoring.MonitoringSystem.Instance;
-        }
-
-        private void MonitorLazyBones()
-        {
-            var inst = Monitoring.MonitoringSystem.Instance;
+            var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
         }
 
         private void MonitorDropBoxFolder()

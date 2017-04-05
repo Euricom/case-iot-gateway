@@ -4,7 +4,6 @@ using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
-using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System;
@@ -16,12 +15,12 @@ namespace Euricom.IoT.Api.Managers
 {
     public class DanaLockManager : IDanaLockManager
     {
-        private readonly Devices.DanaLock.DanaLock _danaLock;
+        private readonly ZWave.ZWaveManager _zwaveManager;
         private readonly IAzureDeviceManager _azureDeviceManager;
 
         public DanaLockManager()
         {
-            _danaLock = Devices.DanaLock.DanaLock.Instance;
+            _zwaveManager = ZWave.ZWaveManager.Instance;
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
         }
 
@@ -94,12 +93,12 @@ namespace Euricom.IoT.Api.Managers
         {
             var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
             var nodeId = config.NodeId;
-            return _danaLock.TestConnection(nodeId);
+            return _zwaveManager.TestConnection(nodeId);
         }
 
         public async Task<bool> IsLocked(byte nodeId)
         {
-            return _danaLock.IsLocked(nodeId);
+            return _zwaveManager.IsLocked(nodeId);
         }
 
         public async Task<bool> IsLocked(string deviceId)
@@ -108,7 +107,7 @@ namespace Euricom.IoT.Api.Managers
             {
                 var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
                 var nodeId = config.NodeId;
-                return _danaLock.IsLocked(nodeId);
+                return _zwaveManager.IsLocked(nodeId);
             }
             catch (Exception)
             {
@@ -127,19 +126,18 @@ namespace Euricom.IoT.Api.Managers
                 throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
             }
 
-            //var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+            var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
 
             try
             {
-                //var nodeId = config.NodeId;
-                byte nodeId = 0x4;
+                var nodeId = config.NodeId;
                 switch (state)
                 {
                     case "open":
-                        _danaLock.OpenLock(nodeId);
+                        _zwaveManager.OpenLock(nodeId);
                         break;
                     case "close":
-                        _danaLock.CloseLock(nodeId);
+                        _zwaveManager.CloseLock(nodeId);
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");

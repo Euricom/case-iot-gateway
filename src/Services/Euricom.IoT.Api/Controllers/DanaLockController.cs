@@ -112,12 +112,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/islocked?deviceid={deviceid}")]
-        public IGetResponse IsLocked(string deviceid)
+        [UriFormat("/danalock/islocked/{deviceid}")]
+        public async Task<IGetResponse> IsLocked(string deviceid)
         {
             try
             {
-                var isLocked = _danaLockManager.IsLocked(deviceid);
+                var isLocked = await _danaLockManager.IsLocked(deviceid);
                 return ResponseUtilities.GetResponseOk(isLocked.ToString());
             }
             catch (Exception ex)

@@ -20,8 +20,6 @@ namespace Euricom.IoT.Messaging
 
         public async void Publish(string json)
         {
-            Debug.WriteLine("test publishing");
-
             try
             {
                 var message = new Message(Encoding.ASCII.GetBytes(json));

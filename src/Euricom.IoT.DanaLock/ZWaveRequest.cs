@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Devices.DanaLock
+namespace Euricom.IoT.ZWave
 {
     public sealed class ZWaveRequest
     {

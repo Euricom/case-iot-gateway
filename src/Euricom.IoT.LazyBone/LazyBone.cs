@@ -35,8 +35,7 @@ namespace Euricom.IoT.LazyBone
             lock (_client)
             {
                 var response = _client.Send(HexToString(COMMAND_RELAY_STATUS), true).Result;
-                var isRelayOn = IsRelayOn(response);
-                return true;
+                return IsRelayOn(response);
             }
         }
 

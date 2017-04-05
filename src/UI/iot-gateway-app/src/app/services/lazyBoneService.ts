@@ -60,7 +60,7 @@ export class LazyBoneService {
   }
 
   switch(id: String, state: String) {
-    return this.http.get(`${this.config.baseUrl}/api/lazyBone/switch?deviceid=${id}&state=${state}`)
+    return this.http.put(`${this.config.baseUrl}/api/lazyBone/switch?deviceid=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

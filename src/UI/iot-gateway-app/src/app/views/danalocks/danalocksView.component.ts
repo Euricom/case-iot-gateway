@@ -12,8 +12,8 @@ import { DanaLockService } from '../../services/danaLockService'
 })
 export class DanaLocksViewComponent implements OnInit {
 
-  danaLocks: DanaLock[]
-  danaLock: DanaLock = new DanaLock({})
+  danalocks: DanaLock[]
+  danalock: DanaLock = new DanaLock({})
   selectedRowIndex: Number = undefined
 
   constructor(
@@ -28,7 +28,7 @@ export class DanaLocksViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.danaLockService.update(this.danaLock.DeviceId, this.danaLock)
+    this.danaLockService.update(this.danalock.DeviceId, this.danalock)
       .subscribe(
       (data) => {
         this.toastr.info('DanaLock updated successfully')
@@ -40,14 +40,14 @@ export class DanaLocksViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.danaLock = new DanaLock({})
+    this.danalock = new DanaLock({})
   }
 
   refresh() {
     this.danaLockService.getAll()
       .subscribe(
       (data) => {
-        this.danaLocks = data
+        this.danalocks = data
       },
       (err) => {
         this.toastr.error('error occurred' + err)
@@ -69,17 +69,21 @@ export class DanaLocksViewComponent implements OnInit {
       })
   }
 
-  getCurrentState(danaLock: DanaLock) {
+  isLocked(danaLock: DanaLock) {
     if (!danaLock.NodeId) {
-      this.toastr.error('Cannot get danalock state valid Node ID')
+      this.toastr.error('Cannot get danalock state without valid Node ID')
       return
-    } this.danaLockService.getCurrentState(danaLock.DeviceId)
+    } this.danaLockService.isLocked(danaLock.DeviceId)
       .subscribe(
       (data) => {
-        this.toastr.info(data)
+        if (data === 'True') {
+          this.toastr.info('DanaLock door is locked')
+        } else if (data === 'False') {
+          this.toastr.info('DanaLock door is unlocked')
+        }
       },
       (err) => {
-        this.toastr.error('error occurred' + err)
+        this.toastr.error('error occurred while requesting door lock state' + err)
       })
   }
 
@@ -100,7 +104,7 @@ export class DanaLocksViewComponent implements OnInit {
 
   setClickedRow(i: Number, danaLock: DanaLock) {
     this.selectedRowIndex = i
-    this.danaLock = danaLock
+    this.danalock = danaLock
   }
 
 }
