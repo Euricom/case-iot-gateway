@@ -1,8 +1,8 @@
 ﻿{
   "dependencies": {
-    "DBreeze": "1.83.0",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
-    "Newtonsoft.Json": "10.0.1"
+    "DBreeze": "1.84.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.1",
+    "Newtonsoft.Json": "10.0.2"
   },
   "frameworks": {
     "uap10.0": {}

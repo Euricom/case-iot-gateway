@@ -25,7 +25,7 @@ namespace Euricom.IoT.Api
             });
 
             // Init DanaLock
-            await DanaLock.Instance.Initialize();
+            // await DanaLock.Instance.Initialize();
 
             // Init Webserver
             await new WebServer().InitializeWebServer();

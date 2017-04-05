@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Euricom.IoT.Common;
+using System.Diagnostics;
 
 namespace Euricom.IoT.Monitoring
 {
@@ -18,6 +19,7 @@ namespace Euricom.IoT.Monitoring
 
         private MonitoringSystem()
         {
+            Debug.WriteLine("In Constructor Monitoring System");
             _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
             _pollingTimesCache = new Dictionary<string, int>();
             Init();
@@ -33,29 +35,42 @@ namespace Euricom.IoT.Monitoring
 
         private void Init()
         {
+            Debug.WriteLine("Monitoring System: Init()");
             // Regularly check whether a device was added, removed or polling time was changed
             Task.Run(async () =>
             {
                 while (true)
                 {
+                    Debug.WriteLine("Monitoring System: Init in while true()");
+
+                    Debug.WriteLine("Monitoring System: Init GetHardware()");
+
                     var hardware = DataLayer.Database.Instance.GetHardware();
 
+                    Debug.WriteLine("Monitoring System: Init GetNewDevices()");
                     var newDevices = GetNewDevices(hardware);
+
+                    Debug.WriteLine("Monitoring System: Init GetRemovedDevices()");
                     var removedDevices = GetRemovedDevices(hardware);
+
+                    Debug.WriteLine("Monitoring System: Init GetChangedPollingTimeDevices()");
                     var changedPollingTimeDevices = GetChangedPollingTimeDevices(hardware);
 
                     foreach (var d in newDevices)
                     {
+                        Debug.WriteLine("Monitoring System: Starting monitor newDevices");
                         StartMonitor(d);
                     }
 
                     foreach (var r in removedDevices)
                     {
+                        Debug.WriteLine("Monitoring System: Removing monitor removedDevices");
                         RemoveMonitor(r);
                     }
 
                     foreach (var c in changedPollingTimeDevices)
                     {
+                        Debug.WriteLine("Monitoring System: Changing monitor changedPollingTimeDevices");
                         ChangePollingTime(c);
                     }
 
@@ -64,31 +79,31 @@ namespace Euricom.IoT.Monitoring
             });
         }
 
-        public void MonitorLazyBones()
-        {
-            //Get all lazybone configs from db 
-            var lazyBones = DataLayer.Database.Instance.GetLazyBones();
-            lazyBones = lazyBones.Where(x => !String.IsNullOrEmpty(x.Host) && x.Port > 0 && x.PollingTime >= 5000 && x.Enabled).ToList();
+        //public void MonitorLazyBones()
+        //{
+        //    //Get all lazybone configs from db 
+        //    var lazyBones = DataLayer.Database.Instance.GetLazyBones();
+        //    lazyBones = lazyBones.Where(x => !String.IsNullOrEmpty(x.Host) && x.Port > 0 && x.PollingTime >= 5000 && x.Enabled).ToList();
 
-            foreach (var lazybone in lazyBones)
-            {
-                var pollingTime = lazybone.PollingTime;
-                StartMonitor(lazybone.DeviceId);
-            }
-        }
+        //    foreach (var lazybone in lazyBones)
+        //    {
+        //        var pollingTime = lazybone.PollingTime;
+        //        StartMonitor(lazybone.DeviceId);
+        //    }
+        //}
 
-        public void MonitorDanaLocks()
-        {
-            //Get all lazybone configs from db 
-            var danaLocks = DataLayer.Database.Instance.GetDanaLocks();
-            danaLocks = danaLocks.Where(x => x.NodeId > 0x0 && x.Enabled).ToList();
+        //public void MonitorDanaLocks()
+        //{
+        //    //Get all lazybone configs from db 
+        //    var danaLocks = DataLayer.Database.Instance.GetDanaLocks();
+        //    danaLocks = danaLocks.Where(x => x.NodeId > 0x0 && x.Enabled).ToList();
 
-            foreach (var danaLock in danaLocks)
-            {
-                var pollingTime = danaLock.PollingTime;
-                StartMonitor(danaLock.DeviceId);
-            }
-        }
+        //    foreach (var danaLock in danaLocks)
+        //    {
+        //        var pollingTime = danaLock.PollingTime;
+        //        StartMonitor(danaLock.DeviceId);
+        //    }
+        //}
 
         public void StartMonitor(string deviceId)
         {
@@ -99,7 +114,7 @@ namespace Euricom.IoT.Monitoring
                 {
                     case Common.HardwareType.LazyBoneSwitch:
                         var configLazyBone = ((Common.LazyBone)config);
-                        if (configLazyBone.PollingTime >= MIN_POLLING_TIME)
+                        if (configLazyBone.Enabled && configLazyBone.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
                             _cancellationTokenSources[deviceId] = ctsLazyBone;
@@ -108,7 +123,7 @@ namespace Euricom.IoT.Monitoring
 
                     case Common.HardwareType.DanaLock:
                         var configDanaLock = ((Common.DanaLock)config);
-                        if (configDanaLock.PollingTime >= MIN_POLLING_TIME)
+                        if (configDanaLock.Enabled && configDanaLock.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsDanaLock = new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
                             _cancellationTokenSources[deviceId] = ctsDanaLock;
