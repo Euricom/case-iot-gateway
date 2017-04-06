@@ -110,12 +110,14 @@
     <Compile Include="CameraManager.cs" />
     <Compile Include="DropboxManager.cs" />
     <Compile Include="HardwareManager.cs" />
+    <Compile Include="Interfaces\ILogManager.cs" />
     <Compile Include="Interfaces\IDropboxManager.cs" />
     <Compile Include="Interfaces\ICameraManager.cs" />
     <Compile Include="Interfaces\IDanaLockManager.cs" />
     <Compile Include="Interfaces\IHardwareManager.cs" />
     <Compile Include="Interfaces\ILazyBoneManager.cs" />
     <Compile Include="DanaLockManager.cs" />
+    <Compile Include="LogManager.cs" />
     <Compile Include="LazyBoneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Api.Components.rd.xml" />
@@ -136,6 +138,10 @@
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
       <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
       <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.ZWave\Euricom.IoT.ZWave.csproj">
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>

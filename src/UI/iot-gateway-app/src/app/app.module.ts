@@ -6,6 +6,7 @@ import { ToastModule } from 'ng2-toastr/ng2-toastr'
 import { ToastOptions } from 'ng2-toastr'
 import { ButtonsModule, TabsModule } from 'ng2-bootstrap'
 import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http'
+import { DatePickerModule } from 'ng2-datepicker'
 
 import '../styles.less'
 import { routes } from './app.routes'
@@ -29,6 +30,7 @@ import { DanaLocksViewComponent } from './views/danalocks/danalocksView.componen
 import { LogViewComponent } from './views/log/logView.component'
 
 import { CollapseModule } from 'ng2-bootstrap/collapse'
+import { LogService } from './services/logService';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
     TabsModule.forRoot(),
     ToastModule.forRoot(),
     HttpModule,
+    DatePickerModule
   ],
   providers: [
     Config,
@@ -59,6 +62,7 @@ import { CollapseModule } from 'ng2-bootstrap/collapse'
     CameraService,
     LazyBoneService,
     DanaLockService,
+    LogService,
   ],
   bootstrap: [AppComponent]
 })

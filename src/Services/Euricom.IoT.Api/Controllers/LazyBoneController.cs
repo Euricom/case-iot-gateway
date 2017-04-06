@@ -4,6 +4,7 @@ using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
+using Euricom.IoT.Logging;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
@@ -35,6 +36,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get lazyBones: exception: {ex.Message}");
             }
         }
@@ -50,6 +52,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
                 return ResponseUtilities.GetResponseFail($"Could not get lazybone with deviceId {deviceid} , exception: {ex.Message}");
             }
         }
@@ -65,6 +68,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PostResponseFail($"Could not add lazyBone: exception: {ex.Message}");
             }
         }
@@ -80,6 +84,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PutResponseFail($"Could not edit lazyBone: exception: {ex.Message}");
             }
         }
@@ -94,6 +99,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
@@ -108,6 +114,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
                 return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
@@ -122,6 +129,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
                 return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
@@ -137,6 +145,8 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
+                throw new Exception("test van wim");
+
                 Debug.WriteLine("LazyBoneController: Switch()");
 
                 //Send switch command to the manager
@@ -149,10 +159,9 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
                 return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
         }
-
-
     }
 }

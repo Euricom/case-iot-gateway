@@ -1,30 +1,25 @@
 ﻿using AutoMapper;
-using Dropbox.Api.Files;
-using Euricom.IoT.Api.Manager;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Managers;
+using Euricom.IoT.Logging;
 using Euricom.IoT.ZWave;
-using System.Collections.Generic;
+using Serilog;
+using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Euricom.IoT.Api
 {
     public class Startup
     {
-
         public async void Run()
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<LazyBoneMappingProfile>();
-                cfg.AddProfile<DanaLockMappingProfile>();
-                cfg.AddProfile<CameraMappingProfile>();
-            });
+            // Add AutoMapper mappings
+            AddAutoMapperMappings();
+
+            var instLogger = Logger.Instance;
 
             // Init DanaLock
-            await ZWaveManager.Instance.Initialize();
+            // await ZWaveManager.Instance.Initialize();
             Debug.WriteLine("OpenZWave initialized");
 
             // Init Webserver
@@ -32,7 +27,18 @@ namespace Euricom.IoT.Api
             Debug.WriteLine("Restup Web Server initialized, listening on default port 8800");
 
             // Set up monitoring devices
-            MonitorDevices();
+            // MonitorDevices();
+        }
+
+        private static void AddAutoMapperMappings()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<LazyBoneMappingProfile>();
+                cfg.AddProfile<DanaLockMappingProfile>();
+                cfg.AddProfile<CameraMappingProfile>();
+                cfg.AddProfile<LogMappingProfile>();
+            });
         }
 
         private void MonitorDevices()

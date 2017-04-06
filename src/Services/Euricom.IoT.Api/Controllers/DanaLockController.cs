@@ -35,6 +35,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get danaLocks: exception: {ex.Message}");
             }
         }
@@ -50,6 +51,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get danaLock with deviceId: {deviceid} , exception: {ex.Message}");
             }
         }
@@ -65,6 +67,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PostResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
@@ -80,6 +83,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PutResponseFail($"Could not edit danaLock: exception: {ex.Message}");
             }
         }
@@ -94,6 +98,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not remove danaLock: exception: {ex.Message}");
             }
         }
@@ -108,6 +113,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
@@ -122,6 +128,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
@@ -139,6 +146,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PutResponseFail($"DanaLock switch failed, exception: {ex.Message}");
             }
         }

@@ -115,8 +115,8 @@
     <Compile Include="Notifications\DanaLockNotification.cs" />
     <Compile Include="HardwareType.cs" />
     <Compile Include="Notifications\LazyBoneNotification.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="LogLine.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogLine.cs" />
     <Compile Include="LazyBone.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Hardware.cs" />

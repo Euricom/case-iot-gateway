@@ -30,6 +30,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not add hardware: exception: {ex.Message}");
             }
         }
@@ -53,6 +54,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PostResponseFail($"Could not add hardware: exception: {ex.Message}");
             }
         }
@@ -67,6 +69,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not add hardware: exception: {ex.Message}");
             }
         }

@@ -1,6 +1,16 @@
 # case-iot-gateway
 
 
+Set time in raspberry (after every reboot of raspberry)
+
+ Using powershell
+
+ Set-Date "Thursday, April 06, 2017 10:34:26 AM"
+
+
+
+
+
 MotionEye:
 
 under file storage: enter /Apps/EuricomIoT/camera1 for Dropbox Service

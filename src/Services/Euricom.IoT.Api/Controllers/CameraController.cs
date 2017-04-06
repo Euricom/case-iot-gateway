@@ -34,6 +34,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get cameras: exception: {ex.Message}");
             }
         }
@@ -49,6 +50,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get camera: exception: {ex.Message}");
             }
         }
@@ -64,6 +66,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PostResponseFail($"Could not add camera: exception: {ex.Message}");
             }
         }
@@ -79,6 +82,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.PutResponseFail($"Could not edit camera: exception: {ex.Message}");
             }
         }
@@ -93,6 +97,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not remove camera: exception: {ex.Message}");
             }
         }
@@ -107,6 +112,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
@@ -114,11 +120,19 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/camera/notify?deviceid={deviceid}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
         public IGetResponse Notify(string deviceid, string url, string timestamp, int frameNumber, int eventNumber)
         {
-            //Send notification to IoT hub
-            _cameraManager.Notify(deviceid, url, timestamp, frameNumber, eventNumber);
+            try
+            {
+                //Send notification to IoT hub
+                _cameraManager.Notify(deviceid, url, timestamp, frameNumber, eventNumber);
 
-            // Send response back
-            return ResponseUtilities.GetResponseOk("");
+                // Send response back
+                return ResponseUtilities.GetResponseOk("");
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                return ResponseUtilities.GetResponseFail(ex.Message);
+            }
         }
     }
 }

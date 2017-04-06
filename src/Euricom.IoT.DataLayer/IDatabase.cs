@@ -14,7 +14,6 @@ namespace Euricom.IoT.DataLayer
         Hardware GetHardware();
         LazyBone GetLazyBoneConfig(string deviceId);
         List<LazyBone> GetLazyBones();
-        Log GetLog();
         void SetValue(string table, string key, string value);
     }
 }

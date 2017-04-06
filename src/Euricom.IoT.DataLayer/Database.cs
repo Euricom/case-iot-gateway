@@ -1,6 +1,7 @@
 ﻿using DBreeze;
 using Euricom.IoT.Common;
 using Euricom.IoT.Common.Secrets;
+using Euricom.IoT.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -207,31 +208,6 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public Log GetLog()
-        {
-            try
-            {
-                var log = new Log();
-                List<LogLine> logs = new List<LogLine>();
-                using (var tran = _engine.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LOGGING))
-                    {
-                        var sequence = Int64.Parse(row.Key);
-                        var logLine = JsonConvert.DeserializeObject<LogLine>(row.Value);
-                        logs.Add(logLine);
-                    }
-                }
-                log.LogLines = logs;
-                return log;
-            }
-            catch (Exception ex)
-            {
-                //TODO add logging to file ?
-                throw;
-            }
-        }
-
         public List<Camera> GetCameras()
         {
             try
@@ -296,7 +272,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
@@ -312,8 +288,10 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
-                throw new Exception($"Could not get value for table: {table}, key: {key}, exception: " + ex);
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                var exception = new Exception($"Could not get value for table: {table}, key: {key}, exception: " + ex);
+                Logger.Instance.LogErrorWithContext(this.GetType(), exception);
+                throw exception;
             }
         }
 

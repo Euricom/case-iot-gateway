@@ -140,6 +140,10 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Services\Euricom.IoT.Api\Euricom.IoT.Api.csproj">
       <Project>{9a870600-eeaf-4076-acc2-0408d2542563}</Project>
       <Name>Euricom.IoT.Api</Name>

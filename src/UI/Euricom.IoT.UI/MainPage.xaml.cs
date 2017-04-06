@@ -16,13 +16,5 @@ namespace Euricom.IoT.UI
         {
             this.InitializeComponent();
         }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            await Task.Run(() =>
-            {
-                new Startup().Run();
-            });
-        }
     }
 }

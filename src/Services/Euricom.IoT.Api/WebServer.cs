@@ -23,6 +23,7 @@ namespace Euricom.IoT.Api
             restRouteHandler.RegisterController<CameraController>();
             restRouteHandler.RegisterController<DanaLockController>();
             restRouteHandler.RegisterController<LazyBoneController>();
+            restRouteHandler.RegisterController<LogController>();
 
             var configuration = new HttpServerConfiguration()
               .ListenOnPort(8800)

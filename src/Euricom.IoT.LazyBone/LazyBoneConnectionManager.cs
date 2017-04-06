@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euricom.IoT.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,8 +24,17 @@ namespace Euricom.IoT.LazyBone
 
         public async Task<string> TestConnection(string deviceId, Common.LazyBone config)
         {
-            LazyBone lazyBone = GetLazyBone(deviceId, config);
-            return await lazyBone.TestConnection();
+            try
+            {
+                LazyBone lazyBone = GetLazyBone(deviceId, config);
+                return await lazyBone.TestConnection();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
         }
 
         public async Task<bool> GetCurrentState(string deviceId, Common.LazyBone config)

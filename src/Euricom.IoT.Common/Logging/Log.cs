@@ -10,9 +10,11 @@ namespace Euricom.IoT.Common
     {
         public Log()
         {
-
+            LogLines = new List<LogLine>();
         }
 
-        public IEnumerable<LogLine> LogLines { get; set; }
+        public string FileName { get; set; }
+
+        public IList<LogLine> LogLines { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace Euricom.IoT.Api.Managers
     {
         private IAzureDeviceManager _azureDeviceManager;
 
+
         public LazyBoneManager()
         {
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
@@ -88,7 +89,8 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-
+ 
+    
         public async Task<string> TestConnection(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
