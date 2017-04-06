@@ -32,11 +32,32 @@ namespace Euricom.IoT.Api.Managers
             // Convert to json LogLine
             var jsonLogLines = DeserializeLogLines(logLines);
 
+            // Get device name if found
+            jsonLogLines = GetDeviceNames(jsonLogLines);
+
             return new Log()
             {
                 FileName = "log-" + date + ".txt",
                 LogLines = jsonLogLines.ToList()
             };
+        }
+
+        private IEnumerable<LogLine> GetDeviceNames(IEnumerable<LogLine> jsonLogLines)
+        {
+            var copy = new List<LogLine>();
+            foreach (var jLogLine in jsonLogLines)
+            {
+                if (jLogLine.Properties != null)
+                {
+                    if (!String.IsNullOrEmpty(jLogLine.Properties.DeviceId))
+                    {
+                        jLogLine.DeviceId = jLogLine.Properties.DeviceId;
+                        jLogLine.DeviceName = new HardwareManager().GetDeviceName(jLogLine.Properties.DeviceId);
+                    }
+                }
+                copy.Add(jLogLine);
+            }
+            return copy;
         }
 
         private IEnumerable<LogLine> DeserializeLogLines(string[] logLines)

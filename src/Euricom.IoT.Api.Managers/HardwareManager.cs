@@ -23,6 +23,16 @@ namespace Euricom.IoT.Api.Managers
             _lazyBoneManager = new LazyBoneManager();
         }
 
+        public string GetDeviceName(string deviceId)
+        {
+            var device = GetDevice(deviceId);
+            if (device == null)
+            {
+                throw new Exception($"Could not find deviceId: {deviceId}");
+            }
+            return device.Name;
+        }
+
         public IEnumerable<Device> GetHardwareDevices()
         {
             var devices = new List<Device>();
