@@ -65,7 +65,7 @@ export class HardwareViewComponent implements OnInit {
   }
 
   deleteDevice(device: Device) {
-    this.hardwareService.delete(device.DeviceId)
+    this.hardwareService.delete(device.Name)
       .subscribe(
       (data) => {
         this.toastr.info('device deleted successfully')

@@ -18,7 +18,6 @@ namespace Euricom.IoT.Monitoring
 
         private MonitoringSystem()
         {
-            Debug.WriteLine("In Constructor Monitoring System");
             _cancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
             _pollingTimesCache = new Dictionary<string, int>();
             Init();

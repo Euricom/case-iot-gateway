@@ -41,19 +41,19 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/lazybone/{deviceid}")]
-        public async Task<IGetResponse> GetByDeviceId(string deviceid)
+        [UriFormat("/lazybone/{devicename}")]
+        public async Task<IGetResponse> GetByDeviceName(string devicename)
         {
             try
             {
-                var lazyBone = await _lazyBoneManager.Get(deviceid);
+                var lazyBone = await _lazyBoneManager.GetByDeviceName(devicename);
                 var lazyBoneDto = Mapper.Map<LazyBoneDto>(lazyBone);
                 return ResponseUtilities.GetResponseOk(lazyBoneDto);
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
-                return ResponseUtilities.GetResponseFail($"Could not get lazybone with deviceId {deviceid} , exception: {ex.Message}");
+                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                return ResponseUtilities.GetResponseFail($"Could not get lazybone with devicename {devicename} , exception: {ex.Message}");
             }
         }
 
@@ -89,47 +89,49 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/lazybone/{deviceid}")]
-        public async Task<IDeleteResponse> Delete(string deviceid)
+        [UriFormat("/lazybone/{devicename}")]
+        public async Task<IDeleteResponse> Delete(string devicename)
         {
             try
             {
-                var removed = await _lazyBoneManager.Remove(deviceid);
+                var removed = await _lazyBoneManager.Remove(devicename);
                 return ResponseUtilities.DeleteResponseOk(removed.ToString());
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
+                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/lazybone/testconnection/{deviceid}")]
-        public async Task<IGetResponse> TestConnection(string deviceid)
+        [UriFormat("/lazybone/testconnection/{devicename}")]
+        public async Task<IGetResponse> TestConnection(string devicename)
         {
             try
             {
-                string softwareVersion = await _lazyBoneManager.TestConnection(deviceid);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                string softwareVersion = await _lazyBoneManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(softwareVersion);
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
+                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
                 return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
 
-        [UriFormat("/lazybone/getstate/{deviceid}")]
-        public async Task<IGetResponse> GetState(string deviceid)
+        [UriFormat("/lazybone/getstate/{devicename}")]
+        public async Task<IGetResponse> GetState(string devicename)
         {
             try
             {
-                var isRelayOn = await _lazyBoneManager.GetCurrentState(deviceid);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var isRelayOn = await _lazyBoneManager.GetCurrentState(deviceId);
                 return ResponseUtilities.GetResponseOk(isRelayOn.ToString());
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
+                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
                 return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
@@ -140,26 +142,21 @@ namespace Euricom.IoT.Api.Controllers
         /// <param name="device">Guid of device</param>
         /// <param name="state">on or off</param>
         /// <returns></returns>
-        [UriFormat("/lazybone/switch?deviceid={deviceid}&state={state}")]
-        public async Task<IPutResponse> Switch(string deviceid, string state)
+        [UriFormat("/lazybone/switch?devicename={devicename}&state={state}")]
+        public async Task<IPutResponse> Switch(string devicename, string state)
         {
             try
             {
-                throw new Exception("test van wim");
-
-                Debug.WriteLine("LazyBoneController: Switch()");
-
                 //Send switch command to the manager
-                await _lazyBoneManager.Switch(deviceid, state);
-
-                Debug.WriteLine("LazyBoneController: Switch() completed");
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                await _lazyBoneManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
                 return ResponseUtilities.PutResponseOk($"OK changed LazyBone device state to : {state}");
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(deviceid, ex);
+                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
                 return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
         }

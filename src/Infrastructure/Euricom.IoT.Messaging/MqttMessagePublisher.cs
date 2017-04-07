@@ -1,9 +1,8 @@
-﻿using Euricom.IoT.Common.Secrets;
+﻿using Euricom.IoT.Common;
 using Microsoft.Azure.Devices.Client;
 using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euricom.IoT.Messaging
 {
@@ -11,11 +10,10 @@ namespace Euricom.IoT.Messaging
     {
         private readonly DeviceClient _azureDeviceClient;
 
-        private const string iotHubUri = Secrets.AZURE_IOT_HUB_URI;
-
-        public MqttMessagePublisher(string deviceName, string deviceKey)
+        public MqttMessagePublisher(Settings settings, string deviceName, string deviceKey)
         {
-            _azureDeviceClient = DeviceClient.Create(iotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey("myFirstDevice", Secrets.MY_FIRST_DEVICE_KEY), TransportType.Http1);
+            var iotHubUri = settings.AzureIotHubUri;
+            _azureDeviceClient = DeviceClient.Create(iotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(deviceName, deviceKey), TransportType.Http1);
         }
 
         public async void Publish(string json)

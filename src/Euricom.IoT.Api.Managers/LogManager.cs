@@ -35,6 +35,9 @@ namespace Euricom.IoT.Api.Managers
             // Get device name if found
             jsonLogLines = GetDeviceNames(jsonLogLines);
 
+            // Order by date desc
+            jsonLogLines = jsonLogLines.OrderByDescending(x => x.Timestamp).ToList();
+
             return new Log()
             {
                 FileName = "log-" + date + ".txt",

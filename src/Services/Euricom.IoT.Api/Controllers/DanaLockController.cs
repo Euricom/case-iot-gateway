@@ -40,19 +40,19 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/{deviceid}")]
-        public async Task<IGetResponse> GetByDeviceId(string deviceid)
+        [UriFormat("/danalock/{devicename}")]
+        public async Task<IGetResponse> GetByDeviceName(string devicename)
         {
             try
             {
-                var danaLock = await _danaLockManager.Get(deviceid);
+                var danaLock = await _danaLockManager.GetByDeviceName(devicename);
                 var danaLockDto = Mapper.Map<DanaLockDto>(danaLock);
                 return ResponseUtilities.GetResponseOk(danaLockDto);
             }
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get danaLock with deviceId: {deviceid} , exception: {ex.Message}");
+                return ResponseUtilities.GetResponseFail($"Could not get danaLock with devicename: {devicename} , exception: {ex.Message}");
             }
         }
 
@@ -88,12 +88,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/{deviceid}")]
-        public async Task<IDeleteResponse> Delete(string deviceId)
+        [UriFormat("/danalock/{devicename}")]
+        public async Task<IDeleteResponse> Delete(string devicename)
         {
             try
             {
-                var removed = await _danaLockManager.Remove(deviceId);
+                var removed = await _danaLockManager.Remove(devicename);
                 return ResponseUtilities.DeleteResponseOk(removed.ToString());
             }
             catch (Exception ex)
@@ -103,12 +103,13 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/testconnection/{deviceid}")]
-        public async Task<IGetResponse> TestConnection(string deviceid)
+        [UriFormat("/danalock/testconnection/{devicename}")]
+        public async Task<IGetResponse> TestConnection(string devicename)
         {
             try
             {
-                bool succeeded = await _danaLockManager.TestConnection(deviceid);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                bool succeeded = await _danaLockManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)
@@ -118,12 +119,13 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/islocked/{deviceid}")]
-        public async Task<IGetResponse> IsLocked(string deviceid)
+        [UriFormat("/danalock/islocked/{devicename}")]
+        public async Task<IGetResponse> IsLocked(string devicename)
         {
             try
             {
-                var isLocked = await _danaLockManager.IsLocked(deviceid);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var isLocked = await _danaLockManager.IsLocked(deviceId);
                 return ResponseUtilities.GetResponseOk(isLocked.ToString());
             }
             catch (Exception ex)
@@ -133,13 +135,14 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/danalock/switch?deviceid={deviceid}&state={state}")]
-        public async Task<IPutResponse> Switch(string deviceid, string state)
+        [UriFormat("/danalock/switch?devicename={devicename}&state={state}")]
+        public async Task<IPutResponse> Switch(string devicename, string state)
         {
             try
             {
                 //Send switch command to the manager
-                await _danaLockManager.Switch(deviceid, state);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                await _danaLockManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
                 return ResponseUtilities.PutResponseOk($"OK DanaLock switched state to : {state}");

@@ -20,10 +20,17 @@ namespace Euricom.IoT.Logging
         private static object _syncRootContextLogger = new Object(); //For locking the logging context (if two threads try to log from two different managers/device id, the context must be correct)
 
         private Serilog.Core.Logger _logger;
+        private static int _historyLog = 31;
+
 
         private Logger()
         {
             Init().Wait();
+        }
+
+        public static void Configure(int historyLog)
+        {
+            _historyLog = historyLog;
         }
 
         public static Logger Instance
@@ -63,12 +70,12 @@ namespace Euricom.IoT.Logging
                 var jsonFormatter = new JsonFormatter(null, false, null);
 
                 var logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(jsonFormatter, pathFormat, LogEventLevel.Information, null, 31, null, false, false, null) //Third parameter from right is buffered
+                .WriteTo.RollingFile(jsonFormatter, pathFormat, LogEventLevel.Information, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
                 .CreateLogger();
 
                 _logger = logger;
 
-                _logger.Information("Logging started");
+                _logger.Information($"Logging started: history log will be saved for {_historyLog} days");
             }
             catch (Exception ex)
             {
@@ -109,7 +116,7 @@ namespace Euricom.IoT.Logging
 
         public void LogInformationWithDeviceContext(string deviceId, string message)
         {
-            lock(_syncRootContextLogger)
+            lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
                 contextLogger.Information(message);
@@ -129,7 +136,7 @@ namespace Euricom.IoT.Logging
         {
             lock (_syncRootContextLogger)
             {
-                var contextLogger =_logger.ForContext("DeviceId", deviceId);
+                var contextLogger = _logger.ForContext("DeviceId", deviceId);
                 contextLogger.Error(exception, "");
             }
         }
@@ -156,7 +163,7 @@ namespace Euricom.IoT.Logging
         {
             lock (_syncRootContextLogger)
             {
-                var contextLogger =_logger.ForContext(type);
+                var contextLogger = _logger.ForContext(type);
                 contextLogger.Error(exception, "");
             }
         }

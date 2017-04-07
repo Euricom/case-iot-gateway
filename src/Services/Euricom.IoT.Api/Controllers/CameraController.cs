@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
 using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Common;
@@ -39,12 +40,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/camera/{deviceid}")]
-        public async Task<IGetResponse> GetByDeviceId(string deviceid)
+        [UriFormat("/camera/{devicename}")]
+        public async Task<IGetResponse> GetByDeviceName(string devicename)
         {
             try
             {
-                var camera = await _cameraManager.Get(deviceid);
+                var camera = await _cameraManager.GetByDeviceName(devicename);
                 var cameraDto = Mapper.Map<CameraDto>(camera);
                 return ResponseUtilities.GetResponseOk(cameraDto);
             }
@@ -87,12 +88,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/camera/{deviceid}")]
-        public async Task<IDeleteResponse> Delete(string deviceid)
+        [UriFormat("/camera/{devicename}")]
+        public async Task<IDeleteResponse> Delete(string devicename)
         {
             try
             {
-                var removed = await _cameraManager.Remove(deviceid);
+                var removed = await _cameraManager.Remove(devicename);
                 return ResponseUtilities.DeleteResponseOk(removed.ToString());
             }
             catch (Exception ex)
@@ -102,12 +103,13 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/camera/testconnection/{deviceid}")]
-        public async Task<IGetResponse> TestConnection(string deviceid)
+        [UriFormat("/camera/testconnection/{devicename}")]
+        public async Task<IGetResponse> TestConnection(string devicename)
         {
             try
             {
-                bool succeeded = await _cameraManager.TestConnection(deviceid);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                bool succeeded = await _cameraManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)
@@ -117,13 +119,14 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/camera/notify?deviceid={deviceid}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
-        public IGetResponse Notify(string deviceid, string url, string timestamp, int frameNumber, int eventNumber)
+        [UriFormat("/camera/notify?devicename={devicename}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
+        public IGetResponse Notify(string devicename, string url, string timestamp, int frameNumber, int eventNumber)
         {
             try
             {
                 //Send notification to IoT hub
-                _cameraManager.Notify(deviceid, url, timestamp, frameNumber, eventNumber);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                _cameraManager.Notify(deviceId, url, timestamp, frameNumber, eventNumber);
 
                 // Send response back
                 return ResponseUtilities.GetResponseOk("");

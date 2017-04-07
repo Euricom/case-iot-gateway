@@ -29,11 +29,11 @@ export class DanaLockService {
     if (danaLock.isNew()) {
       return this.create(danaLock)
     } else {
-      return this.update(danaLock.DeviceId, danaLock)
+      return this.update(danaLock)
     }
   }
 
-  update(id: String, danaLock: DanaLock): Observable<DanaLock> {
+  update(danaLock: DanaLock): Observable<DanaLock> {
     return this.http.put(`${this.config.baseUrl}/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))

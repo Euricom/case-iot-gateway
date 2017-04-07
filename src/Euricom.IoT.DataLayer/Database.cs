@@ -1,6 +1,5 @@
 ﻿using DBreeze;
 using Euricom.IoT.Common;
-using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.Logging;
 using Newtonsoft.Json;
 using System;
@@ -21,7 +20,7 @@ namespace Euricom.IoT.DataLayer
             InitDB();
 
             //TODO remove once settings page in angular works
-            InitializeSettings();
+            // InitializeSettings();
         }
 
         public static Database Instance
@@ -44,7 +43,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
@@ -86,12 +85,12 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
 
-        public Device FindDevice(string deviceid)
+        public Device FindDevice(string deviceId)
         {
             try
             {
@@ -99,7 +98,7 @@ namespace Euricom.IoT.DataLayer
                 {
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             var camera = JsonConvert.DeserializeObject<Camera>(row.Value);
                             return camera;
@@ -107,7 +106,7 @@ namespace Euricom.IoT.DataLayer
                     }
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             var danalock = JsonConvert.DeserializeObject<DanaLock>(row.Value);
                             return danalock;
@@ -115,7 +114,7 @@ namespace Euricom.IoT.DataLayer
                     }
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             var lazybone = JsonConvert.DeserializeObject<LazyBone>(row.Value);
                             return lazybone;
@@ -126,12 +125,12 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
 
-        public bool RemoveDevice(string deviceid)
+        public bool RemoveDevice(string deviceId)
         {
             try
             {
@@ -140,7 +139,7 @@ namespace Euricom.IoT.DataLayer
                 {
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, row.Key);
                             removed = true;
@@ -148,7 +147,7 @@ namespace Euricom.IoT.DataLayer
                     }
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, row.Key);
                             removed = true;
@@ -156,7 +155,7 @@ namespace Euricom.IoT.DataLayer
                     }
                     foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
                     {
-                        if (row.Key == deviceid)
+                        if (row.Key == deviceId)
                         {
                             tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, row.Key);
                             removed = true;
@@ -168,7 +167,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
@@ -186,7 +185,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
@@ -203,7 +202,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
@@ -226,7 +225,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
@@ -249,7 +248,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
@@ -309,7 +308,7 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                //TODO add logging to file ?
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw new Exception($"Could not set value for table: {table}, key: {key}, exception: " + ex);
             }
         }
@@ -318,45 +317,27 @@ namespace Euricom.IoT.DataLayer
         {
             if (_engine == null)
             {
-                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-
-                //test write to local folder
-                //StorageFile sampleFile = await localFolder.CreateFileAsync("dataFile.txt");
-                //await FileIO.WriteTextAsync(sampleFile, "My text");
-
-                //test read the first line of dataFile.txt in LocalFolder and store it in a String
-                //StorageFile sampleFile = await localFolder.GetFileAsync("dataFile.txt");
-                //String fileContent = await FileIO.ReadTextAsync(sampleFile);
-
-                _engine = new DBreezeEngine(new DBreezeConfiguration { DBreezeDataFolderName = localFolder.Path });
-            }
-
-            try
-            {
-                using (var tran = _engine.GetTransaction())
+                try
                 {
-                    tran.Insert<string, string>("t1", "azure-admin", "admin");
-                    tran.Insert<string, string>("t1", "azure-pass", "secret-password");
-                    tran.Commit();
-
-                    var row = tran.Select<string, string>("t1", "azure-pass").Value;
+                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+                    _engine = new DBreezeEngine(new DBreezeConfiguration { DBreezeDataFolderName = localFolder.Path });
+                    Logger.Instance.LogInformationWithContext(this.GetType(), "Database DBreeze (settings DB) Initialized succesfully");
                 }
-            }
-            catch (Exception ex)
-            {
-                //TODO add logging to file ?
-                throw;
+                catch (Exception ex)
+                {
+                    Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                }
             }
         }
 
         private void InitializeSettings()
         {
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", 365.ToString());
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", Secrets.AZURE_IOT_HUB_URI);
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", Secrets.AZURE_IOT_HUB_CONNECTIONSTRING);
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", Secrets.AZURE_ACCOUNT_NAME);
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", Secrets.AZURE_STORAGE_ACCESS_KEY);
-            SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", Secrets.DROPBOX_ACCESS_TOKEN);
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", 365.ToString());
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", Secrets.AZURE_IOT_HUB_URI);
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", Secrets.AZURE_IOT_HUB_CONNECTIONSTRING);
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", Secrets.AZURE_ACCOUNT_NAME);
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", Secrets.AZURE_STORAGE_ACCESS_KEY);
+            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", Secrets.DROPBOX_ACCESS_TOKEN);
         }
 
         public void Dispose()

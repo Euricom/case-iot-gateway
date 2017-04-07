@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureBlobStorage;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common;
@@ -22,8 +23,9 @@ namespace Euricom.IoT.Api.Manager
 
         public CameraManager()
         {
+            var settings = Database.Instance.GetConfigSettings();
             _azureBlobStorage = new IoT.AzureBlobStorage.AzureBlobStorageManager();
-            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
+            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }
 
         public Task<IEnumerable<Camera>> GetAll()
@@ -32,8 +34,15 @@ namespace Euricom.IoT.Api.Manager
             return Task.FromResult(cameras.AsEnumerable());
         }
 
-        public Task<Camera> Get(string deviceId)
+        public Task<Camera> GetByDeviceId(string deviceId)
         {
+            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
+        }
+
+        public Task<Camera> GetByDeviceName(string deviceName)
+        {
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
             var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
         }
@@ -41,8 +50,7 @@ namespace Euricom.IoT.Api.Manager
         public async Task<Camera> Add(Camera camera)
         {
             //Add device to Azure Device IoT
-            //var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
-            camera.DeviceId = Guid.NewGuid().ToString();
+            camera.DeviceId = await _azureDeviceManager.AddDeviceAsync(camera.Name);
 
             //Convert to json
             var json = JsonConvert.SerializeObject(camera);
@@ -50,7 +58,7 @@ namespace Euricom.IoT.Api.Manager
             //Save to database
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
-            return await Get(camera.DeviceId);
+            return await GetByDeviceId(camera.DeviceId);
         }
 
         public async Task<Camera> Edit(Camera camera)
@@ -68,17 +76,18 @@ namespace Euricom.IoT.Api.Manager
 
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
-            return await Get(camera.DeviceId);
+            return await GetByDeviceId(camera.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceId)
+        public async Task<bool> Remove(string deviceName)
         {
             try
             {
                 // Remove device from Azure
-                // await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
 
                 // Remove device from  database
+                var deviceId = new HardwareManager().GetDeviceId(deviceName);
                 Database.Instance.RemoveDevice(deviceId);
 
                 return true;
@@ -91,7 +100,8 @@ namespace Euricom.IoT.Api.Manager
 
         public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
         {
-            var config = DataLayer.Database.Instance.GetCameraConfig(deviceId);
+            var settings = Database.Instance.GetConfigSettings();
+            var config = Database.Instance.GetCameraConfig(deviceId);
             if (config.Enabled)
             {
                 var notification = new CameraNotification
@@ -104,7 +114,7 @@ namespace Euricom.IoT.Api.Manager
                 };
 
                 // Publish to IoT Hub
-                PublishMotionEvent(config.DeviceId, notification);
+                PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
             }
         }
 
@@ -167,12 +177,10 @@ namespace Euricom.IoT.Api.Manager
             }
         }
 
-        private void PublishMotionEvent(string deviceKey, CameraNotification notification)
+        private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraNotification notification)
         {
             var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher("", deviceKey).Publish(json);
+            new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
         }
-
-
     }
 }

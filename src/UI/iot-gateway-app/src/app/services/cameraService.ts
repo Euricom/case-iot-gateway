@@ -29,11 +29,11 @@ export class CameraService {
     if (camera.isNew()) {
       return this.create(camera)
     } else {
-      return this.update(camera.DeviceId, camera)
+      return this.update(camera)
     }
   }
 
-  update(id: String, camera: Camera): Observable<Camera> {
+  update(camera: Camera): Observable<Camera> {
     return this.http.put(`${this.config.baseUrl}/api/camera`, camera)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))

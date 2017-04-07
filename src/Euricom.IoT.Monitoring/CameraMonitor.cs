@@ -1,5 +1,6 @@
 ﻿using Dropbox.Api.Files;
 using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Logging;
 using Euricom.IoT.Managers;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,8 @@ namespace Euricom.IoT.Monitoring
                     }
                     catch (Exception ex)
                     {
-                        //TODO add logging
+                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                        Logger.Instance.LogErrorWithDeviceContext(camera.DeviceId, ex);
                         Debug.WriteLine($"Exception occurred while monitoring Camera device {camera.DeviceId}, exception message: {ex.Message}");
                     }
                 }

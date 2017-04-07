@@ -76,6 +76,8 @@ namespace Euricom.IoT.ZWave
             await Init();
 
             GetSerialPorts();
+
+            Debug.WriteLine("OpenZWave initialized");
         }
 
         public bool TestConnection(byte nodeId)

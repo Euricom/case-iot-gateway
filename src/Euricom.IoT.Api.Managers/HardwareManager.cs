@@ -23,9 +23,20 @@ namespace Euricom.IoT.Api.Managers
             _lazyBoneManager = new LazyBoneManager();
         }
 
+        public string GetDeviceId(string deviceName)
+        {
+            var device = GetDeviceByName(deviceName);
+            if (device == null)
+            {
+                throw new Exception($"Could not find deviceName: {deviceName}");
+            }
+            return device.DeviceId;
+
+        }
+
         public string GetDeviceName(string deviceId)
         {
-            var device = GetDevice(deviceId);
+            var device = GetDeviceById(deviceId);
             if (device == null)
             {
                 throw new Exception($"Could not find deviceId: {deviceId}");
@@ -77,9 +88,14 @@ namespace Euricom.IoT.Api.Managers
             return hardware;
         }
 
-        public Device GetDevice(string deviceId)
+        public Device GetDeviceById(string deviceId)
         {
             return GetHardwareDevices().SingleOrDefault(x => x.DeviceId == deviceId);
+        }
+
+        public Device GetDeviceByName(string deviceName)
+        {
+            return GetHardwareDevices().SingleOrDefault(x => x.Name == deviceName);
         }
 
         public async Task<Device> AddHardware(Device device)
@@ -113,17 +129,17 @@ namespace Euricom.IoT.Api.Managers
             return device;
         }
 
-        public async Task<bool> DeleteHardware(string deviceId)
+        public async Task<bool> DeleteHardware(string deviceName)
         {
-            var device = GetDevice(deviceId);
+            var device = GetDeviceByName(deviceName);
             switch (device.Type)
             {
                 case HardwareType.Camera:
-                    return await _cameraManager.Remove(deviceId);
+                    return await _cameraManager.Remove(device.Name);
                 case HardwareType.DanaLock:
-                    return await _danaLockManager.Remove(deviceId);
+                    return await _danaLockManager.Remove(device.Name);
                 case HardwareType.LazyBoneSwitch:
-                    return await _lazyBoneManager.Remove(deviceId);
+                    return await _lazyBoneManager.Remove(device.Name);
                 default:
                     throw new ArgumentException($"type: {device.Type} has no implementation..");
             }

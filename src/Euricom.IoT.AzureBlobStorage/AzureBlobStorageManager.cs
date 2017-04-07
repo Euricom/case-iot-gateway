@@ -1,14 +1,11 @@
 ﻿using Euricom.IoT.Common;
-using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.AzureBlobStorage
@@ -67,9 +64,10 @@ namespace Euricom.IoT.AzureBlobStorage
                     };
                 }
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                throw error;
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw ex;
             }
 
         }

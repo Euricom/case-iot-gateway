@@ -16,15 +16,21 @@ namespace Euricom.IoT.Api
             // Add AutoMapper mappings
             AddAutoMapperMappings();
 
+            // Init Database
+            var instDatabase = DataLayer.Database.Instance;
+
+            // Get setting for preserving history log (days)
+            var preserveHistoryLogDays = instDatabase.GetConfigSettings().HistoryLog;
+
+            // Init logger
+            Logger.Configure(preserveHistoryLogDays);
             var instLogger = Logger.Instance;
 
             // Init DanaLock
-            // await ZWaveManager.Instance.Initialize();
-            Debug.WriteLine("OpenZWave initialized");
+            await ZWaveManager.Instance.Initialize();
 
             // Init Webserver
             await new WebServer().InitializeWebServer();
-            Debug.WriteLine("Restup Web Server initialized, listening on default port 8800");
 
             // Set up monitoring devices
             // MonitorDevices();

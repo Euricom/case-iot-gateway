@@ -29,11 +29,11 @@ export class LazyBoneService {
     if (lazyBone.isNew()) {
       return this.create(lazyBone)
     } else {
-      return this.update(lazyBone.DeviceId, lazyBone)
+      return this.update(lazyBone)
     }
   }
 
-  update(id: String, lazyBone: LazyBone): Observable<LazyBone> {
+  update(lazyBone: LazyBone): Observable<LazyBone> {
     return this.http.put(`${this.config.baseUrl}/api/lazyBone`, lazyBone)
       .map((res: Response) => (res.json()))
       .map((data) => new LazyBone(data))
@@ -60,7 +60,7 @@ export class LazyBoneService {
   }
 
   switch(id: String, state: String) {
-    return this.http.put(`${this.config.baseUrl}/api/lazyBone/switch?deviceid=${id}&state=${state}`, null)
+    return this.http.put(`${this.config.baseUrl}/api/lazyBone/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

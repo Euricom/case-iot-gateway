@@ -28,7 +28,7 @@ export class CameraViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.cameraService.update(this.camera.DeviceId, this.camera)
+    this.cameraService.update(this.camera)
       .subscribe(
       (data) => {
         this.toastr.info('camera updated successfully')
@@ -59,7 +59,7 @@ export class CameraViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid ip address')
       return
     }
-    this.cameraService.testConnection(camera.DeviceId)
+    this.cameraService.testConnection(camera.Name)
     .subscribe(
       (data) => {
         this.toastr.info(data)

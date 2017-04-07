@@ -1,4 +1,5 @@
 ﻿using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,6 +24,8 @@ namespace Euricom.IoT.Monitoring
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
 
+            var settings = DataLayer.Database.Instance.GetConfigSettings();
+
             Task.Run(async () =>
             {
                 while (true)
@@ -35,7 +38,7 @@ namespace Euricom.IoT.Monitoring
 
                         Debug.WriteLine($"MONITOR polling lazyBone {lazyBone.DeviceId} was done");
 
-                        PublishNotification(lazyBone, notification);
+                        PublishNotification(settings, lazyBone, notification);
 
                         Debug.WriteLine($"MONITOR pushing notification lazyBone {lazyBone.DeviceId} was done");
 
@@ -45,7 +48,8 @@ namespace Euricom.IoT.Monitoring
                     }
                     catch (Exception ex)
                     {
-                        //TODO add logging
+                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                        Logger.Instance.LogErrorWithDeviceContext(lazyBone.DeviceId, ex);
                         Debug.WriteLine($"Exception occurred while monitoring LazyBone device {lazyBone.DeviceId}, exception message: {ex.Message}");
                     }
                 }
@@ -65,10 +69,10 @@ namespace Euricom.IoT.Monitoring
             };
         }
 
-        private void PublishNotification(Common.LazyBone lazyBone, Common.Notifications.LazyBoneNotification notification)
+        private void PublishNotification(Common.Settings settings, Common.LazyBone lazyBone, Common.Notifications.LazyBoneNotification notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
-            new Messaging.MqttMessagePublisher(lazyBone.Name, lazyBone.DeviceId).Publish(json);
+            new Messaging.MqttMessagePublisher(settings, lazyBone.Name, lazyBone.DeviceId).Publish(json);
             Debug.WriteLine($"Publishing notification {lazyBone.DeviceId} was done");
         }
     }

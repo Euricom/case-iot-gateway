@@ -1,4 +1,6 @@
 ﻿using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Common;
+using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +20,8 @@ namespace Euricom.IoT.Monitoring
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
 
+            var settings = DataLayer.Database.Instance.GetConfigSettings();
+
             Task.Run(async () =>
             {
                 while (true)
@@ -26,13 +30,14 @@ namespace Euricom.IoT.Monitoring
                     {
                         var notification = await PollDanaLock(danaLock.DeviceId);
 
-                        PublishNotification(danaLock, notification);
+                        PublishNotification(settings, danaLock, notification);
 
                         await Task.Delay(pollingTime);
                     }
                     catch (Exception ex)
                     {
-                        //TODO add logging
+                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                        Logger.Instance.LogErrorWithDeviceContext(danaLock.DeviceId, ex);
                         Debug.WriteLine($"Exception occurred while monitoring DanaLock device {danaLock.DeviceId}, exception message: {ex.Message}");
                     }
                 }
@@ -52,10 +57,10 @@ namespace Euricom.IoT.Monitoring
             };
         }
 
-        private void PublishNotification(Common.DanaLock danaLock, Common.Notifications.DanaLockNotification notification)
+        private void PublishNotification(Settings settings, Common.DanaLock danaLock, Common.Notifications.DanaLockNotification notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
-            new Messaging.MqttMessagePublisher(danaLock.Name, danaLock.DeviceId).Publish(json);
+            new Messaging.MqttMessagePublisher(settings, danaLock.Name, danaLock.DeviceId).Publish(json);
         }
     }
 }

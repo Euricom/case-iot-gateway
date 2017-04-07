@@ -1,28 +1,23 @@
 ﻿using Dropbox.Api;
 using Dropbox.Api.Files;
-using Euricom.IoT.Common.Secrets;
 using Euricom.IoT.Managers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Managers
 {
     public class DropboxManager : IDropboxManager
     {
-        private string _accessToken = Secrets.DROPBOX_ACCESS_TOKEN;
-        private DropboxClientConfig _config;
+        private DropboxClientConfig _dropboxClientConfig;
         private Dictionary<string, string> _latestDropboxCursorPerPath;
 
         public DropboxManager()
         {
-            _config = new DropboxClientConfig("SimpleTestApp");
+            _dropboxClientConfig = new DropboxClientConfig("SimpleTestApp");
             _latestDropboxCursorPerPath = new Dictionary<string, string>();
         }
 
@@ -42,9 +37,10 @@ namespace Euricom.IoT.Managers
 
                 var httpClient = new HttpClient();
                 httpClient.Timeout = TimeSpan.FromMinutes(5);
-                _config.HttpClient = httpClient;
+                _dropboxClientConfig.HttpClient = httpClient;
 
-                var dropboxClient = new DropboxClient(_accessToken, _config);
+                var settings = DataLayer.Database.Instance.GetConfigSettings();
+                var dropboxClient = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
                 //The cursor is a sort of GUID which we pass to the dropbox api for getting changed files
                 
@@ -87,9 +83,10 @@ namespace Euricom.IoT.Managers
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.Timeout = TimeSpan.FromMinutes(5);
-                    _config.HttpClient = httpClient;
+                    _dropboxClientConfig.HttpClient = httpClient;
 
-                    var client = new DropboxClient(_accessToken, _config);
+                    var settings = DataLayer.Database.Instance.GetConfigSettings();
+                    var client = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
                     foreach (var entry in entries)
                     {

@@ -7,6 +7,7 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -21,7 +22,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/hardware")]
-        public IGetResponse GetHardware()
+        public async Task<IGetResponse> GetHardware()
         {
             try
             {
@@ -36,7 +37,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/hardware")]
-        public IPostResponse AddHardware([FromContent] DeviceDto deviceDto)
+        public async Task<IPostResponse> AddHardware([FromContent] DeviceDto deviceDto)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace Euricom.IoT.Api.Controllers
                     throw new ArgumentNullException("deviceDto");
                 }
 
-                var newDevice = _hardwareManager.AddHardware(new Device()
+                var newDevice = await _hardwareManager.AddHardware(new Device()
                 {
                     Name = deviceDto.Name,
                     Type = GetDeviceTypeFromDto(deviceDto),
@@ -59,13 +60,13 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/hardware/{deviceid}")]
-        public IDeleteResponse DeleteHardware(string deviceid)
+        [UriFormat("/hardware/{devicename}")]
+        public async Task<IDeleteResponse> DeleteHardware(string devicename)
         {
             try
             {
-                var device = _hardwareManager.DeleteHardware(deviceid);
-                return ResponseUtilities.DeleteResponseOk(deviceid);
+                var succeeded = await _hardwareManager.DeleteHardware(devicename);
+                return ResponseUtilities.DeleteResponseOk(succeeded.ToString());
             }
             catch (Exception ex)
             {

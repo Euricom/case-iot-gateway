@@ -39,8 +39,8 @@ export class HardwareService {
       .map((data) => new Device(data))
   }
 
-  delete(id: String) {
-    return this.http.delete(`${this.config.baseUrl}/api/hardware/${id}`)
+  delete(name: String) {
+    return this.http.delete(`${this.config.baseUrl}/api/hardware/${name}`)
   }
 
   create(device: Device) {

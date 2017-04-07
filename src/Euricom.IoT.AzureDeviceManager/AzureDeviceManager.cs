@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Common.Secrets;
+﻿using Euricom.IoT.Common;
+using Euricom.IoT.Logging;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using System;
@@ -11,13 +12,13 @@ namespace Euricom.IoT.AzureDeviceManager
     {
         private RegistryManager _registryManager;
 
-        public AzureDeviceManager()
+        public AzureDeviceManager(Settings settings)
         {
-            string connectionString = GetConnectionString();
+            string connectionString = GetConnectionString(settings);
             _registryManager = RegistryManager.CreateFromConnectionString(connectionString);
         }
 
-        public async Task<IEnumerable<Device>> GetDevicesAsync()
+        public async Task<IEnumerable<Microsoft.Azure.Devices.Device>> GetDevicesAsync()
         {
             var devices = await _registryManager.GetDevicesAsync(int.MaxValue);
             return devices;
@@ -25,18 +26,20 @@ namespace Euricom.IoT.AzureDeviceManager
 
         public async Task<string> AddDeviceAsync(string deviceName)
         {
-            Device device;
+            Microsoft.Azure.Devices.Device device;
             try
             {
-                device = await _registryManager.AddDeviceAsync(new Device(deviceName));
+                device = await _registryManager.AddDeviceAsync(new Microsoft.Azure.Devices.Device(deviceName));
                 return device.Authentication.SymmetricKey.PrimaryKey;
             }
-            catch (DeviceAlreadyExistsException)
+            catch (DeviceAlreadyExistsException deviceAlreadyExistsException)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), deviceAlreadyExistsException);
                 throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
@@ -45,32 +48,25 @@ namespace Euricom.IoT.AzureDeviceManager
         {
             try
             {
-                await _registryManager.RemoveDeviceAsync(new Device(deviceName));
+                var device = await _registryManager.GetDeviceAsync(deviceName);
+                if (device != null)
+                    await _registryManager.RemoveDeviceAsync(device);
             }
-            catch (DeviceNotFoundException)
+            catch (Exception ex)
             {
-                throw;
-            }
-            catch (Exception)
-            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
 
-        private string GetConnectionString()
+        private string GetConnectionString(Settings settings)
         {
-            return Secrets.AZURE_IOT_HUB_CONNECTIONSTRING;
-
-            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(
-            //                     new Uri(String.Format("ms-appx:///Assets/Configuration/secrets.xml")));
-
-            //XmlDocument xmlSecrets = await XmlDocument.LoadFromFileAsync(file);
-
-            //var children = xmlSecrets.ChildNodes;
-
-            //return "";
+            if (String.IsNullOrEmpty(settings.AzureIotHubUriConnectionString))
+            {
+                Logger.Instance.LogWarningWithContext(this.GetType(), "Please set a connection string for Azure IoT Hub URI");
+                throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
+            }
+            return settings.AzureIotHubUriConnectionString;
         }
-
-
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Euricom.IoT.Api.Controllers;
 using Restup.Webserver.File;
+using System.Diagnostics;
 
 namespace Euricom.IoT.Api
 {
@@ -33,6 +34,8 @@ namespace Euricom.IoT.Api
 
             _httpServer = new HttpServer(configuration);
             await _httpServer.StartServerAsync();
+
+            Debug.WriteLine("Restup Web Server initialized, listening on default port 8800");
         }
     }
 }

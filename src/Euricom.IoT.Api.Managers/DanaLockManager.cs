@@ -21,7 +21,8 @@ namespace Euricom.IoT.Api.Managers
         public DanaLockManager()
         {
             _zwaveManager = ZWave.ZWaveManager.Instance;
-            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager();
+            var settings = Database.Instance.GetConfigSettings();
+            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }
 
         public Task<IEnumerable<Common.DanaLock>> GetAll()
@@ -30,8 +31,15 @@ namespace Euricom.IoT.Api.Managers
             return Task.FromResult(cameras.AsEnumerable());
         }
 
-        public Task<Common.DanaLock> Get(string deviceId)
+        public Task<Common.DanaLock> GetByDeviceId(string deviceId)
         {
+            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Common.DanaLock>(json));
+        }
+
+        public Task<Common.DanaLock> GetByDeviceName(string deviceName)
+        {
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
             var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Common.DanaLock>(json));
         }
@@ -39,8 +47,7 @@ namespace Euricom.IoT.Api.Managers
         public async Task<Common.DanaLock> Add(Common.DanaLock danaLock)
         {
             //Add device to Azure Device IoT
-            //var deviceId = _azureDeviceManager.AddDeviceAsync(camera.Name).Result;
-            danaLock.DeviceId = Guid.NewGuid().ToString();
+            danaLock.DeviceId = await _azureDeviceManager.AddDeviceAsync(danaLock.Name);
 
             //Convert to json
             var json = JsonConvert.SerializeObject(danaLock);
@@ -48,7 +55,7 @@ namespace Euricom.IoT.Api.Managers
             //Save to database
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
 
-            return await Get(danaLock.DeviceId);
+            return await GetByDeviceId(danaLock.DeviceId);
         }
 
         public async Task<Common.DanaLock> Edit(Common.DanaLock danaLock)
@@ -66,17 +73,18 @@ namespace Euricom.IoT.Api.Managers
 
             Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
 
-            return await Get(danaLock.DeviceId);
+            return await GetByDeviceId(danaLock.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceId)
+        public async Task<bool> Remove(string deviceName)
         {
             try
             {
                 // Remove device from Azure
-                // await _azureDeviceManager.RemoveDeviceAsync(deviceId);
+                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
 
                 // Remove device from  database
+                var deviceId = new HardwareManager().GetDeviceId(deviceName);
                 Database.Instance.RemoveDevice(deviceId);
 
                 return true;
@@ -126,11 +134,12 @@ namespace Euricom.IoT.Api.Managers
                 throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
             }
 
-            var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
-
             try
             {
+                var settings = Database.Instance.GetConfigSettings();
+                var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
                 var nodeId = config.NodeId;
+
                 switch (state)
                 {
                     case "open":
@@ -150,6 +159,8 @@ namespace Euricom.IoT.Api.Managers
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
 
+                // Publish to IoT Hub
+                PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception)
             {
@@ -157,10 +168,10 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        private void SendDoorLockNotification(string deviceName, string deviceId, DanaLockNotification notification)
+        private void PublishDanaLockEvent(Settings settings, string deviceName, string deviceId, DanaLockNotification notification)
         {
             var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(deviceName, deviceId).Publish(json);
+            new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);
         }
     }
 }

@@ -6,10 +6,13 @@ namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface IHardwareManager
     {
-        string GetDeviceName(string deviceId);
-        IEnumerable<Device> GetHardwareDevices();
-        Hardware GetHardware();
         Task<Device> AddHardware(Device device);
-        Task<bool> DeleteHardware(string deviceid);
+        Task<bool> DeleteHardware(string deviceName);
+        Device GetDeviceById(string deviceId);
+        Device GetDeviceByName(string deviceName);
+        string GetDeviceId(string deviceName);
+        string GetDeviceName(string deviceId);
+        Hardware GetHardware();
+        IEnumerable<Device> GetHardwareDevices();
     }
 }
