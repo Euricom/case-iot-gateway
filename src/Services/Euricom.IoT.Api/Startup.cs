@@ -33,7 +33,7 @@ namespace Euricom.IoT.Api
             await new WebServer().InitializeWebServer();
 
             // Set up monitoring devices
-            // MonitorDevices();
+            MonitorDevices();
         }
 
         private static void AddAutoMapperMappings()

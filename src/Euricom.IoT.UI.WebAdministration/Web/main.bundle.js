@@ -304,7 +304,7 @@ var DanaLockService = (function () {
             .map(function (res) { return (res.json()); });
     };
     DanaLockService.prototype.switch = function (id, state) {
-        return this.http.put(this.config.baseUrl + "/api/danalock/switch?deviceid=" + id + "&state=" + state, null)
+        return this.http.put(this.config.baseUrl + "/api/danalock/switch?devicename=" + id + "&state=" + state, null)
             .map(function (res) { return (res.json()); });
     };
     DanaLockService = __decorate([

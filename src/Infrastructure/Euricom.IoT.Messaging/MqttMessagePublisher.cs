@@ -1,4 +1,5 @@
 ﻿using Euricom.IoT.Common;
+using Euricom.IoT.Logging;
 using Microsoft.Azure.Devices.Client;
 using System;
 using System.Diagnostics;
@@ -26,6 +27,7 @@ namespace Euricom.IoT.Messaging
             }
             catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 Debug.WriteLine(ex.ToString());
             }
         }
