@@ -5,6 +5,7 @@ using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.LazyBone;
+using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System;
@@ -89,14 +90,13 @@ namespace Euricom.IoT.Api.Managers
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw;
             }
         }
 
- 
-    
         public async Task<string> TestConnection(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
@@ -115,8 +115,22 @@ namespace Euricom.IoT.Api.Managers
                 throw new ArgumentNullException("deviceId");
             }
 
-            var config = Database.Instance.GetLazyBoneConfig(deviceId);
-            return await LazyBoneConnectionManager.Instance.GetCurrentState(deviceId, config);
+            try
+            {
+                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+                return await LazyBoneConnectionManager.Instance.GetCurrentState(deviceId, config);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
+
         }
 
         public async Task Switch(string deviceId, string state)
@@ -138,6 +152,13 @@ namespace Euricom.IoT.Api.Managers
             {
                 var settings = Database.Instance.GetConfigSettings();
                 var config = Database.Instance.GetLazyBoneConfig(deviceId);
+
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+
                 switch (state)
                 {
                     case "on":
@@ -150,18 +171,21 @@ namespace Euricom.IoT.Api.Managers
                         throw new InvalidOperationException($"unknown operation for LazyBone, state: {state}");
                 }
 
+                // Log command
+                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
+
+                // Publish to IoT Hub
                 var notification = new LazyBoneNotification
                 {
                     DeviceKey = deviceId,
                     State = state == "on" ? true : false,
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
-
-                // Publish to IoT Hub
                 PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }

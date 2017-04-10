@@ -1,12 +1,10 @@
 ﻿using Dropbox.Api.Files;
 using Euricom.IoT.Api.Manager;
+using Euricom.IoT.Dropbox;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Managers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,11 +12,10 @@ namespace Euricom.IoT.Monitoring
 {
     public class CameraMonitor
     {
-        private DropboxManager _dropBoxManager = new DropboxManager();
+        private IDropbox _dropBoxManager = new Dropbox.Dropbox();
 
         public CameraMonitor()
         {
-
         }
 
         public CancellationTokenSource StartMonitor(Common.Camera camera, int pollingTime)

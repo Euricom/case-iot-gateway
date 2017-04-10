@@ -13,6 +13,7 @@ namespace Euricom.IoT.Common
         //public string Password { get; set; }
         public string DropboxPath { get; set; }
         public int PollingTime { get; set; }
-        public bool Enabled { get; set; }
+        public int MaximumDaysDropbox { get; set; }
+        public int MaximumDaysAzureBlobStorage { get; set; }
     }
 }

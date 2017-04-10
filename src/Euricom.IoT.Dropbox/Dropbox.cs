@@ -1,6 +1,6 @@
 ﻿using Dropbox.Api;
 using Dropbox.Api.Files;
-using Euricom.IoT.Managers.Interfaces;
+using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,16 +8,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Managers
+namespace Euricom.IoT.Dropbox
 {
-    public class DropboxManager : IDropboxManager
+    public class Dropbox : IDropbox
     {
         private DropboxClientConfig _dropboxClientConfig;
         private Dictionary<string, string> _latestDropboxCursorPerPath;
 
-        public DropboxManager()
+        public Dropbox()
         {
-            _dropboxClientConfig = new DropboxClientConfig("SimpleTestApp");
+            _dropboxClientConfig = new DropboxClientConfig();
             _latestDropboxCursorPerPath = new Dictionary<string, string>();
         }
 
@@ -29,7 +29,6 @@ namespace Euricom.IoT.Managers
         {
             try
             {
-                // string path = @"/camera";
                 bool recursive = true;
                 bool includeMediaInfo = true;
                 bool includeDeleted = true;
@@ -64,6 +63,8 @@ namespace Euricom.IoT.Managers
             }
             catch (HttpException ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+
                 Debug.WriteLine("Exception reported from RPC layer");
                 Debug.WriteLine("    Status code: {0}", ex.StatusCode);
                 Debug.WriteLine("    Message    : {0}", ex.Message);
@@ -100,6 +101,8 @@ namespace Euricom.IoT.Managers
             }
             catch (HttpException ex)
             {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+
                 Debug.WriteLine("Exception reported from RPC layer");
                 Debug.WriteLine("    Status code: {0}", ex.StatusCode);
                 Debug.WriteLine("    Message    : {0}", ex.Message);

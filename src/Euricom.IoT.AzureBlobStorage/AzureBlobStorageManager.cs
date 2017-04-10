@@ -44,7 +44,15 @@ namespace Euricom.IoT.AzureBlobStorage
                 containerName = containerName.Replace(@"\", "").Replace(@"/", "");
 
                 CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
-                await container.CreateIfNotExistsAsync();
+
+                try
+                {
+                    await container.CreateIfNotExistsAsync();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                }
 
                 // Get reference to a blob with name 'imageId' if not excist create new
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(name);
@@ -78,6 +86,28 @@ namespace Euricom.IoT.AzureBlobStorage
             CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
             CloudBlockBlob blockblob = container.GetBlockBlobReference(imageName);
             return await blockblob.DeleteIfExistsAsync().ConfigureAwait(false);
+        }
+
+        public async Task Cleanup(string containerName, int maxDays)
+        {
+            if (maxDays <= 0)
+            {
+                Logger.Instance.LogWarningWithContext(this.GetType(), "Azure cleaning not starting, because maxDays was less than or equal to zero");
+                return;
+            }
+
+            containerName = containerName.Replace(@"\", "").Replace(@"/", "");
+            CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
+            var blobs = await container.ListBlobsSegmentedAsync(null);
+            var blobsResults = blobs.Results;
+            foreach (CloudBlockBlob blob in blobsResults)
+            {
+                if (blob.Properties.LastModified.HasValue && 
+                    blob.Properties.LastModified.Value.AddDays(maxDays) < DateTime.Now)
+                {
+                    await blob.DeleteAsync();
+                }
+            }
         }
 
         private void CreateCredentialsConnectToClient(Settings settings)

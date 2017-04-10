@@ -10,7 +10,8 @@ namespace Euricom.IoT.DataLayer
 {
     public class Database : IDisposable, IDatabase
     {
-        private static readonly Database _instance = new Database();
+        private static volatile Database _instance;
+        private static object _syncRoot = new Object();
 
         private static DBreeze.DBreezeEngine _engine;
 
@@ -18,15 +19,21 @@ namespace Euricom.IoT.DataLayer
         private Database()
         {
             InitDB();
-
-            //TODO remove once settings page in angular works
-            // InitializeSettings();
         }
 
         public static Database Instance
         {
             get
             {
+                if (_instance == null)
+                {
+                    lock (_syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new Database();
+                    }
+                }
+
                 return _instance;
             }
         }

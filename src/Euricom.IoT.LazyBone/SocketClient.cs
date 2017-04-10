@@ -15,11 +15,11 @@ namespace Euricom.IoT.LazyBone
     public class SocketClient
     {
         private string _hostname;
-        private string _port;
+        private short _port;
 
         private TcpClient _tcpclnt;
 
-        public SocketClient(string hostname, string port)
+        public SocketClient(string hostname, short port)
         {
             _tcpclnt = new TcpClient();
             _hostname = hostname;
@@ -37,8 +37,8 @@ namespace Euricom.IoT.LazyBone
                     _tcpclnt.NoDelay = true;
 
 
-                    _tcpclnt.ConnectAsync("10.0.1.127", 2000).Wait();
-                    Task.Delay(1500).Wait();
+                    _tcpclnt.ConnectAsync(_hostname, _port).Wait();
+                    Task.Delay(500).Wait();
 
                     stream = _tcpclnt.GetStream();
 
@@ -49,7 +49,7 @@ namespace Euricom.IoT.LazyBone
 
                     if (readResponse)
                     {
-                        Task.Delay(2000).Wait();
+                        Task.Delay(1000).Wait();
 
                         var inputStr = stream.AsInputStream().AsStreamForRead();
                         var response = ReadFully(inputStr, 100);
@@ -65,7 +65,6 @@ namespace Euricom.IoT.LazyBone
                 {
                     stream.Dispose();
                     _tcpclnt.Dispose();
-                    Task.Delay(1000).Wait();
                 }
             }
         }

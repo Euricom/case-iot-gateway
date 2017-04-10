@@ -25,6 +25,12 @@ namespace Euricom.IoT.Api.Managers
             return Logger.Instance.QueryLogFiles();
         }
 
+        public string[] GetOpenZWaveLog()
+        {
+            var logLines = Logger.Instance.GetOpenZWaveLog();
+            return logLines;
+        }
+
         public Log GetLog(string date)
         {
             var logLines = Logger.Instance.GetLogLines(date);

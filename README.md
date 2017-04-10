@@ -1,13 +1,23 @@
 # case-iot-gateway
 
 
-Set time in raspberry (after every reboot of raspberry)
+Install Windows 10 IoT core Dashboard watcher from
+
+[Windows 10 IoT Core Dashboard](https://developer.microsoft.com/en-us/windows/iot/docs/iotdashboard)
+
+
+
+**Important**
+
+Set time in raspberry using powershell: 
 
  Using powershell
 
  Set-Date "Thursday, April 06, 2017 10:34:26 AM"
 
 
+
+(after every reboot of raspberry)
 
 
 

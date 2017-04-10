@@ -116,6 +116,10 @@
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UWP\OpenZWaveUWP.vcxproj">
       <Project>{46641b66-9271-4234-8e8b-1547def4bebb}</Project>
       <Name>OpenZWaveUWP</Name>

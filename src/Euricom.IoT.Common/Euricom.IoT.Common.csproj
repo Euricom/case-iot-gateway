@@ -110,6 +110,7 @@
     <Compile Include="DatabaseTableNames.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="Logging\LogProperties.cs" />
+    <Compile Include="Logging\OpenZWaveLog.cs" />
     <Compile Include="Notifications\CameraNotification.cs" />
     <Compile Include="DanaLock.cs" />
     <Compile Include="Device.cs" />

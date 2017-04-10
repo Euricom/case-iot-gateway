@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</ProjectGuid>
+    <ProjectGuid>{33E5FFC7-769C-408F-A9E2-26E717E8F83C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Euricom.IoT.Api.Managers</RootNamespace>
-    <AssemblyName>Euricom.IoT.Api.Managers</AssemblyName>
+    <RootNamespace>Euricom.IoT.DropboxCleanup</RootNamespace>
+    <AssemblyName>Euricom.IoT.DropboxCleanup</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -107,55 +107,22 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraManager.cs" />
-    <Compile Include="HardwareManager.cs" />
-    <Compile Include="Interfaces\ILogManager.cs" />
-    <Compile Include="Interfaces\ICameraManager.cs" />
-    <Compile Include="Interfaces\IDanaLockManager.cs" />
-    <Compile Include="Interfaces\IHardwareManager.cs" />
-    <Compile Include="Interfaces\ILazyBoneManager.cs" />
-    <Compile Include="DanaLockManager.cs" />
-    <Compile Include="LogManager.cs" />
-    <Compile Include="LazyBoneManager.cs" />
+    <Compile Include="DropboxCleanup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Euricom.IoT.Api.Components.rd.xml" />
+    <EmbeddedResource Include="Properties\Euricom.IoT.DropboxCleanup.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
-      <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
-      <Name>Euricom.IoT.AzureBlobStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj">
-      <Project>{a1673557-c45c-457b-bd38-597549771075}</Project>
-      <Name>Euricom.IoT.AzureDeviceManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.Camera\Euricom.IoT.Camera.csproj">
-      <Project>{9da8728a-ee56-48c5-92ec-087dbfc9bf18}</Project>
-      <Name>Euricom.IoT.Camera</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
-      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
       <Name>Euricom.IoT.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
-      <Name>Euricom.IoT.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.ZWave\Euricom.IoT.ZWave.csproj">
-      <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
-      <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
       <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
       <Name>Euricom.IoT.DataLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.LazyBone\Euricom.IoT.LazyBone.csproj">
-      <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
-      <Name>Euricom.IoT.LazyBone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
-      <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>
-      <Name>Euricom.IoT.Messaging</Name>
+    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

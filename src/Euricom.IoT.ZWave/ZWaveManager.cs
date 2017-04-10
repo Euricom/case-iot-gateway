@@ -4,17 +4,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
-using Windows.Foundation;
-using Windows.UI.Core;
 
 namespace Euricom.IoT.ZWave
 {
     public class ZWaveManager
     {
-        private static readonly ZWaveManager _instance = new ZWaveManager();
+        private static volatile ZWaveManager _instance;
+        private static object _syncRoot = new Object();
 
         private uint _homeId;
 
@@ -33,6 +31,15 @@ namespace Euricom.IoT.ZWave
         {
             get
             {
+                if (_instance == null)
+                {
+                    lock (_syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new ZWaveManager();
+                    }
+                }
+
                 return _instance;
             }
         }
@@ -108,8 +115,9 @@ namespace Euricom.IoT.ZWave
                 throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
             }
 
-            //Unlock or lock door
+            // Unlock or lock door
             ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
+
         }
 
         public void CloseLock(byte nodeId) //nodeId = 0x4

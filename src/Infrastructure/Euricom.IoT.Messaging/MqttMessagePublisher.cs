@@ -23,7 +23,7 @@ namespace Euricom.IoT.Messaging
             {
                 var message = new Message(Encoding.ASCII.GetBytes(json));
 
-                await _azureDeviceClient.SendEventAsync(message);
+                // await _azureDeviceClient.SendEventAsync(message);
             }
             catch (Exception ex)
             {

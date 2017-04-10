@@ -7,5 +7,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         string[] QueryLogFiles();
         Log GetLog(string date);
+        string[] GetOpenZWaveLog();
     }
 }

@@ -3,14 +3,10 @@ using Euricom.IoT.Api.Dtos;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Common;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -39,6 +35,20 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
+        [UriFormat("/logs_openzwave")]
+        public IGetResponse GetOpenZWaveLog()
+        {
+            try
+            {
+                var logFiles = _logManager.GetOpenZWaveLog();
+                return ResponseUtilities.GetResponseOk(logFiles);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                return ResponseUtilities.GetResponseFail($"Could not get log: exception: {ex.Message}");
+            }
+        }
 
         [UriFormat("/logs/{day}")]
         public IGetResponse GetAll(string day)

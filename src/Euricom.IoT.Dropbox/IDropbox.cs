@@ -3,9 +3,9 @@ using Dropbox.Api.Files;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Euricom.IoT.Managers.Interfaces
+namespace Euricom.IoT.Dropbox
 {
-    public interface IDropboxManager
+    public interface IDropbox
     {
         Task<Dictionary<string, byte[]>> DownloadFiles(IList<Metadata> entries);
         Task<IList<Metadata>> PollDropboxNewFiles(string path);

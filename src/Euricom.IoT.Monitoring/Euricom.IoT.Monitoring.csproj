@@ -119,6 +119,10 @@
       <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
+      <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
+      <Name>Euricom.IoT.AzureBlobStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
       <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
       <Name>Euricom.IoT.Common</Name>
@@ -126,6 +130,14 @@
     <ProjectReference Include="..\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
       <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
       <Name>Euricom.IoT.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.DropboxCleanup\Euricom.IoT.DropboxCleanup.csproj">
+      <Project>{33e5ffc7-769c-408f-a9e2-26e717e8f83c}</Project>
+      <Name>Euricom.IoT.DropboxCleanup</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Dropbox\Euricom.IoT.Dropbox.csproj">
+      <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
+      <Name>Euricom.IoT.Dropbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>

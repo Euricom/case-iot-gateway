@@ -55,7 +55,7 @@ namespace Euricom.IoT.LazyBone
             {
                 if (!_lazyBones.ContainsKey(deviceId))
                 {
-                    var lazyBone = new LazyBone(new SocketClient(config.Host, config.Port.ToString()));
+                    var lazyBone = new LazyBone(new SocketClient(config.Host, config.Port));
                     _lazyBones[deviceId] = lazyBone;
                     Debug.WriteLine("New lazybone created");
                     return lazyBone;

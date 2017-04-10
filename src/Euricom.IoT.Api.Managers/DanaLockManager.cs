@@ -4,6 +4,7 @@ using Euricom.IoT.Common;
 using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging;
 using Newtonsoft.Json;
 using System;
@@ -106,7 +107,12 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<bool> IsLocked(byte nodeId)
         {
-            return _zwaveManager.IsLocked(nodeId);
+            var danalock = Database.Instance.GetDanaLocks().SingleOrDefault(x => x.NodeId == nodeId);
+            if (danalock == null)
+            {
+                throw new InvalidOperationException($"Could not find a danalock by nodeId: {nodeId}");
+            }
+            return await IsLocked(danalock.DeviceId);
         }
 
         public async Task<bool> IsLocked(string deviceId)
@@ -114,11 +120,17 @@ namespace Euricom.IoT.Api.Managers
             try
             {
                 var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
                 var nodeId = config.NodeId;
                 return _zwaveManager.IsLocked(nodeId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }
@@ -138,6 +150,13 @@ namespace Euricom.IoT.Api.Managers
             {
                 var settings = Database.Instance.GetConfigSettings();
                 var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
+
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+
                 var nodeId = config.NodeId;
 
                 switch (state)
@@ -152,6 +171,10 @@ namespace Euricom.IoT.Api.Managers
                         throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");
                 }
 
+                // Log command
+                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
+
+                // Publish to IoT Hub
                 var notification = new DanaLockNotification
                 {
                     DeviceKey = deviceId,
@@ -159,11 +182,11 @@ namespace Euricom.IoT.Api.Managers
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
 
-                // Publish to IoT Hub
                 PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
         }

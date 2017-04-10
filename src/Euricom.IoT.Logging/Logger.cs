@@ -114,6 +114,28 @@ namespace Euricom.IoT.Logging
             throw new Exception($"Could not get logFile {logFile} from logDirectory {logDirectory}");
         }
 
+        public string[] GetOpenZWaveLog()
+        {
+            var logLines = new List<string>();
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            string logDirectory = System.IO.Path.Combine(localFolder.Path);
+            string logFile = System.IO.Path.Combine(logDirectory, "OZW_Log.txt");
+            if (System.IO.File.Exists(logFile))
+            {
+                using (var fileStream = File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        logLines.Add(line);
+                    }
+                }
+                return logLines.ToArray();
+            }
+            throw new Exception($"Could not get logFile {logFile} from logDirectory {logDirectory}");
+        }
+
         public void LogInformationWithDeviceContext(string deviceId, string message)
         {
             lock (_syncRootContextLogger)
