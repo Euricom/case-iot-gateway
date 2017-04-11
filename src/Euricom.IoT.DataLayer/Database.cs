@@ -1,5 +1,6 @@
 ﻿using DBreeze;
 using Euricom.IoT.Common;
+using Euricom.IoT.Common.Logging;
 using Euricom.IoT.Logging;
 using Newtonsoft.Json;
 using System;
@@ -59,6 +60,13 @@ namespace Euricom.IoT.DataLayer
         {
             var settings = new Settings();
             settings.HistoryLog = Int32.Parse(GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog"));
+
+            if (String.IsNullOrEmpty(GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel")))
+                settings.LogLevel = LogLevel.Information;
+            else
+                settings.LogLevel = (LogLevel) Enum.Parse(typeof(LogLevel), GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel"));
+
+            settings.GatewayDeviceKey = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey");
             settings.AzureIotHubUri = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri");
             settings.AzureIotHubUriConnectionString = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString");
             settings.AzureAccountName = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName");
@@ -72,6 +80,8 @@ namespace Euricom.IoT.DataLayer
             if (settings != null)
             {
                 SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel", settings.LogLevel.ToString());
+                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey.ToString());
                 SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
                 SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
                 SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);

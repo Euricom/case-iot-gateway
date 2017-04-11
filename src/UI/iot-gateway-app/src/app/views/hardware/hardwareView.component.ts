@@ -12,7 +12,7 @@ import { HardwareService } from '../../services/hardwareService'
 })
 export class HardwareViewComponent implements OnInit {
 
-  device: Device = new Device({ guid: 'ff', name: 'test1', type: 'camera' })
+  device: Device = new Device({ })
   deviceType: DeviceType
 
   formSubmitted = false

@@ -338,14 +338,12 @@ namespace Euricom.IoT.Monitoring
                         var cameras = DataLayer.Database.Instance.GetCameras().ToList();
                         foreach (var camera in cameras)
                         {
-                            Debug.WriteLine($"Cleaning dropbox for camera {camera.DeviceId}");
-                            Logging.Logger.Instance.LogInformationWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera (max days was {camera.MaximumDaysDropbox})");
+                            Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera (if there are old files..)");
 
                             // Cleanup 
                             await DropboxCleanup.DropboxCleanup.Instance.Cleanup(camera.Name, camera.MaximumDaysDropbox);
 
-                            Logging.Logger.Instance.LogInformationWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera completed");
-                            Debug.WriteLine($"Cleaning dropbox for camera {camera.DeviceId} completed");
+                            Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera completed");
                         }
                     }
                     catch (Exception ex)
@@ -375,14 +373,12 @@ namespace Euricom.IoT.Monitoring
                         var cameras = DataLayer.Database.Instance.GetCameras().ToList();
                         foreach (var camera in cameras)
                         {
-                            Debug.WriteLine($"Cleaning azure blob storage for camera {camera.DeviceId}");
-                            Logging.Logger.Instance.LogInformationWithDeviceContext(camera.DeviceId, $"Cleaning azure blob storage for camera (max days was {camera.MaximumDaysDropbox})");
+                            Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning azure blob storage for camera (if there are old files..)");
 
                             // Cleanup 
                             await new AzureBlobStorage.AzureBlobStorageManager().Cleanup(camera.Name, camera.MaximumDaysAzureBlobStorage);
 
-                            Logging.Logger.Instance.LogInformationWithDeviceContext(camera.DeviceId, $"Cleaning azure blob storage for camera completed");
-                            Debug.WriteLine($"Cleaning azure blob storage for camera {camera.DeviceId} completed");
+                            Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning azure blob storage for camera completed");
                         }
                     }
                     catch (Exception ex)

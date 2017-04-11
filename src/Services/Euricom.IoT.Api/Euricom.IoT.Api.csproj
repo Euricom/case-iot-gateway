@@ -102,6 +102,7 @@
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
+    <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
     <Compile Include="Controllers\DanaLockController.cs" />
@@ -111,8 +112,10 @@
     <Compile Include="Dtos\DeviceDto.cs" />
     <Compile Include="Dtos\LogDto.cs" />
     <Compile Include="Dtos\LogLineDto.cs" />
+    <Compile Include="Dtos\SettingsDto.cs" />
     <Compile Include="Mappings\DanaLockMappingProfile.cs" />
     <Compile Include="Mappings\CameraMappingProfile.cs" />
+    <Compile Include="Mappings\SettingsMappingProfile.cs" />
     <Compile Include="Mappings\LogMappingProfile.cs" />
     <Compile Include="Mappings\LazyBoneMappingProfile.cs" />
     <Compile Include="ResponseData.cs" />

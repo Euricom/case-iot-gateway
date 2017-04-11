@@ -5,7 +5,9 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.AzureBlobStorage
@@ -95,18 +97,32 @@ namespace Euricom.IoT.AzureBlobStorage
                 Logger.Instance.LogWarningWithContext(this.GetType(), "Azure cleaning not starting, because maxDays was less than or equal to zero");
                 return;
             }
+            string deviceName = containerName.Replace("/", "");
+
+            var device = DataLayer.Database.Instance.GetCameras().SingleOrDefault(x => x.Name == deviceName);
+            if (device == null)
+            {
+                Logger.Instance.LogWarningWithContext(this.GetType(), $"Could not find camera device with name: {deviceName}.. Azure Blob Storage cleanup was not initiated!");
+                return;
+            }
+
 
             containerName = containerName.Replace(@"\", "").Replace(@"/", "");
             CloudBlobContainer container = _blobClient.GetContainerReference(containerName);
             var blobs = await container.ListBlobsSegmentedAsync(null);
             var blobsResults = blobs.Results;
-            foreach (CloudBlockBlob blob in blobsResults)
+            var filteredBlobs = blobsResults
+                       .Cast<CloudBlockBlob>()
+                       .Where(x => x.Properties.LastModified.HasValue &&
+                                  x.Properties.LastModified.Value.AddDays(maxDays) < DateTime.Now)
+                       .ToList();
+
+            if (filteredBlobs.Any())
+                Logger.Instance.LogInformationWithDeviceContext(device.DeviceId, $"Deleting {filteredBlobs.Count} files from dropbox");
+
+            foreach (var blob in filteredBlobs)
             {
-                if (blob.Properties.LastModified.HasValue && 
-                    blob.Properties.LastModified.Value.AddDays(maxDays) < DateTime.Now)
-                {
-                    await blob.DeleteAsync();
-                }
+                await blob.DeleteAsync();
             }
         }
 

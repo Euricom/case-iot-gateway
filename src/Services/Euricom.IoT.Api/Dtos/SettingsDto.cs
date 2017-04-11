@@ -1,15 +1,14 @@
-﻿using Euricom.IoT.Common.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Common
+namespace Euricom.IoT.Api.Dtos
 {
-    public class Settings
+    public class SettingsDto
     {
-        public LogLevel LogLevel { get; set; }
+        public string LogLevel { get; set; }
         public int HistoryLog { get; set; }
         public string GatewayDeviceKey { get; set; }
         public string AzureIotHubUri { get; set; }

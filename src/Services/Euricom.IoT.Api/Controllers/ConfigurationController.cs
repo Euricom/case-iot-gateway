@@ -1,4 +1,9 @@
-﻿using Euricom.IoT.Api.Utilities;
+﻿using AutoMapper;
+using Euricom.IoT.Api.Dtos;
+using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
@@ -10,8 +15,11 @@ namespace Euricom.IoT.Api.Controllers
     [RestController(InstanceCreationType.Singleton)]
     public class ConfigurationController
     {
+        private readonly IConfigurationManager _configurationManager;
+
         public ConfigurationController()
         {
+            _configurationManager = new ConfigurationManager();
         }
 
         [UriFormat("/settings")]
@@ -19,8 +27,9 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var settings = Database.Instance.GetConfigSettings();
-                return ResponseUtilities.GetResponseOk(settings);
+                var settings = _configurationManager.GetConfigSettings();
+                var settingsDto = Mapper.Map<Settings>(settings);
+                return ResponseUtilities.GetResponseOk(settingsDto);
             }
             catch (Exception ex)
             {
@@ -30,11 +39,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/settings")]
-        public IPutResponse SaveConfig([FromContent] Common.Settings settings)
+        public IPutResponse SaveConfig([FromContent] SettingsDto settingsDto)
         {
             try
             {
-                Database.Instance.SaveConfigSettings(settings);
+                var settings = Mapper.Map<Settings>(settingsDto);
+                _configurationManager.SaveConfigSettings(settings);
                 return new PutResponse(PutResponse.ResponseStatus.OK);
             }
             catch (Exception ex)

@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="DatabaseTableNames.cs" />
     <Compile Include="DropboxFile.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogProperties.cs" />
     <Compile Include="Logging\OpenZWaveLog.cs" />
     <Compile Include="Notifications\CameraNotification.cs" />
@@ -123,10 +124,12 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Hardware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\RequestForAccessToken.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utilities\DateTimeExtensions.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Common.rd.xml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 
 export class DeviceType {
-  id?: String
-  name?: String
+  Id?: String
+  Name?: String
 
   constructor(resource) {
     Object.assign(this, resource)

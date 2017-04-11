@@ -44,6 +44,13 @@ namespace Euricom.IoT.DropboxCleanup
             }
 
             var settings = DataLayer.Database.Instance.GetConfigSettings();
+            var device = DataLayer.Database.Instance.GetCameras().SingleOrDefault(x => x.Name == deviceName);
+            if (device == null)
+            {
+                Logger.Instance.LogWarningWithContext(this.GetType(), $"Could not find camera device with name: {deviceName}.. Dropbox cleanup was not initiated!");
+                return;
+            }
+
             var dropboxClient = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
             // List folder with name Camera name
@@ -51,13 +58,13 @@ namespace Euricom.IoT.DropboxCleanup
             var folder = await dropboxClient.Files.ListFolderAsync(path, true, false, false, false);
             if (folder.Entries.Any())
             {
-                foreach (var entry in folder.Entries.Where(x => x.IsFile))
+                var filteredEntries = folder.Entries.Where(x => x.IsFile && x.AsFile.ServerModified.AddDays(maxDays) < DateTime.Now).ToList();
+                if (filteredEntries.Any())
+                    Logger.Instance.LogInformationWithDeviceContext(device.DeviceId, $"Deleting {filteredEntries.Count} files from dropbox");
+
+                foreach (var entry in filteredEntries)
                 {
-                    var serverModified = entry.AsFile.ServerModified;
-                    if (serverModified.AddDays(maxDays) < DateTime.Now)
-                    {
-                        await dropboxClient.Files.DeleteAsync(entry.PathLower);
-                    }
+                    await dropboxClient.Files.DeleteAsync(entry.PathLower);
                 }
             }
         }

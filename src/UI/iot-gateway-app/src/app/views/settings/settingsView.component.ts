@@ -4,6 +4,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
 import { Settings } from '../../models/settings';
 import { SettingsService } from '../../services/settingsService'
+import { LogLevel } from '../../models/logLevel';
 
 @Component({
   selector: 'overview',
@@ -12,6 +13,8 @@ import { SettingsService } from '../../services/settingsService'
 export class SettingsViewComponent implements OnInit {
 
   settings: Settings
+  logLevelOptions: string[]
+  logLevelsEnum: typeof LogLevel = LogLevel
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -34,6 +37,8 @@ export class SettingsViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const logLevels = Object.keys(this.logLevelsEnum)
+    this.logLevelOptions = logLevels.slice(logLevels.length / 2)
     this.settings = new Settings({})
     this.refresh()
   }
@@ -42,12 +47,8 @@ export class SettingsViewComponent implements OnInit {
     this.settingsService.getSettings()
       .subscribe(
       (data: any) => {
-        this.settings.azureAccountName = data.AzureAccountName
-        this.settings.azureIotHubUri = data.AzureIotHubUri
-        this.settings.azureIotHubUriConnectionString = data.AzureIotHubUriConnectionString
-        this.settings.azureStorageAccessKey = data.AzureStorageAccessKey
-        this.settings.dropboxAccessToken = data.DropboxAccessToken
-        this.settings.historyLog = data.HistoryLog
+        this.settings = <Settings>data
+        this.settings.LogLevel = this.logLevelsEnum[data.LogLevel]
       },
       (err) => {
         this.toastr.error('error occurred' + err)

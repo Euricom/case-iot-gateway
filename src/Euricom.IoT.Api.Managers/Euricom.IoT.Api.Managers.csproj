@@ -109,12 +109,15 @@
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
     <Compile Include="HardwareManager.cs" />
+    <Compile Include="Interfaces\IConfigurationManager.cs" />
     <Compile Include="Interfaces\ILogManager.cs" />
     <Compile Include="Interfaces\ICameraManager.cs" />
     <Compile Include="Interfaces\IDanaLockManager.cs" />
     <Compile Include="Interfaces\IHardwareManager.cs" />
     <Compile Include="Interfaces\ILazyBoneManager.cs" />
     <Compile Include="DanaLockManager.cs" />
+    <Compile Include="Interfaces\ISecurityManager.cs" />
+    <Compile Include="ConfigurationManager.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="LazyBoneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
