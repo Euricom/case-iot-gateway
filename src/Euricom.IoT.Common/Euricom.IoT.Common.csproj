@@ -112,6 +112,9 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogProperties.cs" />
     <Compile Include="Logging\OpenZWaveLog.cs" />
+    <Compile Include="Messages\LazyBoneMessage.cs" />
+    <Compile Include="Messages\DanaLockMessage.cs" />
+    <Compile Include="Messages\GatewayMessage.cs" />
     <Compile Include="Notifications\CameraNotification.cs" />
     <Compile Include="DanaLock.cs" />
     <Compile Include="Device.cs" />

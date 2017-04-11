@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
+using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Common.Logging;
+using Euricom.IoT.Common.Messages;
 using Euricom.IoT.Logging;
 using Euricom.IoT.ZWave;
-using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Client;
-using Serilog;
+using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace Euricom.IoT.Api
 {
@@ -41,13 +40,14 @@ namespace Euricom.IoT.Api
             await new WebServer().InitializeWebServer();
 
             // Wait for messages
-            // ForwardMessagesToDevices();
+            var gatewayManager = new GatewayManager();
+            ForwardMessagesToDevices(gatewayManager);
 
             // Set up monitoring devices
-            // MonitorDevices();
+            MonitorDevices();
         }
 
-        private void ForwardMessagesToDevices()
+        private void ForwardMessagesToDevices(IGatewayManager gatewayManager)
         {
             Logger.Instance.LogInformationWithContext(this.GetType(), "Forwarding IoT hub messages from IoTGateway device to hardware");
             var settings = DataLayer.Database.Instance.GetConfigSettings();
@@ -57,8 +57,8 @@ namespace Euricom.IoT.Api
                 return;
             }
 
-            var deviceGatewayClient = DeviceClient.Create(settings.AzureIotHubUri, 
-                new DeviceAuthenticationWithRegistrySymmetricKey("IoTGateway", settings.GatewayDeviceKey), 
+            var deviceGatewayClient = DeviceClient.Create(settings.AzureIotHubUri,
+                new DeviceAuthenticationWithRegistrySymmetricKey("IoTGateway", settings.GatewayDeviceKey),
                 Microsoft.Azure.Devices.Client.TransportType.Http1);
 
             Task.Run(async () =>
@@ -71,12 +71,23 @@ namespace Euricom.IoT.Api
                         if (receivedMessage == null) continue;
 
                         var messageString = Encoding.ASCII.GetString(receivedMessage.GetBytes());
+                        var gatewayMessage = JsonConvert.DeserializeObject<GatewayMessage>(messageString);
 
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Received message: {0}", messageString);
+                        Console.WriteLine("Handling message: {0}", messageString);
+                        Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message: {messageString}");
+
+                        // Handle message
+                        bool messageHandled = await gatewayManager.HandleMessage(gatewayMessage);
+
+                        Console.WriteLine("Handling message done: {0}", messageString);
+                        Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message done: {messageString}");
                         Console.ResetColor();
 
-                        await deviceGatewayClient.CompleteAsync(receivedMessage);
+                        if (messageHandled)
+                            await deviceGatewayClient.CompleteAsync(receivedMessage);
+                        else
+                            await deviceGatewayClient.RejectAsync(receivedMessage);
                     }
                     catch (Exception ex)
                     {
