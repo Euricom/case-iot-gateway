@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using Euricom.IoT.Models;
+using System.IO;
 using System.Threading.Tasks;
-using Euricom.IoT.Common;
 
 namespace Euricom.IoT.AzureBlobStorage
 {

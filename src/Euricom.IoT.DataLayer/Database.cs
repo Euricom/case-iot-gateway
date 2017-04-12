@@ -1,7 +1,8 @@
 ﻿using DBreeze;
 using Euricom.IoT.Common;
-using Euricom.IoT.Common.Logging;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,6 @@ namespace Euricom.IoT.DataLayer
         private static object _syncRoot = new Object();
 
         private static DBreeze.DBreezeEngine _engine;
-
 
         private Database()
         {
@@ -39,13 +39,117 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
+        public bool ExistsUser(string username)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
+                    return row.Exists;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw;
+            }
+        }
+
+        public void AddUser(string username, string password)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
+                    if (row.Exists)
+                        throw new InvalidOperationException($"username {username} already exists in the database");
+
+                    tran.Insert<string, string>(Constants.DBREEZE_TABLE_USERS, username, password);
+                    tran.Commit();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw;
+            }
+        }
+
+        public bool CheckUser(string username, string password)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
+                    if (row.Exists && row.Value == password)
+                        return true;
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw;
+            }
+        }
+
+        public bool EditPassword(string username, string password)
+        {
+            try
+            {
+                bool wasUpdated = false;
+                byte[] refToInsertedValue = new List<byte>().ToArray();
+
+                using (var tran = _engine.GetTransaction())
+                {
+                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
+                    if (row.Exists && row.Value == password)
+                    {
+                        tran.Insert<string, string>(Constants.DBREEZE_TABLE_USERS, username, password, out refToInsertedValue, out wasUpdated);
+                    }
+                    return wasUpdated;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw;
+            }
+        }
+
+        public void RemoveUser(string username)
+        {
+            try
+            {
+                using (var tran = _engine.GetTransaction())
+                {
+                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
+                    if (!row.Exists)
+                        throw new InvalidOperationException($"cannot remove username {username}, because it doesn't exist in the database");
+
+                    if (row.Exists)
+                        tran.RemoveKey(Constants.DBREEZE_TABLE_USERS, username);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw;
+            }
+        }
+
+
         public DanaLock GetDanaLockConfig(string deviceId)
         {
             try
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, deviceId).Value;
+                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_DANALOCKS, deviceId).Value;
                     return JsonConvert.DeserializeObject<DanaLock>(json);
                 }
             }
@@ -59,34 +163,34 @@ namespace Euricom.IoT.DataLayer
         public Settings GetConfigSettings()
         {
             var settings = new Settings();
-            settings.HistoryLog = Int32.Parse(GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog"));
+            settings.HistoryLog = Int32.Parse(GetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog"));
 
-            if (String.IsNullOrEmpty(GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel")))
+            if (String.IsNullOrEmpty(GetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel")))
                 settings.LogLevel = LogLevel.Information;
             else
-                settings.LogLevel = (LogLevel) Enum.Parse(typeof(LogLevel), GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel"));
+                settings.LogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), GetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel"));
 
-            settings.GatewayDeviceKey = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey");
-            settings.AzureIotHubUri = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri");
-            settings.AzureIotHubUriConnectionString = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString");
-            settings.AzureAccountName = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName");
-            settings.AzureStorageAccessKey = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey");
-            settings.DropboxAccessToken = GetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken");
+            settings.GatewayDeviceKey = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey");
+            settings.AzureIotHubUri = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri");
+            settings.AzureIotHubUriConnectionString = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString");
+            settings.AzureAccountName = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName");
+            settings.AzureStorageAccessKey = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey");
+            settings.DropboxAccessToken = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken");
             return settings;
         }
 
-        public void SaveConfigSettings(Common.Settings settings)
+        public void SaveConfigSettings(Settings settings)
         {
             if (settings != null)
             {
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "LogLevel", settings.LogLevel.ToString());
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey.ToString());
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
-                SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel", settings.LogLevel.ToString());
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey.ToString());
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
             }
         }
 
@@ -96,7 +200,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, deviceId).Value;
+                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_LAZYBONES, deviceId).Value;
                     return JsonConvert.DeserializeObject<LazyBone>(json);
                 }
             }
@@ -113,7 +217,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_CAMERAS))
                     {
                         if (row.Key == deviceId)
                         {
@@ -121,7 +225,7 @@ namespace Euricom.IoT.DataLayer
                             return camera;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_DANALOCKS))
                     {
                         if (row.Key == deviceId)
                         {
@@ -129,7 +233,7 @@ namespace Euricom.IoT.DataLayer
                             return danalock;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_LAZYBONES))
                     {
                         if (row.Key == deviceId)
                         {
@@ -154,27 +258,27 @@ namespace Euricom.IoT.DataLayer
                 bool removed = false;
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_CAMERAS))
                     {
                         if (row.Key == deviceId)
                         {
-                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, row.Key);
+                            tran.RemoveKey(Constants.DBREEZE_TABLE_CAMERAS, row.Key);
                             removed = true;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_DANALOCKS))
                     {
                         if (row.Key == deviceId)
                         {
-                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS, row.Key);
+                            tran.RemoveKey(Constants.DBREEZE_TABLE_DANALOCKS, row.Key);
                             removed = true;
                         }
                     }
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_LAZYBONES))
                     {
                         if (row.Key == deviceId)
                         {
-                            tran.RemoveKey(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, row.Key);
+                            tran.RemoveKey(Constants.DBREEZE_TABLE_LAZYBONES, row.Key);
                             removed = true;
                         }
                     }
@@ -195,7 +299,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _engine.GetTransaction())
                 {
-                    var json = tran.Select<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId).Value;
+                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_CAMERAS, deviceId).Value;
                     var cameraConfig = JsonConvert.DeserializeObject<Camera>(json);
                     return cameraConfig;
                 }
@@ -231,7 +335,7 @@ namespace Euricom.IoT.DataLayer
                 List<Camera> cameras = new List<Camera>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_CAMERAS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_CAMERAS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<Camera>(row.Value);
@@ -254,7 +358,7 @@ namespace Euricom.IoT.DataLayer
                 List<DanaLock> danaLocks = new List<DanaLock>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_DANALOCKS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_DANALOCKS))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<DanaLock>(row.Value);
@@ -277,7 +381,7 @@ namespace Euricom.IoT.DataLayer
                 List<LazyBone> lazyBones = new List<LazyBone>();
                 using (var tran = _engine.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, string>(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_LAZYBONES))
                     {
                         var deviceGuid = row.Key;
                         var deviceConfig = JsonConvert.DeserializeObject<LazyBone>(row.Value);
@@ -311,8 +415,6 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-
-
         public void SetValue(string table, string key, string value)
         {
             try
@@ -329,6 +431,7 @@ namespace Euricom.IoT.DataLayer
                 throw new Exception($"Could not set value for table: {table}, key: {key}, exception: " + ex);
             }
         }
+
 
         private void InitDB()
         {
@@ -349,12 +452,12 @@ namespace Euricom.IoT.DataLayer
 
         private void InitializeSettings()
         {
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "HistoryLog", 365.ToString());
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", Secrets.AZURE_IOT_HUB_URI);
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", Secrets.AZURE_IOT_HUB_CONNECTIONSTRING);
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureAccountName", Secrets.AZURE_ACCOUNT_NAME);
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", Secrets.AZURE_STORAGE_ACCESS_KEY);
-            //SetValue(DatabaseTableNames.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", Secrets.DROPBOX_ACCESS_TOKEN);
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog", 365.ToString());
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", Secrets.AZURE_IOT_HUB_URI);
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", Secrets.AZURE_IOT_HUB_CONNECTIONSTRING);
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", Secrets.AZURE_ACCOUNT_NAME);
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", Secrets.AZURE_STORAGE_ACCESS_KEY);
+            //SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", Secrets.DROPBOX_ACCESS_TOKEN);
         }
 
         public void Dispose()

@@ -1,18 +1,12 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Messages;
-using Euricom.IoT.Common.Notifications;
-using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
-using Euricom.IoT.LazyBone;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Messages;
 using Euricom.IoT.Security;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
@@ -44,7 +38,7 @@ namespace Euricom.IoT.Api.Managers
                 throw new ArgumentNullException("message.Message");
 
             // Verify JWT token
-            var isValid = JwtSecurity.VerifyJwt(message.CommandToken);
+            var isValid = JwtSecurity.VerifyAccessTokenJwt(message.CommandToken);
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
 

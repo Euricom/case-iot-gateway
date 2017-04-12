@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface ILazyBoneManager
     {
-        Task<IEnumerable<Common.LazyBone>> GetAll();
-        Task<Common.LazyBone> GetByDeviceId(string deviceId);
-        Task<Common.LazyBone> GetByDeviceName(string deviceName);
-        Task<Common.LazyBone> Add(Common.LazyBone danaLock);
-        Task<Common.LazyBone> Edit(Common.LazyBone danaLock);
+        Task<IEnumerable<Euricom.IoT.Models.LazyBone>> GetAll();
+        Task<Euricom.IoT.Models.LazyBone> GetByDeviceId(string deviceId);
+        Task<Euricom.IoT.Models.LazyBone> GetByDeviceName(string deviceName);
+        Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone danaLock);
+        Task<Euricom.IoT.Models.LazyBone> Edit(Euricom.IoT.Models.LazyBone danaLock);
         Task<string> TestConnection(string deviceId);
         Task<bool> GetCurrentState(string deviceId);
         Task Switch(string deviceId, string state);

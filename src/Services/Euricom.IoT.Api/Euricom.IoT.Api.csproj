@@ -99,6 +99,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\JwtValidator.cs" />
+    <Compile Include="Authentication\JwtAuthenticationProvider.cs" />
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
@@ -163,13 +165,25 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\..\restup\src\WebServer.Logging\WebServer.Logging.csproj">
+      <Project>{06a3d120-5923-4ad1-8411-7395a1ec6e94}</Project>
+      <Name>WebServer.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\restup\src\Webserver.Models\Webserver.Models.csproj">
+      <Project>{0b20d095-2896-41a6-865d-172dfd5ecc99}</Project>
+      <Name>Webserver.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\restup\src\WebServer\WebServer.csproj">
+      <Project>{837b8ff3-ded6-4dc7-ad58-dbb0b3e44dd4}</Project>
+      <Name>WebServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
       <Project>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+    <ProjectReference Include="..\..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
-      <Name>Euricom.IoT.Common</Name>
+      <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>

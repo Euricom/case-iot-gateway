@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Mappings
 {

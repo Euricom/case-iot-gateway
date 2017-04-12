@@ -3,17 +3,18 @@ using Euricom.IoT.Api.Dtos;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Notifications;
+using Euricom.IoT.Models;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
+using Restup.WebServer.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Controllers
 {
+    [Authorize]
     [RestController(InstanceCreationType.Singleton)]
     public class DanaLockController
     {

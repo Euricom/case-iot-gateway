@@ -2,8 +2,8 @@
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Common.Messages;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models.Messages;
 using Euricom.IoT.ZWave;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
@@ -34,17 +34,16 @@ namespace Euricom.IoT.Api
             var instLogger = Logger.Instance;
 
             // Init DanaLock
-            await ZWaveManager.Instance.Initialize();
+            // await ZWaveManager.Instance.Initialize();
 
             // Init Webserver
             await new WebServer().InitializeWebServer();
 
             // Wait for messages
-            var gatewayManager = new GatewayManager();
-            ForwardMessagesToDevices(gatewayManager);
+            // ForwardMessagesToDevices(new GatewayManager());
 
             // Set up monitoring devices
-            MonitorDevices();
+            // MonitorDevices();
         }
 
         private void ForwardMessagesToDevices(IGatewayManager gatewayManager)

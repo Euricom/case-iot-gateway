@@ -5,22 +5,24 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/catch'
 
+import { AuthHttp } from 'angular2-jwt'
+
 import { DanaLock } from '../models/danaLock'
 import { Config } from '../../config'
 
 @Injectable()
 export class DanaLockService {
-  constructor(private http: Http, private config: Config) {
+  constructor(private authHttp: AuthHttp, private config: Config) {
   }
 
   getAll(): Observable<DanaLock[]> {
-    return this.http.get(`${this.config.baseUrl}/api/danalock`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/danalock`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new DanaLock(element)))
   }
 
   getById(id: String): Observable<DanaLock> {
-    return this.http.get(`${this.config.baseUrl}/api/danalock/${id}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
@@ -34,33 +36,33 @@ export class DanaLockService {
   }
 
   update(danaLock: DanaLock): Observable<DanaLock> {
-    return this.http.put(`${this.config.baseUrl}/api/danalock`, danaLock)
+    return this.authHttp.put(`${this.config.baseUrl}/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
 
   delete(id: String) {
-    return this.http.delete(`${this.config.baseUrl}/api/danalock/${id}`)
+    return this.authHttp.delete(`${this.config.baseUrl}/api/danalock/${id}`)
   }
 
   create(danaLock: DanaLock) {
-    return this.http.post(`${this.config.baseUrl}/api/danalock`, danaLock)
+    return this.authHttp.post(`${this.config.baseUrl}/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
 
   testConnection(id: String) {
-    return this.http.get(`${this.config.baseUrl}/api/danalock/testconnection/${id}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   isLocked(id: String) {
-    return this.http.get(`${this.config.baseUrl}/api/danalock/isLocked/${id}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/isLocked/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.http.put(`${this.config.baseUrl}/api/danalock/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`${this.config.baseUrl}/api/danalock/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

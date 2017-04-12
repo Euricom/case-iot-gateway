@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Euricom.IoT.Api.Controllers;
 using Restup.Webserver.File;
 using System.Diagnostics;
+using Restup.WebServer.Http;
+using Euricom.IoT.Api.Authentication;
 
 namespace Euricom.IoT.Api
 {
@@ -18,13 +20,15 @@ namespace Euricom.IoT.Api
 
         public async Task InitializeWebServer()
         {
-            var restRouteHandler = new RestRouteHandler();
+            var authProvider = new JwtAuthenticationProvider(null, null);
+            var restRouteHandler = new RestRouteHandler(authProvider);
             restRouteHandler.RegisterController<ConfigurationController>();
             restRouteHandler.RegisterController<DevicesController>();
             restRouteHandler.RegisterController<CameraController>();
             restRouteHandler.RegisterController<DanaLockController>();
             restRouteHandler.RegisterController<LazyBoneController>();
             restRouteHandler.RegisterController<LogController>();
+            restRouteHandler.RegisterController<SecurityController>();
 
             var configuration = new HttpServerConfiguration()
               .ListenOnPort(8800)

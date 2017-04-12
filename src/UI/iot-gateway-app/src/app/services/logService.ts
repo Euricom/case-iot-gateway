@@ -5,22 +5,24 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/catch'
 
+import { AuthHttp } from 'angular2-jwt'
+
 import { Log } from '../models/log'
 import { LogLine } from '../models/logline'
 import { Config } from '../../config'
 
 @Injectable()
 export class LogService {
-  constructor(private http: Http, private config: Config) {
+  constructor(private authHttp: AuthHttp, private config: Config) {
   }
 
   queryLogs(): Observable<string[]> {
-    return this.http.get(`${this.config.baseUrl}/api/logs`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/logs`)
       .map((res: Response) => (res.json()))
   }
 
   getLog(day: string): Observable<Log> {
-    return this.http.get(`${this.config.baseUrl}/api/logs/${day}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/logs/${day}`)
       .map((res: Response) => (res.json()))
   }
 }

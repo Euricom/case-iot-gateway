@@ -5,20 +5,22 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/catch'
 
+import { AuthHttp } from 'angular2-jwt'
+
 import { Settings } from '../models/settings'
 import { Config } from '../../config'
 
 @Injectable()
 export class SettingsService {
-  constructor(private http: Http, private config: Config) {
+  constructor(private authHttp: AuthHttp, private config: Config) {
   }
 
   getSettings(): Observable<Settings> {
-    return this.http.get(`${this.config.baseUrl}/api/settings`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/settings`)
       .map((res: Response) => (res.json()))
   }
 
   saveSettings(settings: Settings): Observable<Settings> {
-    return this.http.put(`${this.config.baseUrl}/api/settings`, settings)
+    return this.authHttp.put(`${this.config.baseUrl}/api/settings`, settings)
   }
 }

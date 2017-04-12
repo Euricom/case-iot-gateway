@@ -1,5 +1,5 @@
-﻿using Euricom.IoT.Common;
-using Euricom.IoT.Logging;
+﻿using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using System;

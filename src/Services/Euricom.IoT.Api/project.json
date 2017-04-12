@@ -3,8 +3,7 @@
     "AutoMapper": "6.0.2",
     "Microsoft.Azure.Devices.Client": "1.2.7",
     "Microsoft.Azure.Devices.Shared": "1.0.9",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.2",
-    "Restup": "1.0.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.2"
   },
   "frameworks": {
     "uap10.0": {}

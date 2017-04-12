@@ -1,11 +1,10 @@
-﻿using Euricom.IoT.Common;
-using Euricom.IoT.DataLayer;
+﻿using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;

@@ -124,8 +124,12 @@
       <Name>Euricom.IoT.AzureBlobStorage</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
-      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
       <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
+      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
       <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>

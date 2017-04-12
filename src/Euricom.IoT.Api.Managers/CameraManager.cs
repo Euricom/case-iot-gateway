@@ -3,9 +3,10 @@ using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureBlobStorage;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common;
-using Euricom.IoT.Common.Notifications;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.Messaging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,14 +37,14 @@ namespace Euricom.IoT.Api.Manager
 
         public Task<Camera> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId);
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
         }
 
         public Task<Camera> GetByDeviceName(string deviceName)
         {
             var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, deviceId);
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
         }
 
@@ -56,7 +57,7 @@ namespace Euricom.IoT.Api.Manager
             var json = JsonConvert.SerializeObject(camera);
 
             //Save to database
-            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
             return await GetByDeviceId(camera.DeviceId);
         }
@@ -74,7 +75,7 @@ namespace Euricom.IoT.Api.Manager
 
             var json = JsonConvert.SerializeObject(camera);
 
-            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
             return await GetByDeviceId(camera.DeviceId);
         }

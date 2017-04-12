@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Api.Managers;
+﻿using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Common.Security;
+using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
@@ -19,6 +17,21 @@ namespace Euricom.IoT.Api.Controllers
         public SecurityController()
         {
             _securityManager = new SecurityManager();
+        }
+
+        [UriFormat("/security/login")]
+        public IPostResponse Login([FromContent] LoginCredentials credentials)
+        {
+            try
+            {
+                var jwt = _securityManager.Login(credentials.Username, credentials.Password);
+                return ResponseUtilities.PostResponseOk(jwt);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+            }
         }
 
         [UriFormat("/security/getcommandtoken")]

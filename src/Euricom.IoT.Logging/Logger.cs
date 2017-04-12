@@ -1,4 +1,4 @@
-﻿using Euricom.IoT.Common.Logging;
+﻿using Euricom.IoT.Models.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;

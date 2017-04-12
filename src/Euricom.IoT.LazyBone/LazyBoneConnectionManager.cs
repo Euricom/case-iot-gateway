@@ -1,12 +1,8 @@
 ﻿using Euricom.IoT.Logging;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Networking.Sockets;
 
 namespace Euricom.IoT.LazyBone
 {
@@ -22,7 +18,7 @@ namespace Euricom.IoT.LazyBone
             _lazyBones = new ConcurrentDictionary<string, LazyBone>();
         }
 
-        public async Task<string> TestConnection(string deviceId, Common.LazyBone config)
+        public async Task<string> TestConnection(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
             try
             {
@@ -37,19 +33,19 @@ namespace Euricom.IoT.LazyBone
             }
         }
 
-        public async Task<bool> GetCurrentState(string deviceId, Common.LazyBone config)
+        public async Task<bool> GetCurrentState(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
             LazyBone lazyBone = GetLazyBone(deviceId, config);
             return await lazyBone.GetCurrentState();
         }
 
-        public async Task Switch(string deviceId, Common.LazyBone config, bool state)
+        public async Task Switch(string deviceId, Euricom.IoT.Models.LazyBone config, bool state)
         {
             LazyBone lazyBone = GetLazyBone(deviceId, config);
             await lazyBone.Switch(state);
         }
 
-        public LazyBone GetLazyBone(string deviceId, Common.LazyBone config)
+        public LazyBone GetLazyBone(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
             lock (_syncRoot)
             {

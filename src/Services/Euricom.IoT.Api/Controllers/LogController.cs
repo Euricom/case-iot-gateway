@@ -6,10 +6,12 @@ using Euricom.IoT.Api.Utilities;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
+using Restup.WebServer.Attributes;
 using System;
 
 namespace Euricom.IoT.Api.Controllers
 {
+    [Authorize]
     [RestController(InstanceCreationType.Singleton)]
     public class LogController
     {

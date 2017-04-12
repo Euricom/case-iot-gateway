@@ -1,8 +1,8 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Logging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Logging;
+using System;
 
 namespace Euricom.IoT.Api.Mappings
 {

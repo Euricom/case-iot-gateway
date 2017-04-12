@@ -2,6 +2,7 @@
 using Euricom.IoT.Api.Manager;
 using Euricom.IoT.Dropbox;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,7 +19,7 @@ namespace Euricom.IoT.Monitoring
         {
         }
 
-        public CancellationTokenSource StartMonitor(Common.Camera camera, int pollingTime)
+        public CancellationTokenSource StartMonitor(Camera camera, int pollingTime)
         {
             var cts = new CancellationTokenSource();
             var ct = cts.Token;

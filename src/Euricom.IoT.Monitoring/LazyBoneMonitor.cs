@@ -1,5 +1,7 @@
 ﻿using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +16,7 @@ namespace Euricom.IoT.Monitoring
         {
         }
 
-        public CancellationTokenSource StartMonitor(Common.LazyBone lazyBone, int pollingTime)
+        public CancellationTokenSource StartMonitor(Euricom.IoT.Models.LazyBone lazyBone, int pollingTime)
         {
             if (pollingTime < 1000)
             {
@@ -58,10 +60,10 @@ namespace Euricom.IoT.Monitoring
             return cts;
         }
 
-        private async Task<Common.Notifications.LazyBoneNotification> PollLazyBone(string deviceId)
+        private async Task<LazyBoneNotification> PollLazyBone(string deviceId)
         {
             var currentState = await new LazyBoneManager().GetCurrentState(deviceId);
-            return new Common.Notifications.LazyBoneNotification()
+            return new LazyBoneNotification()
             {
                 DeviceKey = deviceId,
                 State = currentState,
@@ -69,7 +71,7 @@ namespace Euricom.IoT.Monitoring
             };
         }
 
-        private void PublishNotification(Common.Settings settings, Common.LazyBone lazyBone, Common.Notifications.LazyBoneNotification notification)
+        private void PublishNotification(Settings settings, Euricom.IoT.Models.LazyBone lazyBone, Models.Notifications.LazyBoneNotification notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
             new Messaging.MqttMessagePublisher(settings, lazyBone.Name, lazyBone.DeviceId).Publish(json);

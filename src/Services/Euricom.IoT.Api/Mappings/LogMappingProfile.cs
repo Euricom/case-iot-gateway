@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Common;
+using Euricom.IoT.Models.Logging;
 
 namespace Euricom.IoT.Api.Mappings
 {

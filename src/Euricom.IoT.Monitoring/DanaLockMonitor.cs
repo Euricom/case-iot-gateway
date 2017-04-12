@@ -1,8 +1,8 @@
 ﻿using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Common;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
+using Euricom.IoT.Models.Notifications;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace Euricom.IoT.Monitoring
         {
         }
 
-        public CancellationTokenSource StartMonitor(Common.DanaLock danaLock, int pollingTime)
+        public CancellationTokenSource StartMonitor(Euricom.IoT.Models.DanaLock danaLock, int pollingTime)
         {
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
@@ -46,10 +46,10 @@ namespace Euricom.IoT.Monitoring
             return cts;
         }
 
-        private async Task<Common.Notifications.DanaLockNotification> PollDanaLock(string deviceId)
+        private async Task<DanaLockNotification> PollDanaLock(string deviceId)
         {
             var isLocked = await new DanaLockManager().IsLocked(deviceId);
-            return new Common.Notifications.DanaLockNotification()
+            return new DanaLockNotification()
             {
                 DeviceKey = deviceId,
                 Locked = isLocked,
@@ -57,7 +57,7 @@ namespace Euricom.IoT.Monitoring
             };
         }
 
-        private void PublishNotification(Settings settings, Common.DanaLock danaLock, Common.Notifications.DanaLockNotification notification)
+        private void PublishNotification(Settings settings, Euricom.IoT.Models.DanaLock danaLock, DanaLockNotification notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
             new Messaging.MqttMessagePublisher(settings, danaLock.Name, danaLock.DeviceId).Publish(json);

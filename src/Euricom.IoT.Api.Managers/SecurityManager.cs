@@ -1,17 +1,6 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Notifications;
-using Euricom.IoT.Common.Utilities;
-using Euricom.IoT.DataLayer;
-using Euricom.IoT.LazyBone;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Security;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -19,17 +8,34 @@ namespace Euricom.IoT.Api.Managers
     {
         public SecurityManager()
         {
+            if (!DataLayer.Database.Instance.ExistsUser("admin"))
+            {
+                DataLayer.Database.Instance.AddUser("admin", "admin");
+            }
+        }
+
+        public string Login(string username, string password)
+        {
+            var valid = DataLayer.Database.Instance.CheckUser(username, password);
+            if (!valid)
+                throw new Exception("Invalid login");
+
+            var jwt = JwtSecurity.GenerateJwt(username);
+            return jwt;
         }
 
         public string RequestCommandToken(string accessToken)
         {
-            // TODO verify access token
-            //var decodedJwt = JwtSecurity.DecodeJwt(accessToken);
-            //if (decodedJwt.IsValid())
+            var isValid = JwtSecurity.VerifyAccessTokenJwt(accessToken);
+            if (isValid)
             {
-                return JwtSecurity.GenerateJwt();
+                return JwtSecurity.GenerateJwt("_IOT_GATEWAY_");
             }
             throw new UnauthorizedAccessException();
+        }
+        public bool ValidateToken(string jwt)
+        {
+            return JwtSecurity.VerifyJwt(jwt);
         }
     }
 }

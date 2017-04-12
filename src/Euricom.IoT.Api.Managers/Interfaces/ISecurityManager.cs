@@ -8,6 +8,8 @@ namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface ISecurityManager
     {
+        string Login(string username, string password);
+        bool ValidateToken(string jwt);
         string RequestCommandToken(string accessToken);
     }
 }

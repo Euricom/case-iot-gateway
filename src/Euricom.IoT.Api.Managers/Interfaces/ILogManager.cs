@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Euricom.IoT.Common;
+﻿using Euricom.IoT.Models.Logging;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
 {

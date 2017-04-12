@@ -1,17 +1,17 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureDeviceManager;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Notifications;
-using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.LazyBone;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging;
+using Euricom.IoT.Models.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Euricom.IoT.Models;
+using Euricom.IoT.Common;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -26,26 +26,26 @@ namespace Euricom.IoT.Api.Managers
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }
 
-        public Task<IEnumerable<Common.LazyBone>> GetAll()
+        public Task<IEnumerable<Euricom.IoT.Models.LazyBone>> GetAll()
         {
             var lazyBones = Database.Instance.GetLazyBones();
             return Task.FromResult(lazyBones.AsEnumerable());
         }
 
-        public Task<Common.LazyBone> GetByDeviceId(string deviceId)
+        public Task<Euricom.IoT.Models.LazyBone> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Common.LazyBone>(json));
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.LazyBone>(json));
         }
 
-        public Task<Common.LazyBone> GetByDeviceName(string deviceName)
+        public Task<Euricom.IoT.Models.LazyBone> GetByDeviceName(string deviceName)
         {
             var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Common.LazyBone>(json));
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
+            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.LazyBone>(json));
         }
 
-        public async Task<Common.LazyBone> Add(Common.LazyBone lazyBone)
+        public async Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone lazyBone)
         {
             //Add device to Azure Device IoT
             lazyBone.DeviceId = await _azureDeviceManager.AddDeviceAsync(lazyBone.Name);
@@ -59,7 +59,7 @@ namespace Euricom.IoT.Api.Managers
             return lazyBone;
         }
 
-        public async Task<Common.LazyBone> Edit(Common.LazyBone lazyBone)
+        public async Task<Euricom.IoT.Models.LazyBone> Edit(Euricom.IoT.Models.LazyBone lazyBone)
         {
             if (lazyBone == null)
             {
@@ -72,7 +72,7 @@ namespace Euricom.IoT.Api.Managers
 
             var json = JsonConvert.SerializeObject(lazyBone);
 
-            Database.Instance.SetValue(DatabaseTableNames.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
 
             return await GetByDeviceId(lazyBone.DeviceId);
         }
@@ -179,7 +179,7 @@ namespace Euricom.IoT.Api.Managers
                 {
                     DeviceKey = deviceId,
                     State = state == "on" ? true : false,
-                    Timestamp = DateTimeHelpers.Timestamp(),
+                    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
                 };
                 PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }

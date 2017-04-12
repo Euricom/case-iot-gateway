@@ -1,4 +1,4 @@
-﻿using Euricom.IoT.Common;
+﻿using Euricom.IoT.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

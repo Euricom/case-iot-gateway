@@ -49,10 +49,11 @@ export class SettingsViewComponent implements OnInit {
       (data: any) => {
         this.settings = <Settings>data
         this.settings.LogLevel = this.logLevelsEnum[data.LogLevel]
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      }//,
+      // (err) => {
+      //   this.toastr.error('error occurred' + err)
+      // })
+      )
   }
 
 }

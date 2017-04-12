@@ -5,22 +5,24 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/catch'
 
+import { AuthHttp } from 'angular2-jwt'
+
 import { Camera } from '../models/camera'
 import { Config } from '../../config'
 
 @Injectable()
 export class CameraService {
-  constructor(private http: Http, private config: Config) {
+  constructor(private authHttp: AuthHttp, private config: Config) {
   }
 
   getAll(): Observable<Camera[]> {
-    return this.http.get(`${this.config.baseUrl}/api/camera`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/camera`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new Camera(element)))
   }
 
   getById(id: String): Observable<Camera> {
-    return this.http.get(`${this.config.baseUrl}/api/camera/${id}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/camera/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
@@ -34,23 +36,23 @@ export class CameraService {
   }
 
   update(camera: Camera): Observable<Camera> {
-    return this.http.put(`${this.config.baseUrl}/api/camera`, camera)
+    return this.authHttp.put(`${this.config.baseUrl}/api/camera`, camera)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
 
   delete(id: String) {
-    return this.http.delete(`${this.config.baseUrl}/api/camera/${id}`)
+    return this.authHttp.delete(`${this.config.baseUrl}/api/camera/${id}`)
   }
 
   create(camera: Camera) {
-    return this.http.post(`${this.config.baseUrl}/api/camera`, camera)
+    return this.authHttp.post(`${this.config.baseUrl}/api/camera`, camera)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
 
   testConnection(id: String) {
-    return this.http.get(`${this.config.baseUrl}/api/camera/testconnection/${id}`)
+    return this.authHttp.get(`${this.config.baseUrl}/api/camera/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 }

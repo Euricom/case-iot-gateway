@@ -1,4 +1,4 @@
-﻿using Euricom.IoT.Common;
+﻿using Euricom.IoT.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -62,7 +62,7 @@ namespace Euricom.IoT.Monitoring
                 switch (config.Type)
                 {
                     case HardwareType.LazyBoneSwitch:
-                        var configLazyBone = ((Common.LazyBone)config);
+                        var configLazyBone = ((Euricom.IoT.Models.LazyBone)config);
                         if (configLazyBone.Enabled && configLazyBone.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBone, configLazyBone.PollingTime);
@@ -72,7 +72,7 @@ namespace Euricom.IoT.Monitoring
                         break;
 
                     case HardwareType.DanaLock:
-                        var configDanaLock = ((Common.DanaLock)config);
+                        var configDanaLock = ((Euricom.IoT.Models.DanaLock)config);
                         if (configDanaLock.Enabled && configDanaLock.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsDanaLock = new DanaLockMonitor().StartMonitor(configDanaLock, configDanaLock.PollingTime);
@@ -82,7 +82,7 @@ namespace Euricom.IoT.Monitoring
                         break;
 
                     case HardwareType.Camera:
-                        var configCamera = ((Common.Camera)config);
+                        var configCamera = ((Camera)config);
                         if (configCamera.Enabled && configCamera.PollingTime >= MIN_POLLING_TIME)
                         {
                             var ctsCamera = new CameraMonitor().StartMonitor(configCamera, configCamera.PollingTime);
@@ -142,12 +142,12 @@ namespace Euricom.IoT.Monitoring
             {
                 switch (config.Type)
                 {
-                    case Common.HardwareType.LazyBoneSwitch:
-                        new LazyBoneMonitor().StartMonitor((Common.LazyBone)config, pollingTime);
+                    case HardwareType.LazyBoneSwitch:
+                        new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
                         break;
 
-                    case Common.HardwareType.DanaLock:
-                        new DanaLockMonitor().StartMonitor((Common.DanaLock)config, pollingTime);
+                    case HardwareType.DanaLock:
+                        new DanaLockMonitor().StartMonitor((Euricom.IoT.Models.DanaLock)config, pollingTime);
                         break;
                 }
             }

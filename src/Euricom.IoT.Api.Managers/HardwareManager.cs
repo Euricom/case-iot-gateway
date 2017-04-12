@@ -1,7 +1,7 @@
 ﻿using Euricom.IoT.Api.Manager;
 using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,14 +110,14 @@ namespace Euricom.IoT.Api.Managers
                     });
                     break;
                 case HardwareType.DanaLock:
-                    device = await _danaLockManager.Add(new Common.DanaLock()
+                    device = await _danaLockManager.Add(new Euricom.IoT.Models.DanaLock()
                     {
                         Name = device.Name,
                         Type = HardwareType.DanaLock
                     });
                     break;
                 case HardwareType.LazyBoneSwitch:
-                    device = await _lazyBoneManager.Add(new Common.LazyBone()
+                    device = await _lazyBoneManager.Add(new Euricom.IoT.Models.LazyBone()
                     {
                         Name = device.Name,
                         Type = HardwareType.LazyBoneSwitch
