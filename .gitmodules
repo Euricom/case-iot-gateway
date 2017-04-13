@@ -1,6 +1,8 @@
 [submodule "open-zwave"]
 	path = open-zwave
 	url = https://github.com/OpenZWave/open-zwave.git
+	branch = Dev
 [submodule "restup"]
 	path = restup
-	url = C:\\Projects\\case-iot-gateway\\restup
+	url = https://github.com/tomkuijsten/restup.git
+	branch = feature-implement-basic-authorization
