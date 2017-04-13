@@ -18,7 +18,7 @@ import { AuthGuardService } from './services/authGuardService'
 // routing
 
 export const routes: Routes = [
-  { path: '', component: LoginViewComponent },
+  { path: '', component: SettingsViewComponent, canActivate: [AuthGuardService] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'login', component: LoginViewComponent },
   { path: 'settings', component: SettingsViewComponent, canActivate: [AuthGuardService] },

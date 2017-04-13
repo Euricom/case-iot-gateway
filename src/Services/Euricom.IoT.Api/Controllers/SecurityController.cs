@@ -1,6 +1,7 @@
 ﻿using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.Logging;
 using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
@@ -25,6 +26,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var jwt = _securityManager.Login(credentials.Username, credentials.Password);
+                Logger.Instance.LogInformationWithContext(this.GetType(), $"{credentials.Username} logged in");
                 return ResponseUtilities.PostResponseOk(jwt);
             }
             catch (Exception ex)

@@ -16,6 +16,11 @@ export class AuthService {
   private subject: Subject<String> = new Subject<String>()
 
   constructor(private http: Http, private config: Config) {
+    if (tokenNotExpired()) {
+      this.setLoggedIn('admin')
+    } else {
+      this.setLoggedOut()
+    }
   }
 
   getLoggedIn(): Observable<string> {

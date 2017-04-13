@@ -28,16 +28,16 @@
       <td>{{danalock.PollingTime}}</td>
       <td>{{danalock.Enabled}}</td>
       <td>
-        <button type="button" (click)="testConnection(danalock)" class="btn btn-default">Test Connection</button>
+        <button type="button" (click)="testConnection(danalock)" class="btn btn-primary">Test Connection</button>
       </td>
       <td>
-        <button type="button" (click)="isLocked(danalock)" class="btn btn-default">Get door lock state (open or closed)</button>
+        <button type="button" (click)="isLocked(danalock)" class="btn btn-primary">Get door lock state (open or closed)</button>
       </td>
       <td>
-        <button type="button" (click)="switch(danalock, 'open')" class="btn btn-default">Open door</button>
+        <button type="button" (click)="switch(danalock, 'open')" class="btn btn-primary">Open door</button>
       </td>
       <td>
-        <button type="button" (click)="switch(danalock, 'close')" class="btn btn-default">Close door</button>
+        <button type="button" (click)="switch(danalock, 'close')" class="btn btn-primary">Close door</button>
       </td>
     </tr>
   </tbody>
