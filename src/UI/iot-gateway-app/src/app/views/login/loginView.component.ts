@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { AuthService } from '../../services/authService'
 import { Credentials } from '../../models/credentials';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'login',
@@ -33,8 +34,9 @@ export class LoginViewComponent implements OnInit {
     this.authService.login(credentials)
       .subscribe(
       (data) => {
-        this.toastr.success('login succeeded')
         localStorage.setItem('token', data)
+        this.authService.setLoggedIn(credentials.Username)
+        this.router.navigateByUrl('/settings')
       },
       (error) => {
         this.toastr.error('login failed: ' + error)

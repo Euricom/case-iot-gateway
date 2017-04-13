@@ -9,10 +9,10 @@
       </button>
   </div>
   <div class="navbar-collapse" id="bs-example-navbar-collapse-1" [collapse]="false">
-    <ul class="nav navbar-nav">
+    <!--<ul class="nav navbar-nav">
       <li><a routerLink='/login'> Login </a></li>
-    </ul>
-     <ul class="nav navbar-nav">
+    </ul>-->
+    <ul class="nav navbar-nav">
       <li><a routerLink='/settings'> Settings </a></li>
     </ul>
     <ul class="nav navbar-nav">
@@ -30,6 +30,11 @@
     <ul class="nav navbar-nav">
       <li><a routerLink='/log'> Log </a></li>
     </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <button class="btn btn-primary" (click)="login()" *ngIf="!isAuthenticated">Log In</button>
+        <button class="btn btn-primary" (click)="logout()" *ngIf="isAuthenticated">Log Out</button>
+      </li>
+    </ul>
   </div>
 </nav>
-
