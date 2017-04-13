@@ -1,4 +1,6 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Common;
+using Euricom.IoT.Mailing;
 using Euricom.IoT.Security;
 using System;
 
@@ -6,8 +8,12 @@ namespace Euricom.IoT.Api.Managers
 {
     public class SecurityManager : ISecurityManager
     {
-        public SecurityManager()
+        private IMailer _mailer;
+
+        public SecurityManager(Mailer mailer)
         {
+            _mailer = mailer;
+
             if (!DataLayer.Database.Instance.ExistsUser("admin"))
             {
                 DataLayer.Database.Instance.AddUser("admin", "admin");
@@ -24,6 +30,15 @@ namespace Euricom.IoT.Api.Managers
             return jwt;
         }
 
+        public string LoginWithPUK(string PUK)
+        {
+            if (PUK != Constants.PUK)
+                throw new Exception("PUK code invalid!");
+
+            var jwt = JwtSecurity.GenerateJwt(PUK);
+            return jwt;
+        }
+
         public string RequestCommandToken(string accessToken)
         {
             var isValid = JwtSecurity.VerifyAccessTokenJwt(accessToken);
@@ -36,6 +51,37 @@ namespace Euricom.IoT.Api.Managers
         public bool ValidateToken(string jwt)
         {
             return JwtSecurity.VerifyJwt(jwt);
+        }
+
+        public void LostPassword()
+        {
+            // Generate a GUID
+            var resetGuid = Guid.NewGuid();
+
+            // Create a body template and include a link
+
+
+            // Include GUID in mail link
+
+
+            // Send mail
+            //_mailer.SendLostPasswordMail("wim.vandenrul@euri.com", )
+        }
+
+        public void ResetPassword(string resetGuid)
+        {
+            // 
+            // Add to d
+            // DataLayer.Database.Instance.VerifyResetPasswordGuid(resetGuid);
+
+            // Generate a new password
+            // var password = RandomPasswordGenerator.CreateRandomPassword(10);
+
+            // Generate a verification id
+
+
+            // Send mail
+
         }
     }
 }

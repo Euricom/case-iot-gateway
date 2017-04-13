@@ -181,6 +181,10 @@
       <Project>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Mailing\Euricom.IoT.Mailing.csproj">
+      <Project>{621670D2-9491-4C59-AEA8-85F819DDF811}</Project>
+      <Name>Euricom.IoT.Mailing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
       <Name>Euricom.IoT.Models</Name>

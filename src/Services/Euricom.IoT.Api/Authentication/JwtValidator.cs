@@ -15,7 +15,7 @@ namespace Euricom.IoT.Api.Authentication
 
         public JwtValidator()
         {
-            _securityManager = new SecurityManager();
+            _securityManager = new SecurityManager(new Mailing.Mailer());
         }
 
         public bool Authenticate(string username, string password)

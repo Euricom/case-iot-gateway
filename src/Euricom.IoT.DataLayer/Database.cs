@@ -7,6 +7,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Windows.Storage;
+using System.Reactive.Linq;   // IMPORTANT - this makes await work!
+using Akavache;
+using System.Threading.Tasks;
+using System.Text;
 
 namespace Euricom.IoT.DataLayer
 {
@@ -14,11 +18,13 @@ namespace Euricom.IoT.DataLayer
     {
         private static volatile Database _instance;
         private static object _syncRoot = new Object();
-
         private static DBreeze.DBreezeEngine _engine;
 
         private Database()
         {
+            // Make sure you set the application name before doing any inserts or gets
+            BlobCache.ApplicationName = "AkavacheExperiment";
+
             InitDB();
         }
 
@@ -36,6 +42,30 @@ namespace Euricom.IoT.DataLayer
                 }
 
                 return _instance;
+            }
+        }
+
+        public void AddResetPasswordGuid(string guid)
+        {
+            BlobCache.LocalMachine.InsertObject("reset-password", guid);
+        }
+
+        public async Task<bool> VerifyResetPasswordGuid(string guid)
+        {
+            try
+            {
+                var key = await BlobCache.LocalMachine.Get("reset-password"); //if guid not found throws exception
+                var value = Encoding.UTF8.GetString(key, 0, key.Length);
+                if (value != guid)
+                {
+                    return false;
+                }
+                await BlobCache.LocalMachine.Invalidate(guid);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
@@ -462,6 +492,8 @@ namespace Euricom.IoT.DataLayer
 
         public void Dispose()
         {
+            BlobCache.Shutdown().Wait();
+
             if (_engine != null)
             {
                 _engine.Dispose();

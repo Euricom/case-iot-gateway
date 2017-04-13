@@ -4,6 +4,7 @@ namespace Euricom.IoT.Models
 {
     public class Settings
     {
+        public string Password { get; set; }
         public LogLevel LogLevel { get; set; }
         public int HistoryLog { get; set; }
         public string GatewayDeviceKey { get; set; }

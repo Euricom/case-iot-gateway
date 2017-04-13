@@ -22,7 +22,7 @@ namespace Restup.WebServer.Http
         //ICredentialValidator is not used
         public JwtAuthenticationProvider(string realm, ICredentialValidator credentialValidator)
         {
-            _securityManager = new SecurityManager();
+            _securityManager = new SecurityManager(new Euricom.IoT.Mailing.Mailer());
         }
 
         public HttpResponseStatus Authorize(IHttpServerRequest request)

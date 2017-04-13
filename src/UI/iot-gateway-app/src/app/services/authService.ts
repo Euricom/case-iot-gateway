@@ -8,12 +8,14 @@ import { Subject } from 'rxjs/Subject'
 import { tokenNotExpired } from 'angular2-jwt'
 import { Config } from '../../config'
 import { User } from '../models/user'
+import { Credentials } from '../models/credentials';
 
 @Injectable()
 export class AuthService {
 
   private loggedInUsername: String
   private subject: Subject<String> = new Subject<String>()
+  private loginByPukOk: boolean
 
   constructor(private http: Http, private config: Config) {
     if (tokenNotExpired()) {
@@ -32,6 +34,12 @@ export class AuthService {
     this.subject.next(this.loggedInUsername)
   }
 
+  setLoggedInByPuk() {
+    this.loginByPukOk = true
+    this.loggedInUsername = 'admin'
+    this.subject.next(this.loggedInUsername)
+  }
+
   setLoggedOut() {
     this.logout()
     this.loggedInUsername = undefined
@@ -39,15 +47,25 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return tokenNotExpired()
+    return tokenNotExpired() || this.loginByPukOk
   }
 
-  login(credentials): Observable<any> {
-    return this.http.post(`${this.config.baseUrl}/api/security/login/`, credentials)
-      .map(res => res.json())
+  login(credentials: Credentials, puk): Observable<any> {
+
+    if (credentials && credentials.Username && credentials.Password) {
+      return this.http.post(`${this.config.baseUrl}/api/security/login/`, credentials)
+        .map(res => res.json())
+    } else {
+      if (puk) {
+        return this.http.post(`${this.config.baseUrl}/api/security/loginByPUK/`, { puk })
+          .map(res => res.json())
+      }
+    }
   }
 
   logout() {
+    this.loggedInUsername = undefined
+    this.loginByPukOk = false
     localStorage.removeItem('token')
   }
 }

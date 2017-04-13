@@ -14,5 +14,7 @@ namespace Euricom.IoT.Common
         public const string DBREEZE_TABLE_CAMERAS = "Cameras";
         public const string DBREEZE_TABLE_LAZYBONES = "LazyBones";
         public const string DBREEZE_TABLE_LOGGING = "Log";
+
+        public const string PUK = "9DA9RMEGSXYD5ZMQXZGVJNDWZ";
     }
 }

@@ -11,8 +11,13 @@ import { User } from '../../models/user';
 })
 
 export class LoginViewComponent implements OnInit {
+
   username: String
   password: String
+
+  failedLoginTimes = 0
+  isPukLoginCollapsed: Boolean = true
+  puk: String
 
   constructor(
     private route: ActivatedRoute,
@@ -27,20 +32,33 @@ export class LoginViewComponent implements OnInit {
 
   onSubmit() {
 
+    const self = this
+
     const credentials: Credentials = new Credentials({})
     credentials.Username = this.username
     credentials.Password = this.password
 
-    this.authService.login(credentials)
-      .subscribe(
-      (data) => {
-        localStorage.setItem('token', data)
-        this.authService.setLoggedIn(credentials.Username)
-        this.router.navigateByUrl('/settings')
-      },
-      (error) => {
-        this.toastr.error('login failed: ' + error)
-      },
-    )
+    if ((credentials.Username && credentials.Password) || this.puk) {
+      this.authService.login(credentials, this.puk)
+        .subscribe(
+        (data) => {
+          localStorage.setItem('token', data)
+
+          if (credentials && credentials.Username && credentials.Password) {
+            this.authService.setLoggedIn(credentials.Username)
+          } else {
+            this.authService.setLoggedInByPuk()
+          }
+
+          this.router.navigateByUrl('/settings')
+        },
+        (error) => {
+          this.username = ''
+          this.password = ''
+          this.failedLoginTimes++
+          this.toastr.error('login failed: ' + error)
+        },
+      )
+    }
   }
 }

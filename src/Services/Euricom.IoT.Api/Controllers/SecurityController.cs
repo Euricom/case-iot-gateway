@@ -2,6 +2,7 @@
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Mailing;
 using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
@@ -17,7 +18,7 @@ namespace Euricom.IoT.Api.Controllers
 
         public SecurityController()
         {
-            _securityManager = new SecurityManager();
+            _securityManager = new SecurityManager(new Mailer());
         }
 
         [UriFormat("/security/login")]
@@ -27,6 +28,22 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var jwt = _securityManager.Login(credentials.Username, credentials.Password);
                 Logger.Instance.LogInformationWithContext(this.GetType(), $"{credentials.Username} logged in");
+                return ResponseUtilities.PostResponseOk(jwt);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/security/loginByPUK")]
+        public IPostResponse Login([FromContent] PukCredentials credentials)
+        {
+            try
+            {
+                var jwt = _securityManager.LoginWithPUK(credentials.PUK);
+                Logger.Instance.LogInformationWithContext(this.GetType(), "admin logged in with PUK code!");
                 return ResponseUtilities.PostResponseOk(jwt);
             }
             catch (Exception ex)
