@@ -146,7 +146,7 @@ namespace Euricom.IoT.Api.Controllers
                 await _danaLockManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"OK DanaLock switched state to : {state}");
+                return ResponseUtilities.PutResponseOk($"ZWave command was sent");
             }
             catch (Exception ex)
             {

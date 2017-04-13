@@ -31,7 +31,6 @@ namespace Euricom.IoT.Api.Managers
                 throw new Exception($"Could not find deviceName: {deviceName}");
             }
             return device.DeviceId;
-
         }
 
         public string GetDeviceName(string deviceId)

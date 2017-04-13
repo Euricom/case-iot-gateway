@@ -53,7 +53,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.GetResponseFail($"Could not get lazybone with devicename {devicename} , exception: {ex.Message}");
             }
         }
@@ -100,7 +100,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
@@ -116,7 +116,8 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return ResponseUtilities.GetResponseFail(ex.Message);
             }
         }
@@ -132,7 +133,8 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
@@ -157,7 +159,8 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(devicename, ex);
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
             }
         }

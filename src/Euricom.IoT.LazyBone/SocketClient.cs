@@ -35,10 +35,11 @@ namespace Euricom.IoT.LazyBone
                 {
                     _tcpclnt = new TcpClient();
                     _tcpclnt.NoDelay = true;
-
+                    //_tcpclnt.ReceiveTimeout = 1000;
+                    //_tcpclnt.SendTimeout = 1000;
 
                     _tcpclnt.ConnectAsync(_hostname, _port).Wait();
-                    Task.Delay(500).Wait();
+                    Task.Delay(100).Wait();
 
                     stream = _tcpclnt.GetStream();
 
@@ -49,7 +50,7 @@ namespace Euricom.IoT.LazyBone
 
                     if (readResponse)
                     {
-                        Task.Delay(1000).Wait();
+                        Task.Delay(500).Wait();
 
                         var inputStr = stream.AsInputStream().AsStreamForRead();
                         var response = ReadFully(inputStr, 100);

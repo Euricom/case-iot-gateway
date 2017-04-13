@@ -59,6 +59,7 @@ export class LazyBonesViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid ip address')
       return
     }
+    this.toastr.info('testing connection, please wait')
     this.lazyBoneService.testConnection(lazyBone.Name)
     .subscribe(
       (data) => {
@@ -76,6 +77,7 @@ export class LazyBonesViewComponent implements OnInit {
       this.toastr.error('Cannot get lazy bone state without valid ip address')
       return
     }
+    this.toastr.info('getting state, please wait')
     this.lazyBoneService.getCurrentState(lazyBone.Name)
     .subscribe(
       (data) => {
@@ -91,6 +93,7 @@ export class LazyBonesViewComponent implements OnInit {
       this.toastr.error('Cannot switch without valid ip address')
       return
     }
+    this.toastr.info('switching, please wait')
     this.lazyBoneService.switch(lazyBone.Name, state)
     .subscribe(
       (data) => {
