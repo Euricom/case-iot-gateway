@@ -25,4 +25,9 @@ export class LogService {
     return this.authHttp.get(`${this.config.baseUrl}/api/logs/${day}`)
       .map((res: Response) => (res.json()))
   }
+
+  getOpenZWaveLog(): Observable<string[]> {
+    return this.authHttp.get(`${this.config.baseUrl}/api/logs_openzwave/`)
+      .map((res: Response) => (res.json()))
+  }
 }

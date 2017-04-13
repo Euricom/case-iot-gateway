@@ -225,6 +225,7 @@ namespace Euricom.IoT.DataLayer
 
             if (settings != null && !String.IsNullOrEmpty(settings.Password))
             {
+                Logger.Instance.LogWarningWithContext(this.GetType(), "Password changed");
                 SetValue(Constants.DBREEZE_TABLE_USERS, "admin", settings.Password);
             }
         }

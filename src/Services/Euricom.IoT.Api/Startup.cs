@@ -34,7 +34,7 @@ namespace Euricom.IoT.Api
             var instLogger = Logger.Instance;
 
             // Init DanaLock
-            // await ZWaveManager.Instance.Initialize();
+            await ZWaveManager.Instance.Initialize();
 
             // Init Webserver
             await new WebServer().InitializeWebServer();

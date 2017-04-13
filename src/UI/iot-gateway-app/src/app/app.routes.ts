@@ -10,6 +10,7 @@ import { CameraViewComponent } from './views/camera/cameraView.component'
 import { LazyBonesViewComponent } from './views/lazybone/lazyBoneView.component'
 import { DanaLocksViewComponent } from './views/danalocks/danalocksView.component'
 import { LogViewComponent } from './views/log/logView.component'
+import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
 import { AuthGuardService } from './services/authGuardService'
 
@@ -27,5 +28,6 @@ export const routes: Routes = [
   { path: 'switches', component: LazyBonesViewComponent, canActivate: [AuthGuardService] },
   { path: 'danalocks', component: DanaLocksViewComponent, canActivate: [AuthGuardService] },
   { path: 'log', component: LogViewComponent, canActivate: [AuthGuardService] },
+  { path: 'openzwavelog', component: OpenZWaveLogViewComponent, canActivate: [AuthGuardService] },
   { path: '**', component: PageNotFoundComponent },
 ]

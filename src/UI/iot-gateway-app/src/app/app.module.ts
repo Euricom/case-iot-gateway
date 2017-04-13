@@ -34,11 +34,13 @@ import { CameraViewComponent } from './views/camera/cameraView.component'
 import { LazyBonesViewComponent } from './views/lazybone/lazyBoneView.component'
 import { DanaLocksViewComponent } from './views/danalocks/danalocksView.component'
 import { LogViewComponent } from './views/log/logView.component'
+import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
 import { AuthGuardService } from './services/authGuardService'
 
 import { AuthModule } from './app.auth.module'
 import { MyErrorHandler } from './app.error.module'
+
 
 
 @NgModule({
@@ -54,6 +56,7 @@ import { MyErrorHandler } from './app.error.module'
     LazyBonesViewComponent,
     DanaLocksViewComponent,
     LogViewComponent,
+    OpenZWaveLogViewComponent,
   ],
   imports: [
     BrowserModule,

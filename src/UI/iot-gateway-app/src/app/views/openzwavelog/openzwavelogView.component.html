@@ -1,0 +1,36 @@
+<h2>OpenZWave log</h2>
+
+<div class="row form-group">
+  <div class="col-md-8">
+    <button type="button" class="btn btn-primary" (click)="refresh()">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
+    </button>
+  </div>
+  <div class="col-md-4">
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-4">
+    <label>Filter log</label>
+    <input type="text" class="" id="inputFilter" name="inputFilter" (ngModelChange)="onChangeFilterText($event)" [(ngModel)]="filterText"
+      placeholder="">
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loglevel" *ngFor="let line of logLines; let i=index" (click)="setClickedRow(i, line)" [class.active]="i == selectedRowIndex">
+          <td>{{line}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
