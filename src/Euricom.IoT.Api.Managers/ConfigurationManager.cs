@@ -12,7 +12,9 @@ namespace Euricom.IoT.Api.Managers
 
         public Settings GetConfigSettings()
         {
-            return Database.Instance.GetConfigSettings();
+            var settings = Database.Instance.GetConfigSettings();
+            settings.Password = string.Empty;
+            return settings;
         }
 
         public void SaveConfigSettings(Settings settings)

@@ -8,6 +8,7 @@ namespace Euricom.IoT.Api.Dtos
 {
     public class SettingsDto
     {
+        public string Password { get; set; }
         public string LogLevel { get; set; }
         public int HistoryLog { get; set; }
         public string GatewayDeviceKey { get; set; }

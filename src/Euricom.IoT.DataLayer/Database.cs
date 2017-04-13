@@ -222,6 +222,11 @@ namespace Euricom.IoT.DataLayer
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
             }
+
+            if (settings != null && !String.IsNullOrEmpty(settings.Password))
+            {
+                SetValue(Constants.DBREEZE_TABLE_USERS, "admin", settings.Password);
+            }
         }
 
         public LazyBone GetLazyBoneConfig(string deviceId)

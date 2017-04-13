@@ -1,6 +1,7 @@
 import { Config } from '../../config'
 
 export class Settings {
+  Password?: String
   LogLevel?: String
   HistoryLog?: Number
   GatewayDeviceKey?: String

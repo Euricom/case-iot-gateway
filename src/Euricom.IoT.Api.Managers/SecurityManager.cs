@@ -16,7 +16,7 @@ namespace Euricom.IoT.Api.Managers
 
             if (!DataLayer.Database.Instance.ExistsUser("admin"))
             {
-                DataLayer.Database.Instance.AddUser("admin", "admin");
+                DataLayer.Database.Instance.AddUser("admin", "secret_password");
             }
         }
 

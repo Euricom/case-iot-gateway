@@ -15,6 +15,8 @@ export class SettingsViewComponent implements OnInit {
   settings: Settings
   logLevelOptions: string[]
   logLevelsEnum: typeof LogLevel = LogLevel
+  password: string
+  password2: string
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -25,6 +27,17 @@ export class SettingsViewComponent implements OnInit {
   }
 
   onSubmit(): void {
+
+    // validate
+    if (this.password && this.password2) {
+      if (this.password !== this.password2) {
+        this.toastr.error('passwords do not match')
+        return
+      } else {
+        this.settings.Password = this.password
+      }
+    }
+
     this.settingsService.saveSettings(this.settings)
       .subscribe(
       (data) => {
