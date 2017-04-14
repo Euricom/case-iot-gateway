@@ -39,61 +39,11 @@ namespace Euricom.IoT.Api
             // Init Webserver
             await new WebServer().InitializeWebServer();
 
-            // Wait for messages
-            // ForwardMessagesToDevices(new GatewayManager());
+            // Wait for incoming IoT Hub messages
+            await new GatewayManager().Initialize();
 
             // Set up monitoring devices
-            // MonitorDevices();
-        }
-
-        private void ForwardMessagesToDevices(IGatewayManager gatewayManager)
-        {
-            Logger.Instance.LogInformationWithContext(this.GetType(), "Forwarding IoT hub messages from IoTGateway device to hardware");
-            var settings = DataLayer.Database.Instance.GetConfigSettings();
-            if (settings == null || String.IsNullOrEmpty(settings.GatewayDeviceKey))
-            {
-                Logger.Instance.LogWarningWithContext(this.GetType(), "Setting: 'Gateway Device key' was not provided.. Cannot proccess device messages");
-                return;
-            }
-
-            var deviceGatewayClient = DeviceClient.Create(settings.AzureIotHubUri,
-                new DeviceAuthenticationWithRegistrySymmetricKey("IoTGateway", settings.GatewayDeviceKey),
-                Microsoft.Azure.Devices.Client.TransportType.Http1);
-
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        Microsoft.Azure.Devices.Client.Message receivedMessage = await deviceGatewayClient.ReceiveAsync();
-                        if (receivedMessage == null) continue;
-
-                        var messageString = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-                        var gatewayMessage = JsonConvert.DeserializeObject<GatewayMessage>(messageString);
-
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Handling message: {0}", messageString);
-                        Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message: {messageString}");
-
-                        // Handle message
-                        bool messageHandled = await gatewayManager.HandleMessage(gatewayMessage);
-
-                        Console.WriteLine("Handling message done: {0}", messageString);
-                        Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message done: {messageString}");
-                        Console.ResetColor();
-
-                        if (messageHandled)
-                            await deviceGatewayClient.CompleteAsync(receivedMessage);
-                        else
-                            await deviceGatewayClient.RejectAsync(receivedMessage);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                    }
-                }
-            });
+            MonitorDevices();
         }
 
         private static void AddAutoMapperMappings()

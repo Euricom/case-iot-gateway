@@ -4,9 +4,11 @@ using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 using Euricom.IoT.Models.Messages;
 using Euricom.IoT.Security;
+using Microsoft.Azure.Devices.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Euricom.IoT.Api.Managers
@@ -23,6 +25,54 @@ namespace Euricom.IoT.Api.Managers
             _lazyBoneManager = new LazyBoneManager();
         }
 
+        public async Task Initialize()
+        {
+            Logger.Instance.LogInformationWithContext(this.GetType(), "Forwarding IoT hub messages from IoTGateway device to hardware");
+            var settings = DataLayer.Database.Instance.GetConfigSettings();
+            if (settings == null || String.IsNullOrEmpty(settings.GatewayDeviceKey))
+            {
+                Logger.Instance.LogWarningWithContext(this.GetType(), "Setting: 'Gateway Device key' was not provided.. Cannot proccess device messages");
+                return;
+            }
+
+            var deviceGatewayClient = DeviceClient.Create(settings.AzureIotHubUri,
+                new DeviceAuthenticationWithRegistrySymmetricKey("IoTGateway", settings.GatewayDeviceKey),
+                Microsoft.Azure.Devices.Client.TransportType.Http1);
+
+            await Task.Run(async () =>
+             {
+                 while (true)
+                 {
+                     Microsoft.Azure.Devices.Client.Message receivedMessage = await deviceGatewayClient.ReceiveAsync();
+                     if (receivedMessage == null) continue;
+
+                     try
+                     {
+
+                         var messageString = Encoding.ASCII.GetString(receivedMessage.GetBytes());
+                         var gatewayMessage = JsonConvert.DeserializeObject<GatewayMessage>(messageString);
+
+                         Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message: {messageString}");
+
+                         // Handle message
+                         bool messageHandled = await HandleMessage(gatewayMessage);
+
+                         Logger.Instance.LogDebugWithContext(this.GetType(), $"Handling message done: {messageString}");
+
+                         if (messageHandled)
+                             await deviceGatewayClient.CompleteAsync(receivedMessage);
+                         else
+                             await deviceGatewayClient.RejectAsync(receivedMessage);
+                     }
+                     catch (Exception ex)
+                     {
+                         Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                         await deviceGatewayClient.RejectAsync(receivedMessage);
+                     }
+                 }
+             });
+        }
+
         public async Task<bool> HandleMessage(GatewayMessage message)
         {
             if (message == null)
@@ -31,14 +81,18 @@ namespace Euricom.IoT.Api.Managers
             if (String.IsNullOrEmpty(message.CommandToken))
                 throw new ArgumentNullException("message.CommandToken");
 
-            if (String.IsNullOrEmpty(message.DeviceId))
-                throw new ArgumentNullException("message.DeviceId");
+            //if (String.IsNullOrEmpty(message.DeviceId))
+            //    throw new ArgumentNullException("message.DeviceId");
+
+            if (String.IsNullOrEmpty(message.DeviceType))
+                throw new ArgumentNullException("message.DeviceType");
 
             if (String.IsNullOrEmpty(message.Message))
                 throw new ArgumentNullException("message.Message");
 
             // Verify JWT token
-            var isValid = JwtSecurity.VerifyAccessTokenJwt(message.CommandToken);
+            //var isValid = JwtSecurity.VerifyAccessTokenJwt(message.CommandToken);
+            var isValid = true;
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
 
@@ -47,9 +101,8 @@ namespace Euricom.IoT.Api.Managers
 
         private async Task<bool> ExecuteCommand(GatewayMessage message)
         {
-            // TODO add caching ?
-            var device = Database.Instance.FindDevice(message.DeviceId);
-            switch (device.Type)
+            var deviceType = GetDeviceType(message.DeviceType);
+            switch (deviceType)
             {
                 case HardwareType.Camera:
                     return false;
@@ -66,13 +119,20 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
+                if (String.IsNullOrEmpty(message.Message))
+                {
+                    Logger.Instance.LogWarningWithContext(this.GetType(), "message was empty");
+                    return false;
+                }
+
                 var danaLockmessage = JsonConvert.DeserializeObject<DanaLockMessage>(message.Message);
                 await _danaLockManager.Switch(danaLockmessage.DeviceId, danaLockmessage.Lock == true ? "close" : "open");
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(message.DeviceId, ex);
+                var deviceId = JsonConvert.DeserializeObject<DanaLockMessage>(message.Message).DeviceId;
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return false;
             }
         }
@@ -81,16 +141,38 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
+                if (String.IsNullOrEmpty(message.Message))
+                {
+                    Logger.Instance.LogWarningWithContext(this.GetType(), "message was empty");
+                    return false;
+                }
+
                 var lazyBoneMessage = JsonConvert.DeserializeObject<LazyBoneMessage>(message.Message);
                 await _lazyBoneManager.Switch(lazyBoneMessage.DeviceId, lazyBoneMessage.On == true ? "on" : "off");
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithDeviceContext(message.DeviceId, ex);
+                var deviceId = JsonConvert.DeserializeObject<LazyBoneMessage>(message.Message).DeviceId;
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return false;
             }
 
+        }
+
+        private HardwareType GetDeviceType(string deviceType)
+        {
+            switch (deviceType)
+            {
+                case "danalock":
+                    return HardwareType.DanaLock;
+                case "camera":
+                    return HardwareType.Camera;
+                case "lazybone":
+                    return HardwareType.LazyBoneSwitch;
+                default:
+                    throw new NotSupportedException($"deviceType {deviceType} not supported or unknown");
+            }
         }
     }
 }

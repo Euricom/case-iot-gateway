@@ -58,8 +58,8 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var logFiles = _securityManager.RequestCommandToken(request.JWT);
-                return ResponseUtilities.PostResponseOk(logFiles);
+                var commandTokenJwt = _securityManager.RequestCommandToken(request.JWT);
+                return ResponseUtilities.PostResponseOk(commandTokenJwt);
             }
             catch (Exception ex)
             {

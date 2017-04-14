@@ -135,7 +135,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.GetResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+                return ResponseUtilities.GetResponseFail($"Could not determine lazybone status: exception: {ex.Message}");
             }
         }
 
