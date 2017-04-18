@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Networking;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 
 namespace Euricom.IoT.LazyBone
 {
@@ -17,31 +13,50 @@ namespace Euricom.IoT.LazyBone
         private string _hostname;
         private short _port;
 
-        private TcpClient _tcpclnt;
+        private object _syncRoot = new Object();
 
         public SocketClient(string hostname, short port)
         {
-            _tcpclnt = new TcpClient();
             _hostname = hostname;
             _port = port;
         }
 
+        public async Task<bool> TestConnection()
+        {
+            lock (_syncRoot)
+            {
+                TcpClient tcpClient = new TcpClient();
+                try
+                {
+                    tcpClient = new TcpClient();
+                    tcpClient.NoDelay = true;
+                    tcpClient.ConnectAsync(_hostname, _port).Wait();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+                finally
+                {
+                    tcpClient.Dispose();
+                }
+            }
+        }
+
         public async Task<byte[]> Send(string message, bool readResponse)
         {
-            lock (_tcpclnt)
+            lock (_syncRoot)
             {
+                TcpClient tcpClient = new TcpClient();
                 Stream stream = null;
                 try
                 {
-                    _tcpclnt = new TcpClient();
-                    _tcpclnt.NoDelay = true;
-                    //_tcpclnt.ReceiveTimeout = 1000;
-                    //_tcpclnt.SendTimeout = 1000;
-
-                    _tcpclnt.ConnectAsync(_hostname, _port).Wait();
+                    tcpClient.NoDelay = true;
+                    tcpClient.ConnectAsync(_hostname, _port).Wait();
                     Task.Delay(100).Wait();
 
-                    stream = _tcpclnt.GetStream();
+                    stream = tcpClient.GetStream();
 
                     ASCIIEncoding asen = new ASCIIEncoding();
                     byte[] ba = asen.GetBytes(message);
@@ -50,10 +65,19 @@ namespace Euricom.IoT.LazyBone
 
                     if (readResponse)
                     {
-                        Task.Delay(500).Wait();
-
+                        Task.Delay(2000).Wait();
                         var inputStr = stream.AsInputStream().AsStreamForRead();
-                        var response = ReadFully(inputStr, 100);
+
+                        long read = 0;
+                        byte[] buffer = new byte[10];
+                        read += stream.Read(buffer, (int)read, (int)(buffer.Length - read));
+
+                        // Buffer is now too big. Shrink it.
+                        byte[] ret = new byte[read];
+                        Array.Copy(buffer, ret, (int)read);
+                        var response = ret;
+
+                        Debug.WriteLine(response.Length);
                         return response;
                     }
                     return null;
@@ -65,62 +89,9 @@ namespace Euricom.IoT.LazyBone
                 finally
                 {
                     stream.Dispose();
-                    _tcpclnt.Dispose();
+                    tcpClient.Dispose();
                 }
             }
-        }
-
-
-        /// <summary>
-        /// http://www.yoda.arachsys.com/csharp/readbinary.html
-        /// Reads data from a stream until the end is reached. The
-        /// data is returned as a byte array. An IOException is
-        /// thrown if any of the underlying IO calls fail.
-        /// </summary>
-        /// <param name="stream">The stream to read data from</param>
-        /// <param name="initialLength">The initial buffer length</param>
-        private static byte[] ReadFully(Stream stream, int initialLength)
-        {
-            // If we've been passed an unhelpful initial length, just
-            // use 32K.
-            if (initialLength < 1)
-            {
-                initialLength = 32768;
-            }
-
-            byte[] buffer = new byte[initialLength];
-            long read = 0;
-
-            int chunk;
-            while ((chunk = stream.Read(buffer, (int) read, (int)( buffer.Length - read))) > 0)
-            {
-                read += chunk;
-
-                // If we've reached the end of our buffer, check to see if there's
-                // any more information
-                if (read == buffer.Length)
-                {
-                    int nextByte = stream.ReadByte();
-
-                    // End of stream? If so, we're done
-                    if (nextByte == -1)
-                    {
-                        return buffer;
-                    }
-
-                    // Nope. Resize the buffer, put in the byte we've just
-                    // read, and continue
-                    byte[] newBuffer = new byte[buffer.Length * 2];
-                    Array.Copy(buffer, newBuffer, buffer.Length);
-                    newBuffer[read] = (byte)nextByte;
-                    buffer = newBuffer;
-                    read++;
-                }
-            }
-            // Buffer is now too big. Shrink it.
-            byte[] ret = new byte[read];
-            Array.Copy(buffer, ret, (int) read);
-            return ret;
         }
     }
 

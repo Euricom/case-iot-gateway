@@ -110,6 +110,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DateTimeExtensions.cs" />
+    <Compile Include="Utilities\HexUtilities.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Constants.rd.xml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

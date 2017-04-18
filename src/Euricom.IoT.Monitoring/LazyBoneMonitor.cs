@@ -36,7 +36,15 @@ namespace Euricom.IoT.Monitoring
                     {
                         Debug.WriteLine($"MONITOR lazyBone {lazyBone.DeviceId} is running");
 
-                        var notification = await PollLazyBone(lazyBone.DeviceId);
+                        LazyBoneNotification notification;
+                        if (!lazyBone.IsDimmer)
+                        {
+                            notification = await PollLazyBoneSwitch(lazyBone.DeviceId);
+                        }
+                        else
+                        {
+                            notification = await PollLazyBoneDimmer(lazyBone.DeviceId);
+                        }
 
                         Debug.WriteLine($"MONITOR polling lazyBone {lazyBone.DeviceId} was done");
 
@@ -60,10 +68,21 @@ namespace Euricom.IoT.Monitoring
             return cts;
         }
 
-        private async Task<LazyBoneNotification> PollLazyBone(string deviceId)
+        private async Task<LazyBoneSwitchNotification> PollLazyBoneSwitch(string deviceId)
         {
-            var currentState = await new LazyBoneManager().GetCurrentState(deviceId);
-            return new LazyBoneNotification()
+            var currentState = await new LazyBoneManager().GetCurrentStateSwitch(deviceId);
+            return new LazyBoneSwitchNotification()
+            {
+                DeviceKey = deviceId,
+                State = currentState,
+                Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
+            };
+        }
+
+        private async Task<LazyBoneDimmerNotification> PollLazyBoneDimmer(string deviceId)
+        {
+            var currentState = await new LazyBoneManager().GetCurrentStateDimmer(deviceId);
+            return new LazyBoneDimmerNotification()
             {
                 DeviceKey = deviceId,
                 State = currentState,

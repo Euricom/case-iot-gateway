@@ -16,7 +16,9 @@ namespace Euricom.IoT.Models
         Camera,
         [EnumMember(Value = "danalock")]
         DanaLock,
-        [EnumMember(Value = "lazybone")]
-        LazyBoneSwitch
+        [EnumMember(Value = "lazybone_switch")]
+        LazyBoneSwitch,
+        [EnumMember(Value = "lazybone_dimmer")]
+        LazyBoneDimmer,
     }
 }

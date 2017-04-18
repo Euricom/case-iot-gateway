@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models.Notifications
 {
-    public class LazyBoneNotification
+    public abstract class LazyBoneNotification
     {
-        public bool State { get; set; }
-        public string Timestamp { get; set; }
-        public string DeviceKey { get; set; }
-
     }
 }

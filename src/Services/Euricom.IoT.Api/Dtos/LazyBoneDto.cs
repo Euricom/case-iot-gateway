@@ -13,6 +13,7 @@ namespace Euricom.IoT.Api.Dtos
         public string Address { get; set; }
         public short Port { get; set; }
         public int PollingTime { get; set; }
+        public bool IsDimmer { get; set; }
         public bool Enabled { get; set; }
     }
 }

@@ -111,8 +111,8 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
-                string softwareVersion = await _lazyBoneManager.TestConnection(deviceId);
-                return ResponseUtilities.GetResponseOk(softwareVersion);
+                bool connectionSuccessfull = await _lazyBoneManager.TestConnection(deviceId);
+                return ResponseUtilities.GetResponseOk(connectionSuccessfull);
             }
             catch (Exception ex)
             {
@@ -128,23 +128,26 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
-                var isRelayOn = await _lazyBoneManager.GetCurrentState(deviceId);
-                return ResponseUtilities.GetResponseOk(isRelayOn.ToString());
+                var config = DataLayer.Database.Instance.GetLazyBoneConfig(deviceId);
+                if (!config.IsDimmer)
+                {
+                    var isRelayOn = await _lazyBoneManager.GetCurrentStateSwitch(deviceId);
+                    return ResponseUtilities.GetResponseOk(isRelayOn.ToString());
+                }
+                else
+                {
+                    var dimmerState = await _lazyBoneManager.GetCurrentStateDimmer(deviceId);
+                    return ResponseUtilities.GetResponseOk(dimmerState.ToString());
+                }
             }
             catch (Exception ex)
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.GetResponseFail($"Could not determine lazybone status: exception: {ex.Message}");
+                return ResponseUtilities.GetResponseFail($"Could not determine lazybone state: exception: {ex.Message}");
             }
         }
 
-        /// <summary>
-        /// Sends a switch command to a specific LazyBone device 
-        /// </summary>
-        /// <param name="device">Guid of device</param>
-        /// <param name="state">on or off</param>
-        /// <returns></returns>
         [UriFormat("/lazybone/switch?devicename={devicename}&state={state}")]
         public async Task<IPutResponse> Switch(string devicename, string state)
         {
@@ -155,13 +158,33 @@ namespace Euricom.IoT.Api.Controllers
                 await _lazyBoneManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"OK changed LazyBone device state to : {state}");
+                return ResponseUtilities.PutResponseOk($"LazyBone switched state to : {state}");
             }
             catch (Exception ex)
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/lazybone/setlightvalue?devicename={devicename}&value={value}")]
+        public async Task<IPutResponse> SetLightValue(string devicename, int value)
+        {
+            try
+            {
+                //Send switch command to the manager
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                await _lazyBoneManager.SetLightValue(deviceId, value);
+
+                //If it works, send response back to client
+                return ResponseUtilities.PutResponseOk($"LazyBone dimmer changed light value to : {value}");
+            }
+            catch (Exception ex)
+            {
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                return ResponseUtilities.PutResponseFail($"LazyBone dimmer failed, exception: {ex.Message}");
             }
         }
     }

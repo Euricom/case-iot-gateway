@@ -11,5 +11,6 @@ namespace Euricom.IoT.Models
         public string Host { get; set; }
         public short Port { get; set; }
         public int PollingTime { get; set; }
+        public bool IsDimmer { get; set; }
     }
 }

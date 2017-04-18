@@ -1,4 +1,5 @@
 ﻿using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -18,13 +19,20 @@ namespace Euricom.IoT.LazyBone
             _lazyBones = new ConcurrentDictionary<string, LazyBone>();
         }
 
-        public async Task<string> TestConnection(string deviceId, Euricom.IoT.Models.LazyBone config)
+        public async Task<bool> TestConnection(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
             try
             {
-                LazyBone lazyBone = GetLazyBone(deviceId, config);
-                return await lazyBone.TestConnection();
-
+                if (!config.IsDimmer)
+                {
+                    var lazyBoneSwitch = (Euricom.IoT.LazyBone.LazyBoneSwitch)GetLazyBone(deviceId, config);
+                    return await lazyBoneSwitch.TestConnection();
+                }
+                else
+                {
+                    var lazyBoneDimmer = (Euricom.IoT.LazyBone.LazyBoneDimmer)GetLazyBone(deviceId, config);
+                    return await lazyBoneDimmer.TestConnection();
+                }
             }
             catch (Exception ex)
             {
@@ -33,25 +41,57 @@ namespace Euricom.IoT.LazyBone
             }
         }
 
-        public async Task<bool> GetCurrentState(string deviceId, Euricom.IoT.Models.LazyBone config)
+        public async Task<bool> GetCurrentStateSwitch(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
-            LazyBone lazyBone = GetLazyBone(deviceId, config);
+            var lazyBone = (Euricom.IoT.LazyBone.LazyBoneSwitch)GetLazyBone(deviceId, config);
+            return await lazyBone.GetCurrentState();
+        }
+
+        public async Task<LazyBoneDimmerState> GetCurrentStateDimmer(string deviceId, Euricom.IoT.Models.LazyBone config)
+        {
+            var lazyBone = (Euricom.IoT.LazyBone.LazyBoneDimmer)GetLazyBone(deviceId, config);
             return await lazyBone.GetCurrentState();
         }
 
         public async Task Switch(string deviceId, Euricom.IoT.Models.LazyBone config, bool state)
         {
-            LazyBone lazyBone = GetLazyBone(deviceId, config);
-            await lazyBone.Switch(state);
+            if (!config.IsDimmer)
+            {
+                var lazyBoneSwitch = (Euricom.IoT.LazyBone.LazyBoneSwitch)GetLazyBone(deviceId, config);
+                await lazyBoneSwitch.Switch(state);
+            }
+            else
+            {
+                var lazyBoneDimmer = (Euricom.IoT.LazyBone.LazyBoneDimmer)GetLazyBone(deviceId, config);
+                if (state)
+                    await lazyBoneDimmer.SetLightOn();
+                else
+                    await lazyBoneDimmer.SetLightOff();
+            }
         }
 
-        public LazyBone GetLazyBone(string deviceId, Euricom.IoT.Models.LazyBone config)
+        public async Task SetLightValue(string deviceId, Euricom.IoT.Models.LazyBone config, int lightValue)
+        {
+            var lazyBoneDimmer = (Euricom.IoT.LazyBone.LazyBoneDimmer)GetLazyBone(deviceId, config);
+            await lazyBoneDimmer.SetLightValue(lightValue);
+        }
+
+        public Euricom.IoT.LazyBone.LazyBone GetLazyBone(string deviceId, Euricom.IoT.Models.LazyBone config)
         {
             lock (_syncRoot)
             {
                 if (!_lazyBones.ContainsKey(deviceId))
                 {
-                    var lazyBone = new LazyBone(new SocketClient(config.Host, config.Port));
+                    LazyBone lazyBone;
+                    if (!config.IsDimmer)
+                    {
+                        lazyBone = new LazyBoneSwitch(new SocketClient(config.Host, config.Port));
+                    }
+                    else
+                    {
+                        lazyBone = new LazyBoneDimmer(new SocketClient(config.Host, config.Port));
+                    }
+
                     _lazyBones[deviceId] = lazyBone;
                     Debug.WriteLine("New lazybone created");
                     return lazyBone;

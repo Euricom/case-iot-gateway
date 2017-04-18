@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DropboxFile.cs" />
+    <Compile Include="LazyBoneDimmerState.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogProperties.cs" />
     <Compile Include="Logging\OpenZWaveLog.cs" />
@@ -117,9 +118,12 @@
     <Compile Include="Notifications\CameraNotification.cs" />
     <Compile Include="DanaLock.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="Notifications\LazyBoneLightValueNotification.cs" />
     <Compile Include="Notifications\DanaLockNotification.cs" />
     <Compile Include="HardwareType.cs" />
+    <Compile Include="Notifications\LazyBoneDimmerNotification.cs" />
     <Compile Include="Notifications\LazyBoneNotification.cs" />
+    <Compile Include="Notifications\LazyBoneSwitchNotification.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\LogLine.cs" />
     <Compile Include="LazyBone.cs" />

@@ -97,7 +97,7 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public async Task<string> TestConnection(string deviceId)
+        public async Task<bool> TestConnection(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
@@ -108,7 +108,7 @@ namespace Euricom.IoT.Api.Managers
             return await LazyBoneConnectionManager.Instance.TestConnection(deviceId, config);
         }
 
-        public async Task<bool> GetCurrentState(string deviceId)
+        public async Task<bool> GetCurrentStateSwitch(string deviceId)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
@@ -123,7 +123,37 @@ namespace Euricom.IoT.Api.Managers
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
                     throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
                 }
-                return await LazyBoneConnectionManager.Instance.GetCurrentState(deviceId, config);
+                if (config.IsDimmer)
+                    throw new InvalidOperationException("device is not a switch, but a dimmer");
+
+                return await LazyBoneConnectionManager.Instance.GetCurrentStateSwitch(deviceId, config);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
+        }
+
+        public async Task<LazyBoneDimmerState> GetCurrentStateDimmer(string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
+            }
+
+            try
+            {
+                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+                if (!config.IsDimmer)
+                    throw new InvalidOperationException("device is a switch, not a dimmer");
+
+                return await LazyBoneConnectionManager.Instance.GetCurrentStateDimmer(deviceId, config);
             }
             catch (Exception ex)
             {
@@ -155,7 +185,7 @@ namespace Euricom.IoT.Api.Managers
 
                 if (!config.Enabled)
                 {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not switching because device is not enabled");
                     throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
                 }
 
@@ -175,10 +205,53 @@ namespace Euricom.IoT.Api.Managers
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
 
                 // Publish to IoT Hub
-                var notification = new LazyBoneNotification
+                var notification = new LazyBoneSwitchNotification
                 {
                     DeviceKey = deviceId,
                     State = state == "on" ? true : false,
+                    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
+                };
+                PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
+        }
+
+        public async Task SetLightValue(string deviceId, int value)
+        {
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                throw new ArgumentNullException("deviceId");
+            }
+            else if (value < 0 || value > 255)
+            {
+                throw new ArgumentOutOfRangeException("value must be between 0 and 255");
+            }
+
+            try
+            {
+                var settings = Database.Instance.GetConfigSettings();
+                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not setting light value because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+
+                await LazyBoneConnectionManager.Instance.SetLightValue(deviceId, config, value);
+
+                // Log command
+                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed light value: {value}");
+
+                // Publish to IoT Hub
+                var notification = new LazyBoneLightValueNotification
+                {
+                    DeviceKey = deviceId,
+                    Value = value,
                     Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
                 };
                 PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
