@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9DA8728A-EE56-48C5-92EC-087DBFC9BF18}</ProjectGuid>
+    <ProjectGuid>{C6FD53CC-6841-4956-81DA-40BDB332705E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Euricom.IoT.Camera</RootNamespace>
-    <AssemblyName>Euricom.IoT.Camera</AssemblyName>
+    <RootNamespace>Euricom.IoT.Devices.LazyBone</RootNamespace>
+    <AssemblyName>Euricom.IoT.Devices.LazyBone</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -107,8 +107,27 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LazyBone.cs" />
+    <Compile Include="LazyBoneSwitch.cs" />
+    <Compile Include="LazyBoneDimmer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Euricom.IoT.Camera.rd.xml" />
+    <Compile Include="SocketClient.cs" />
+    <Compile Include="LazyBoneConnectionManager.cs" />
+    <EmbeddedResource Include="Properties\Euricom.IoT.LazyBone.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{A0990875-4EBE-4CB7-AC1C-11855EB6280A}</Project>
+      <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
+      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
+      <Name>Euricom.IoT.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

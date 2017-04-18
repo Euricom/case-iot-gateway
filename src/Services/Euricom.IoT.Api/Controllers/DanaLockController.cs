@@ -110,7 +110,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
-                bool succeeded = await _danaLockManager.TestConnection(deviceId);
+                bool succeeded = _danaLockManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)

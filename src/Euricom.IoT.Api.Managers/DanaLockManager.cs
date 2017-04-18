@@ -17,20 +17,19 @@ namespace Euricom.IoT.Api.Managers
 {
     public class DanaLockManager : IDanaLockManager
     {
-        private readonly ZWave.ZWaveManager _zwaveManager;
+        private readonly Euricom.IoT.DanaLock.IDanaLockManager _manager;
         private readonly IAzureDeviceManager _azureDeviceManager;
 
         public DanaLockManager()
         {
-            _zwaveManager = ZWave.ZWaveManager.Instance;
             var settings = Database.Instance.GetConfigSettings();
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }
 
         public Task<IEnumerable<Euricom.IoT.Models.DanaLock>> GetAll()
         {
-            var cameras = Database.Instance.GetDanaLocks();
-            return Task.FromResult(cameras.AsEnumerable());
+            var danalocks = Database.Instance.GetDanaLocks();
+            return Task.FromResult(danalocks.AsEnumerable());
         }
 
         public Task<Euricom.IoT.Models.DanaLock> GetByDeviceId(string deviceId)
@@ -97,13 +96,11 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-
-
-        public async Task<bool> TestConnection(string deviceId)
+        public bool TestConnection(string deviceId)
         {
             var config = DataLayer.Database.Instance.GetDanaLockConfig(deviceId);
             var nodeId = config.NodeId;
-            return _zwaveManager.TestConnection(nodeId);
+            return _manager.TestConnection(nodeId);
         }
 
         public async Task<bool> IsLocked(byte nodeId)
@@ -127,7 +124,7 @@ namespace Euricom.IoT.Api.Managers
                     throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
                 }
                 var nodeId = config.NodeId;
-                return _zwaveManager.IsLocked(nodeId);
+                return _manager.IsLocked(nodeId);
             }
             catch (Exception ex)
             {
@@ -163,10 +160,10 @@ namespace Euricom.IoT.Api.Managers
                 switch (state)
                 {
                     case "open":
-                        _zwaveManager.OpenLock(nodeId);
+                        _manager.OpenLock(nodeId);
                         break;
                     case "close":
-                        _zwaveManager.CloseLock(nodeId);
+                        _manager.CloseLock(nodeId);
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");

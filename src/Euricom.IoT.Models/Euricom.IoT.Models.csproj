@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WallMountSwitch.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="LazyBoneDimmerState.cs" />
     <Compile Include="Logging\LogLevel.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Security\LoginCredentials.cs" />
     <Compile Include="Security\RequestForAccessToken.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ZWaveDevice.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Common.rd.xml" />
   </ItemGroup>
   <ItemGroup />

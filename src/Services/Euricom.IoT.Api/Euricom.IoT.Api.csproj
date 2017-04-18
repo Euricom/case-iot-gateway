@@ -108,6 +108,7 @@
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
     <Compile Include="Controllers\DanaLockController.cs" />
+    <Compile Include="Controllers\WallMountSwitchController.cs" />
     <Compile Include="Dtos\DanaLockDto.cs" />
     <Compile Include="Dtos\LazyBoneDto.cs" />
     <Compile Include="Dtos\CameraDto.cs" />

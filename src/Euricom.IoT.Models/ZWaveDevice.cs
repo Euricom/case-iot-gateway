@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models
 {
-    public class DanaLock : ZWaveDevice
+    public abstract class ZWaveDevice : Device
     {
-        public int PollingTime { get; set; }
+        public byte NodeId { get; set; }
     }
 }

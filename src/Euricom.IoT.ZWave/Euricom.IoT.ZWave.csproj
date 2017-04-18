@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IZWaveManager.cs" />
     <Compile Include="ZWaveManager.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeWatcher.cs" />

@@ -9,7 +9,7 @@ using Windows.Devices.Enumeration;
 
 namespace Euricom.IoT.ZWave
 {
-    public class ZWaveManager
+    public class ZWaveManager : IZWaveManager
     {
         private static volatile ZWaveManager _instance;
         private static object _syncRoot = new Object();
@@ -94,42 +94,7 @@ namespace Euricom.IoT.ZWave
                 return true;
             }
             return false;
-        }
-
-        public bool IsLocked(byte nodeId)
-        {
-            if (_homeId == 0)
-            {
-                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
-            }
-
-            bool currentVal = false;
-            ZWManager.Instance.GetValueAsBool(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), out currentVal);
-            return currentVal;
-        }
-
-        public void OpenLock(byte nodeId) //nodeId = 0x4
-        {
-            if (_homeId == 0)
-            {
-                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
-            }
-
-            // Unlock or lock door
-            ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), false);
-
-        }
-
-        public void CloseLock(byte nodeId) //nodeId = 0x4
-        {
-            if (_homeId == 0)
-            {
-                throw new Exception("Cannot determine IsLocked(), because OpenZWave wasn't initialized correctly or is still busy initializing. HomeId was 0");
-            }
-
-            //Unlock or lock door
-            ZWManager.Instance.SetValue(new ZWValueID(_homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
-        }
+        }    
 
         private async Task Init()
         {
