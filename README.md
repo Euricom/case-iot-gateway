@@ -137,9 +137,14 @@ These notifications/messages are also stored in a Azure SQL database.
 
 Technical diagram:
 
-[Technical diagram page 1](doc/IOT GW-1.jpg)
+Page 1:
 
-[Technical diagram page 2](doc/IOT GW-2.jpg)
+![Technical diagram page 1](doc/IOT GW-1.jpg)
+
+Page 2:
+
+![Technical diagram page 2](doc/IOT GW-2.jpg)
+
 
 The diagram explained in words:
 
