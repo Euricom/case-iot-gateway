@@ -109,8 +109,6 @@ The gateway has a REST inteface for controlling the IoT devices. This REST inter
 
 ## Technical architecture
 
-![test](/doc/test.jpg)
-
 **UWP**
 Windows 10 IoT core uses UWP for development. So the whole solution uses UWP projects.
 The startup project is the UI (Euricom.IoT.UI). 
