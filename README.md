@@ -41,7 +41,7 @@ Every time raspberry pi loses power/reboots, set date and time  in raspberry usi
 ```
 (after every reboot of raspberry)
 
-** Important **
+**Important**
 
 If password is lost or is forgotten, there is the possibility to login with another code.
 
@@ -105,7 +105,7 @@ The camera is not really controlled by the gateway. The camera only sends notifi
 
 ## REST API
 
-The gateway has a REST inteface for controlling the IoT devices. This REST interface is not really used (only used when developing/testing if devices behave correctly). So the following diagram does not show the REST interface.
+The gateway has a REST inteface for controlling the IoT devices. This REST interface is not really used (only used when developing/testing if devices behave correctly).
 
 ## Technical architecture
 
@@ -137,9 +137,9 @@ These notifications/messages are also stored in a Azure SQL database.
 
 Technical diagram:
 
-![Diagram page 1](doc/IOT GW-1.jpg)
+[Technical diagram page 1](doc/IOT GW-1.jpg)
 
-![Diagram page 2](doc/IOT GW-2.jpg)
+[Technical diagram page 2](doc/IOT GW-2.jpg)
 
 The diagram explained in words:
 
