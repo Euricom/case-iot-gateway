@@ -34,16 +34,15 @@ Other sort of devices can be added/programmed if you can build it in UWP because
 
 **Important**
 
-Every time raspberry pi loses power/reboots, set date and time  in raspberry using powershell. You can do this with the IoT core dashboard. Right click on the device and connect with powershell. Then type in username/password. Then type:
+1) Every time raspberry pi loses power/reboots, set date and time  in raspberry using powershell. You can do this with the IoT core dashboard. Right click on the device and connect with powershell. Then type in username/password. Then **copy paste and change** date and time:
 
 ```
  Set-Date "Thursday, April 06, 2017 10:34:26 AM"
 ```
 (after every reboot of raspberry)
 
-**Important**
 
-If password is lost or is forgotten, there is the possibility to login with another code.
+2) If password is lost or is forgotten, there is the possibility to login with another code.
 
 
 ### IoT devices
@@ -110,24 +109,48 @@ The gateway has a REST inteface for controlling the IoT devices. This REST inter
 ## Technical architecture
 
 **UWP**
+
 Windows 10 IoT core uses UWP for development. So the whole solution uses UWP projects.
 The startup project is the UI (Euricom.IoT.UI). 
 
-**WebServer**
+See [Writing apps for Iot Core](https://developer.microsoft.com/en-us/windows/iot/docs/buildingappsforiotcore)
+
+**Restup (webserver)**
 
 The UI launches a webserver called Restup and currently listens for requests on /api/...
+It also serves static content (the Gateway Administration Website).
+
+See [Restup](https://github.com/tomkuijsten/restup)
+
+**Gateway Administration Website**
+
+The administration site is a basic Angular-CLI website with basic bootstrap layout/menu.
+
+See [Angular CLI](https://github.com/angular/angular-cli)
 
 **Database**
 
 The settings are stored on the Raspberry PI SD card using DBreeze which is a C# NoSQL embedded database system.
 
+See [Dbreeze](https://github.com/hhblaze/DBreeze)
+
+**OpenZWave and UWP**
+
+I used the UWP .NET wrapper of https://github.com/OpenZWave/openzwave-dotnet-uwp (the OpenZWave library is a C++ library). I included the full source code of OpenZWave and UWP wrapper in this repository. This makes it easy to debug if there are problems with initializing OpenZWave or to track bugs.
+
+See [OpenZWave UWP wrapper](https://github.com/OpenZWave/openzwave-dotnet-uwp) and [OpenZWave](https://github.com/OpenZWave/open-zwave)
+
 **Logging**
 
-The OpenZWave is also enabled for logging.
+The OpenZWave is also enabled for logging. This means that a OZW_Log.txt will be created in the package where the app wil run. For example
+\\10.0.1.31\c$\Data\Users\DefaultAccount\AppData\Local\Packages\12636daa-e12e-413c-a6c6-037e08210458_kjj12ry09zpaj\LocalState\
+This OZW_Log will be regenerated/overwritten every time the app restarts. This can be changed in the options.xml of OpenZWave.
 
-Logging is done with Serilog and Rolling file sink. The sink is configured to write a log once per day in the application package folder. Example:
+Logging is done with [Serilog](https://serilog.net/) and [Rolling file sink](https://github.com/serilog/serilog-sinks-rollingfile). The sink is configured to write a log once per day in the application package folder. Example:
 
 \\10.0.1.31\c$\Data\Users\DefaultAccount\AppData\Local\Packages\12636daa-e12e-413c-a6c6-037e08210458_kjj12ry09zpaj\LocalState\logs\
+
+**The sink also has a default setting that limits the file size to 1GB.**
 
 
 **Azure Iot Hub**
@@ -163,9 +186,18 @@ Page 1 & page2:
 The gateway implements a monitoring system / loop that continuously polls devices at a specified interval (can be changed via the device configuration). If the polling of the device was succesfull it sends ACKNOWLEDGEMENT , else a REJECT to Azure IoT Hub. 
 
 
-**Development**: (Windows and Visual Studio)
+## Development: (Windows and Visual Studio)
 
-The solution file is src\Euricom.IoT.sln
+There are 2 development environments
+
+- Development of the API (must use Visual Studio) 
+   => The solution can be found under **src\Euricom.IoT.sln**
+
+- Development of the Gateway Administration Website (any editor, I used VS Code)
+   => The website can be found under **src\UI\iot-gateway-app**
+
+
+### API development
 
 Install Windows 10 IoT core Dashboard watcher from
 
@@ -175,8 +207,33 @@ Use Visual Studio (2017) for debugging/deployment. Don't forget to set the IP ad
 
 Set startup project to Euricom.IoT.UI (Euricom.IoT.API will be deployed too)
 
+### Gateway Administration website development
 
-**Deployment**:
+Change directory to src\UI\iot-gateway-app, then install all dependencies with command
+
+**Install all dependencies (node_modules)**
+
+```
+yarn
+```
+
+**Starting website**
+
+```
+yarn start
+```
+
+
+**Build website for deployment**
+
+```
+yarn build
+```
+
+Then you can use the generated dist folder (which contains the index.html and js) and copy to visual studio project.
+
+
+## Deployment:
 
 To deploy the gateway API , use Visual Studio.
 
@@ -188,7 +245,7 @@ To make a permanent deploy (without VS), set the app as default startup app via 
 
 **Important**
 
-Every time raspberry pi loses power/reboots, set date and time  in raspberry using powershell. You can do this with the IoT core dashboard. Right click on the device and connect with powershell. Then type in username/password. Then type:
+Every time raspberry pi loses power/reboots, set date and time  in raspberry using powershell. You can do this with the IoT core dashboard. Right click on the device and connect with powershell. Then type in username/password. Then **copy paste and change** date and time:
 
 ```
  Set-Date "Thursday, April 06, 2017 10:34:26 AM"
@@ -205,7 +262,11 @@ http://jellebens.blogspot.be/2016/02/installing-z-wave-stick-gen-5-on.html
 
 https://developer.microsoft.com/en-us/windows/iot/docs/iotdashboard
 
+https://github.com/OpenZWave/openzwave-dotnet-uwp
+
 https://github.com/tomkuijsten/restup
+
+https://github.com/angular/angular-cli
 
 https://github.com/hhblaze/DBreeze
 
