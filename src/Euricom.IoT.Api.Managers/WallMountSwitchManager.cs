@@ -169,7 +169,7 @@ namespace Euricom.IoT.Api.Managers
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
 
-                PublishWallMountEvent(settings, config.Name, config.DeviceId, notification);
+                // PublishWallMountEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {

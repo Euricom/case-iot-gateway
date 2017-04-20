@@ -47,9 +47,7 @@ export class LazyBonesViewComponent implements OnInit {
         this.toastr.info('Lazy bone updated successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   delete(lazyBone: LazyBone, event: Event): void {
@@ -61,9 +59,7 @@ export class LazyBonesViewComponent implements OnInit {
         this.toastr.info('Lazy bone removed successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   ngOnInit(): void {
@@ -76,9 +72,7 @@ export class LazyBonesViewComponent implements OnInit {
       (data) => {
         this.lazyBones = data
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   testConnection(lazyBone: LazyBone, event: Event) {
@@ -96,9 +90,7 @@ export class LazyBonesViewComponent implements OnInit {
           this.toastr.error('Connection failed')
         }
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   getCurrentState(lazyBone: LazyBone, event: Event) {
@@ -112,9 +104,7 @@ export class LazyBonesViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   switch(lazyBone: LazyBone, state: String, event: Event) {
@@ -128,9 +118,7 @@ export class LazyBonesViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   testChangeLightIntensity(lazyBone: LazyBone, event: Event) {
@@ -144,9 +132,7 @@ export class LazyBonesViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   setClickedRow(i: Number, lazyBone: LazyBone) {

@@ -169,7 +169,7 @@ namespace Euricom.IoT.Api.Managers
                     Timestamp = DateTimeHelpers.Timestamp(),
                 };
 
-                PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
+                // PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {

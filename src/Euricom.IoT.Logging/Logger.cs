@@ -141,7 +141,6 @@ namespace Euricom.IoT.Logging
 
         public void LogVerboseWithDeviceContext(string deviceId, string message)
         {
-            ValidateDeviceId(deviceId);
             lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
@@ -160,7 +159,6 @@ namespace Euricom.IoT.Logging
 
         public void LogDebugWithDeviceContext(string deviceId, string message)
         {
-            ValidateDeviceId(deviceId);
             lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
@@ -179,7 +177,6 @@ namespace Euricom.IoT.Logging
 
         public void LogInformationWithDeviceContext(string deviceId, string message)
         {
-            ValidateDeviceId(deviceId);
             lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
@@ -189,7 +186,6 @@ namespace Euricom.IoT.Logging
 
         public void LogWarningWithDeviceContext(string deviceId, string message)
         {
-            ValidateDeviceId(deviceId);
             lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
@@ -199,7 +195,6 @@ namespace Euricom.IoT.Logging
 
         public void LogErrorWithDeviceContext(string deviceId, Exception exception)
         {
-            ValidateDeviceId(deviceId);
             lock (_syncRootContextLogger)
             {
                 var contextLogger = _logger.ForContext("DeviceId", deviceId);
@@ -242,24 +237,6 @@ namespace Euricom.IoT.Logging
         public void LogFatal(Exception exception)
         {
             _logger.Fatal(exception, "");
-        }
-
-        //https://www.codeproject.com/Questions/177808/How-to-determine-if-a-string-is-Base-decoded-or
-        private bool ValidateDeviceId(string deviceId)
-        {
-            try
-            {
-                // If no exception is caught, then it is possibly a base64 encoded string
-                byte[] data = Convert.FromBase64String(deviceId);
-                // The part that checks if the string was properly padded to the
-                // correct length was borrowed from d@anish's solution
-                return (deviceId.Replace(" ", "").Length % 4 == 0);
-            }
-            catch
-            {
-                // If exception is caught, then it is not a base64 encoded string
-                return false;
-            }
         }
     }
 }

@@ -197,7 +197,7 @@ namespace Euricom.IoT.Api.Managers
                     State = state == "on" ? true : false,
                     Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
                 };
-                PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
+                //PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {
@@ -240,7 +240,7 @@ namespace Euricom.IoT.Api.Managers
                     Value = value,
                     Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
                 };
-                PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
+                //PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {

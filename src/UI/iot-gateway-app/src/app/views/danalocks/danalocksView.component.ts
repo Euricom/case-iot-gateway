@@ -47,9 +47,7 @@ export class DanaLocksViewComponent implements OnInit {
         this.toastr.info('DanaLock updated successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   delete(danaLock: DanaLock, event: Event): void {
@@ -61,9 +59,7 @@ export class DanaLocksViewComponent implements OnInit {
         this.toastr.info('DanaLock removed successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   ngOnInit(): void {
@@ -76,9 +72,7 @@ export class DanaLocksViewComponent implements OnInit {
       (data) => {
         this.danalocks = data
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   testConnection(danaLock: DanaLock, event: Event) {
@@ -92,12 +86,11 @@ export class DanaLocksViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  isLocked(danaLock: DanaLock) {
+  isLocked(danaLock: DanaLock, event: Event) {
+    event.stopPropagation()
     if (!this.validate(danaLock)) {
       this.toastr.error('Cannot get danalock state without valid Node ID')
       return
@@ -111,12 +104,11 @@ export class DanaLocksViewComponent implements OnInit {
           this.toastr.info('DanaLock door is unlocked')
         }
       },
-      (err) => {
-        this.toastr.error('error occurred while requesting door lock state' + err)
-      })
+      )
   }
 
-  switch(danaLock: DanaLock, state: String) {
+  switch(danaLock: DanaLock, state: String, event: Event) {
+    event.stopPropagation()
     if (!this.validate(danaLock)) {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
@@ -126,9 +118,7 @@ export class DanaLocksViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   setClickedRow(i: Number, danaLock: DanaLock) {

@@ -27,15 +27,12 @@ namespace Euricom.IoT.WallMountSwitch
         public void SetOn(byte nodeId)
         {
             uint homeId = GetHomeId();
-
-            // Unlock or lock door
             ZWManager.Instance.SetValue(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x25, 1, 0, ZWValueType.Bool, 0), false);
         }
 
         public void SetOff(byte nodeId)
         {
             uint homeId = GetHomeId();
-            //Unlock or lock door
             ZWManager.Instance.SetValue(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x25, 1, 0, ZWValueType.Bool, 0), true);
         }
 

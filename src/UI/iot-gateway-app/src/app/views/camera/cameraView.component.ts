@@ -46,10 +46,7 @@ export class CameraViewComponent implements OnInit {
         this.isAddMode = false
         this.toastr.info('camera updated successfully')
         this.refresh()
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
   delete(camera: Camera, event: Event): void {
@@ -60,10 +57,7 @@ export class CameraViewComponent implements OnInit {
         this.selectedRowIndex = undefined
         this.toastr.info('Camera removed successfully')
         this.refresh()
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
   ngOnInit(): void {
@@ -75,10 +69,7 @@ export class CameraViewComponent implements OnInit {
       .subscribe(
       (data) => {
         this.cameras = data
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
   testConnection(camera: Camera, event: Event) {
@@ -92,10 +83,7 @@ export class CameraViewComponent implements OnInit {
       .subscribe(
       (data) => {
         this.toastr.info(data)
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
   setClickedRow(i: Number, camera: Camera) {

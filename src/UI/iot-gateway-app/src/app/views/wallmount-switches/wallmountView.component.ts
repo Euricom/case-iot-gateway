@@ -47,9 +47,7 @@ export class WallMountViewComponent implements OnInit {
         this.toastr.info('Wallmount updated successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   delete(wallmount: Wallmount, event: Event): void {
@@ -91,7 +89,8 @@ export class WallMountViewComponent implements OnInit {
       )
   }
 
-  getState(wallmount: Wallmount) {
+  getState(wallmount: Wallmount, event: Event) {
+    event.stopPropagation()
     if (!this.validate(wallmount)) {
       this.toastr.error('Cannot get wallmount state without valid Node ID')
       return
@@ -100,15 +99,16 @@ export class WallMountViewComponent implements OnInit {
       .subscribe(
       (data) => {
         if (data === 'True') {
-          this.toastr.info('DanaLock door is locked')
+          this.toastr.info('Wallmount is ON')
         } else if (data === 'False') {
-          this.toastr.info('DanaLock door is unlocked')
+          this.toastr.info('Wallmount is OFF')
         }
       },
       )
   }
 
-  switch(wallmount: Wallmount, state: String) {
+  switch(wallmount: Wallmount, state: String, event: Event) {
+    event.stopPropagation()
     if (!this.validate(wallmount)) {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
@@ -118,9 +118,7 @@ export class WallMountViewComponent implements OnInit {
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   setClickedRow(i: Number, wallmount: Wallmount) {
@@ -128,8 +126,8 @@ export class WallMountViewComponent implements OnInit {
     this.wallmount = wallmount
   }
 
-  validate(danalock: Wallmount): boolean {
-    if (!danalock.NodeId) {
+  validate(wallmount: Wallmount): boolean {
+    if (!wallmount.NodeId) {
       return false
     }
     return true

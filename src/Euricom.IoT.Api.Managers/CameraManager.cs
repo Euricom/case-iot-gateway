@@ -103,7 +103,7 @@ namespace Euricom.IoT.Api.Manager
                 };
 
                 // Publish to IoT Hub
-                PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
+                // PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
             }
         }
 
