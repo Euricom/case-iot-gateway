@@ -15,6 +15,8 @@ The **purpose of the gateway** is:
 	- test by simple click button to see whether device works	
 	- show logging of events (device state changes, errors, debugging, ..)
 
+**Important business requirement: the user must be at Euricom WIFI network to be able to send commands.** For example, it is not possible to switch on Euricom lights at home or open doorlock at another location than Euricom.**
+
 We use **Azure IoT Hub**:
 
 - for sending notifications to Iot Hub as device state changes happen
@@ -24,6 +26,7 @@ The currently used device hardware are:
 
 - [DanaLock](https://danalock.com/)
 - [LazyBone Switch](http://www.tinyosshop.com/index.php?route=product/product&product_id=657)
+- TKB Switch TZ36S
 - [MotionEyeOs](https://github.com/ccrisan/motioneyeos) Camera which is a raspberry pi device with motionEye
 
 
@@ -52,7 +55,9 @@ Other sort of devices can be added/programmed if you can build it in UWP because
 
 The DanaLock is controlled using the open source library called [OpenZWave](http://openzwave.com/). The Gateway uses the [Z-Stick GEn5 from Aeotec](https://aeotec.freshdesk.com/support/solutions/folders/6000146720)
 
-**The following steps must be done once:**
+**The following steps must be done ONLY ONCE on the Gateway (if gateway was reinstalled):**
+
+**Step 1**
 
 1) Download the drivers here: http://aeotec.com/z-wave-usb-stick/1358-z-wave-drivers.html
 2) Connect to your raspberry e.g. \\10.0.1.31\c$\Data\Users\Administrator\Documents
@@ -83,6 +88,12 @@ USB\VID_0658&PID_0200\5&3753427A&0&4
 ...
 
 [Installing Z-Wave Stick Gen5](http://jellebens.blogspot.be/2016/02/installing-z-wave-stick-gen-5-on.html)
+
+
+**Step 2**
+
+
+
 
 #### LazyBone Switch
 
@@ -241,6 +252,10 @@ To deploy the web configuration site, you must manually copy the files from
 src\UI\iot-gateway-app to src\Euricom.IoT.UI.WebAdministration, then deploy the gateway API
 
 To make a permanent deploy (without VS), set the app as default startup app via the Windows 10 IoT Core Dashboard.
+
+Open gateway administration website at http://ip:8800
+
+For example: [http://10.0.1.31:8800](http://10.0.1.31:8800)
   
 
 **Important**
@@ -261,6 +276,10 @@ https://developer.microsoft.com/en-us/windows/iot/docs/buildingappsforiotcore
 http://jellebens.blogspot.be/2016/02/installing-z-wave-stick-gen-5-on.html
 
 https://developer.microsoft.com/en-us/windows/iot/docs/iotdashboard
+
+https://github.com/OpenZWave/open-zwave
+
+http://wiki.micasaverde.com/index.php/ZWave_Command_Classes
 
 https://github.com/OpenZWave/openzwave-dotnet-uwp
 

@@ -187,5 +187,25 @@ namespace Euricom.IoT.Api.Controllers
                 return ResponseUtilities.PutResponseFail($"LazyBone dimmer failed, exception: {ex.Message}");
             }
         }
+
+        [UriFormat("/lazybone/testchangelightintensity?devicename={devicename}")]
+        public async Task<IPutResponse> TestChangeLightIntensity(string devicename)
+        {
+            try
+            {
+                //Send switch command to the manager
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                await _lazyBoneManager.TestChangeLightIntensity(deviceId);
+
+                //If it works, send response back to client
+                return ResponseUtilities.PutResponseOk($"LazyBone dimmer changed light values 3 times");
+            }
+            catch (Exception ex)
+            {
+                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                return ResponseUtilities.PutResponseFail($"LazyBone dimmer failed, exception: {ex.Message}");
+            }
+        }
     }
 }

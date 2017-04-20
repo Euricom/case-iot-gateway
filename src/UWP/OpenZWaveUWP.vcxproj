@@ -190,6 +190,7 @@
       <AdditionalIncludeDirectories>..\..\open-zwave\cpp\src;..\..\open-zwave\cpp\src\value_classes;..\..\open-zwave\cpp\src\command_classes;..\..\open-zwave\cpp\src\platform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
       <XMLDocumentationFileName>$(OutDir)</XMLDocumentationFileName>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

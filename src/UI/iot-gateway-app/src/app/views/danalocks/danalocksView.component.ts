@@ -28,7 +28,7 @@ export class DanaLocksViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.danaLockService.update(this.danalock)
+    this.danaLockService.save(this.danalock)
       .subscribe(
       (data) => {
         this.toastr.info('DanaLock updated successfully')

@@ -53,10 +53,8 @@ export class LoginViewComponent implements OnInit {
           this.router.navigateByUrl('/settings')
         },
         (error) => {
-          this.username = ''
           this.password = ''
           this.failedLoginTimes++
-          this.toastr.error('login failed: ' + error)
         },
       )
     }

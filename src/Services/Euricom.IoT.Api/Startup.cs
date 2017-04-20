@@ -39,11 +39,11 @@ namespace Euricom.IoT.Api
             // Init Webserver
             await new WebServer().InitializeWebServer();
 
-            // Wait for incoming IoT Hub messages
-            await new GatewayManager().Initialize();
+            // Process incoming IoT Hub messages
+            // await new GatewayManager().Initialize();
 
             // Set up monitoring devices
-            MonitorDevices();
+            // MonitorDevices();
         }
 
         private static void AddAutoMapperMappings()

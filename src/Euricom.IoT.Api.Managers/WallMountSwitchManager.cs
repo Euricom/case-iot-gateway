@@ -22,6 +22,7 @@ namespace Euricom.IoT.Api.Managers
 
         public WallMountSwitchManager()
         {
+            _manager = new Euricom.IoT.WallMountSwitch.WallMountSwitchManager();
             var settings = Database.Instance.GetConfigSettings();
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }
@@ -34,47 +35,48 @@ namespace Euricom.IoT.Api.Managers
 
         public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_DANALOCKS, deviceId);
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
         }
 
         public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceName(string deviceName)
         {
             var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_DANALOCKS, deviceId);
+            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
         }
 
-        public async Task<Euricom.IoT.Models.WallMountSwitch> Add(Euricom.IoT.Models.WallMountSwitch danaLock)
+        public async Task<Euricom.IoT.Models.WallMountSwitch> Add(Euricom.IoT.Models.WallMountSwitch wallmount)
         {
-            //Add device to Azure Device IoT
-            danaLock.DeviceId = await _azureDeviceManager.AddDeviceAsync(danaLock.Name);
+            // Add device to Azure Device IoT
+            // wallmount.DeviceId = await _azureDeviceManager.AddDeviceAsync(wallmount.Name);
+            wallmount.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
-            var json = JsonConvert.SerializeObject(danaLock);
+            var json = JsonConvert.SerializeObject(wallmount);
 
             //Save to database
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
 
-            return await GetByDeviceId(danaLock.DeviceId);
+            return await GetByDeviceId(wallmount.DeviceId);
         }
 
-        public async Task<Euricom.IoT.Models.WallMountSwitch> Edit(Euricom.IoT.Models.WallMountSwitch danaLock)
+        public async Task<Euricom.IoT.Models.WallMountSwitch> Edit(Euricom.IoT.Models.WallMountSwitch wallmount)
         {
-            if (danaLock == null)
+            if (wallmount == null)
             {
-                throw new ArgumentNullException("danaLock");
+                throw new ArgumentNullException("wallmount");
             }
-            else if (String.IsNullOrEmpty(danaLock.DeviceId))
+            else if (String.IsNullOrEmpty(wallmount.DeviceId))
             {
-                throw new ArgumentException("danaLock.DeviceId");
+                throw new ArgumentException("wallmount.DeviceId");
             }
 
-            var json = JsonConvert.SerializeObject(danaLock);
+            var json = JsonConvert.SerializeObject(wallmount);
 
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
 
-            return await GetByDeviceId(danaLock.DeviceId);
+            return await GetByDeviceId(wallmount.DeviceId);
         }
 
         public async Task<bool> Remove(string deviceName)
@@ -105,76 +107,94 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<bool> IsOn(byte nodeId)
         {
-            //var danalock = Database.Instance.GetDanaLocks().SingleOrDefault(x => x.NodeId == nodeId);
-            //if (danalock == null)
-            //{
-            //    throw new InvalidOperationException($"Could not find a danalock by nodeId: {nodeId}");
-            //}
-            //return await IsLocked(danalock.DeviceId);
+            var wallmount = Database.Instance.GetWallMountSwitches().SingleOrDefault(x => x.NodeId == nodeId);
+            if (wallmount == null)
+            {
+                throw new InvalidOperationException($"Could not find a wallmount by nodeId: {nodeId}");
+            }
+            return await IsOn(wallmount.DeviceId);
+        }
 
-            return false;
+        public async Task<bool> IsOn(string deviceId)
+        {
+            try
+            {
+                var config = DataLayer.Database.Instance.GetWallMountConfig(deviceId);
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
+                var nodeId = config.NodeId;
+                return _manager.IsOn(nodeId);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
         }
 
         public async Task Switch(string deviceId, string state)
         {
-            //if (string.IsNullOrEmpty(state))
-            //{
-            //    throw new Exception("param state was null or empty");
-            //}
-            //else if (state != "on" && state != "off")
-            //{
-            //    throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
-            //}
+            if (string.IsNullOrEmpty(state))
+            {
+                throw new Exception("param state was null or empty");
+            }
+            else if (state != "on" && state != "off")
+            {
+                throw new Exception($"UNKNOWN parameter: { state}. Please use 'on' or 'off'");
+            }
 
-            //try
-            //{
-            //    var settings = Database.Instance.GetConfigSettings();
-            //    var config = DataLayer.Database.Instance.get(deviceId);
+            try
+            {
+                var settings = Database.Instance.GetConfigSettings();
+                var config = DataLayer.Database.Instance.GetWallMountConfig(deviceId);
 
-            //    if (!config.Enabled)
-            //    {
-            //        Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-            //        throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
-            //    }
+                if (!config.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                }
 
-            //    var nodeId = config.NodeId;
+                var nodeId = config.NodeId;
 
-            //    switch (state)
-            //    {
-            //        case "open":
-            //            _zwaveManager.OpenLock(nodeId);
-            //            break;
-            //        case "close":
-            //            _zwaveManager.CloseLock(nodeId);
-            //            break;
-            //        default:
-            //            throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");
-            //    }
+                switch (state)
+                {
+                    case "on":
+                        _manager.SetOn(nodeId);
+                        break;
+                    case "off":
+                        _manager.SetOff(nodeId);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"unknown operation for Wallmount Switch node: {nodeId}, state: {state}");
+                }
 
-            //    // Log command
-            //    Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
+                // Log command
+                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
 
-            //    // Publish to IoT Hub
-            //    var notification = new DanaLockNotification
-            //    {
-            //        DeviceKey = deviceId,
-            //        Locked = state == "closed" ? true : false,
-            //        Timestamp = DateTimeHelpers.Timestamp(),
-            //    };
+                // Publish to IoT Hub
+                var notification = new WallMountSwitchNotification
+                {
+                    DeviceKey = deviceId,
+                    On = state == "on" ? true : false,
+                    Timestamp = DateTimeHelpers.Timestamp(),
+                };
 
-            //    PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-            //    throw;
-            //}
+                PublishWallMountEvent(settings, config.Name, config.DeviceId, notification);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
         }
 
-        // private void PublishWallMountEvent(Settings settings, string deviceName, string deviceId, ff notification)
-        //{
-        //    var json = JsonConvert.SerializeObject(notification);
-        //    new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);
-        //}
+        private void PublishWallMountEvent(Settings settings, string deviceName, string deviceId, WallMountSwitchNotification notification)
+        {
+            var json = JsonConvert.SerializeObject(notification);
+            new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);
+        }
     }
 }

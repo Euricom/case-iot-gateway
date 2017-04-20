@@ -22,6 +22,7 @@ namespace Euricom.IoT.Api.Managers
 
         public DanaLockManager()
         {
+            _manager = new Euricom.IoT.DanaLock.DanaLockManager();
             var settings = Database.Instance.GetConfigSettings();
             _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
         }

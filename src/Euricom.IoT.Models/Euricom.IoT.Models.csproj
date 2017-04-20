@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications\WallMountSwitchNotification.cs" />
     <Compile Include="WallMountSwitch.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="LazyBoneDimmerState.cs" />

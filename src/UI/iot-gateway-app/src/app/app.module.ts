@@ -36,12 +36,16 @@ import { DanaLocksViewComponent } from './views/danalocks/danalocksView.componen
 import { LogViewComponent } from './views/log/logView.component'
 import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
-import { AuthGuardService } from './services/authGuardService'
-
 import { AuthModule } from './app.auth.module'
-import { MyErrorHandler } from './app.error.module'
+import { CustomErrorHandler } from './app.error.module'
+import { AuthGuardService } from './services/authGuardService'
+import { CustomHttpService } from './services/customHttp'
 
+import { EventAggregator } from './services/eventAggregator'
 
+export function httpFactory(backend: XHRBackend, options, eventAggregator: EventAggregator) {
+  return new CustomHttpService(backend, options, eventAggregator)
+}
 
 @NgModule({
   declarations: [
@@ -69,7 +73,7 @@ import { MyErrorHandler } from './app.error.module'
     HttpModule,
     DatePickerModule,
     AuthModule,
-    MyErrorHandler,
+    CustomErrorHandler,
   ],
   providers: [
     Config,
@@ -81,9 +85,14 @@ import { MyErrorHandler } from './app.error.module'
     LazyBoneService,
     DanaLockService,
     LogService,
-    { provide: MyErrorHandler, useClass: MyErrorHandler },
-    // {provide: MyErrorHandler, useFactory: (router) => { return new MyErrorHandler(router); }, deps: [RouterModule.forRoot(routes)]}
+    EventAggregator,
+    { provide: CustomErrorHandler, useClass: CustomErrorHandler },
+    {
+      provide: Http,
+      useFactory: httpFactory,
+      deps: [XHRBackend, RequestOptions, EventAggregator],
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

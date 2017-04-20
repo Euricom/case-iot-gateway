@@ -411,6 +411,7 @@ namespace Euricom.IoT.DataLayer
                         var deviceConfig = JsonConvert.DeserializeObject<LazyBone>(row.Value);
                         lazyBones.Add(deviceConfig);
                     }
+                    tran.Commit();
                 }
                 return lazyBones;
             }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.WallMountSwitch
 {
+    // This class uses the SwitchBinary implementation of OpenZWave
     // https://github.com/OpenZWave/open-zwave/blob/Dev/cpp/src/command_classes/SwitchBinary.h
     public class WallMountSwitchManager : IWallMountSwitchManager
     {

@@ -69,7 +69,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not determine danalock status: exception: {ex.Message}");
+                return ResponseUtilities.PostResponseFail($"Could not add danalock: exception: {ex.Message}");
             }
         }
 

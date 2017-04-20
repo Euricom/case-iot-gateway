@@ -19,7 +19,6 @@ namespace Euricom.IoT.Api.Managers
     {
         private IAzureDeviceManager _azureDeviceManager;
 
-
         public LazyBoneManager()
         {
             var settings = Database.Instance.GetConfigSettings();
@@ -48,13 +47,14 @@ namespace Euricom.IoT.Api.Managers
         public async Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone lazyBone)
         {
             //Add device to Azure Device IoT
-            lazyBone.DeviceId = await _azureDeviceManager.AddDeviceAsync(lazyBone.Name);
+            // lazyBone.DeviceId = await _azureDeviceManager.AddDeviceAsync(lazyBone.Name);
+            lazyBone.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
             var json = JsonConvert.SerializeObject(lazyBone);
 
             //Save to database
-            Database.Instance.SetValue("LazyBones", lazyBone.DeviceId, json);
+            Database.Instance.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
 
             return lazyBone;
         }
@@ -82,7 +82,7 @@ namespace Euricom.IoT.Api.Managers
             try
             {
                 // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
+                // await _azureDeviceManager.RemoveDeviceAsync(deviceName);
 
                 // Remove device from  database
                 var deviceId = new HardwareManager().GetDeviceId(deviceName);
@@ -263,10 +263,25 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
+        public async Task TestChangeLightIntensity(string deviceId)
+        {
+            // Set to 50
+            await SetLightValue(deviceId, 50);
+            await Task.Delay(1500);
+
+            // Set to 100
+            await SetLightValue(deviceId, 100);
+            await Task.Delay(1500);
+
+            // Set to 255
+            await SetLightValue(deviceId, 255);
+        }
+
         private void PublishLazyBoneEvent(Settings settings, string deviceName, string deviceKey, LazyBoneNotification notification)
         {
             var json = JsonConvert.SerializeObject(notification);
             new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
         }
+
     }
 }

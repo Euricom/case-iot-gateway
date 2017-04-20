@@ -53,7 +53,9 @@ namespace Euricom.IoT.LazyBone
                 try
                 {
                     tcpClient.NoDelay = true;
-                    tcpClient.ConnectAsync(_hostname, _port).Wait();
+                    tcpClient.SendTimeout = 2000;
+                    tcpClient.ReceiveTimeout = 2000;
+                    tcpClient.ConnectAsync(_hostname, _port).Wait(2000);
                     Task.Delay(100).Wait();
 
                     stream = tcpClient.GetStream();
