@@ -46,8 +46,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone lazyBone)
         {
-            //Add device to Azure Device IoT
-            // lazyBone.DeviceId = await _azureDeviceManager.AddDeviceAsync(lazyBone.Name);
+            // Generate Device Id
             lazyBone.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
@@ -77,24 +76,11 @@ namespace Euricom.IoT.Api.Managers
             return await GetByDeviceId(lazyBone.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceName)
+        public async Task Remove(string deviceName)
         {
-            try
-            {
-                // Remove device from Azure
-                // await _azureDeviceManager.RemoveDeviceAsync(deviceName);
-
-                // Remove device from  database
-                var deviceId = new HardwareManager().GetDeviceId(deviceName);
-                Database.Instance.RemoveDevice(deviceId);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
+            // Remove device from  database
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
+            Database.Instance.RemoveDevice(deviceId);
         }
 
         public async Task<bool> TestConnection(string deviceId)

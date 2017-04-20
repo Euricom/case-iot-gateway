@@ -8,7 +8,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         Task<Euricom.IoT.Models.WallMountSwitch> Add(Euricom.IoT.Models.WallMountSwitch wallmount);
         Task<Euricom.IoT.Models.WallMountSwitch> Edit(Euricom.IoT.Models.WallMountSwitch wallmount);
-        Task<bool> Remove(string deviceName);
+        Task Remove(string deviceName);
         Task<IEnumerable<Euricom.IoT.Models.WallMountSwitch>> GetAll();
         Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceId(string deviceId);
         Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceName(string deviceName);

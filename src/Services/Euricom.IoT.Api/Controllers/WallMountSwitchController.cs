@@ -37,7 +37,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get wallmounts: exception: {ex.Message}");
+                throw new Exception($"Could not get wallmounts: exception: {ex.Message}");
             }
         }
 
@@ -53,7 +53,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get wallmount with devicename: {devicename} , exception: {ex.Message}");
+                throw new Exception($"Could not get wallmount with devicename: {devicename} , exception: {ex.Message}");
             }
         }
 
@@ -69,7 +69,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not add wallmount, exception: {ex.Message}");
+                throw new Exception($"Could not add wallmount, exception: {ex.Message}");
             }
         }
 
@@ -85,7 +85,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PutResponseFail($"Could not edit wallmount switch: exception: {ex.Message}");
+                throw new Exception($"Could not edit wallmount switch: exception: {ex.Message}");
             }
         }
 
@@ -94,13 +94,13 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var removed = await _wallmountSwitchManager.Remove(devicename);
-                return ResponseUtilities.DeleteResponseOk(removed.ToString());
+                await _wallmountSwitchManager.Remove(devicename);
+                return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.DeleteResponseFail($"Could not remove wallmount: exception: {ex.Message}");
+                throw new Exception($"Could not remove wallmount: exception: {ex.Message}");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not determine wallmount state: exception: {ex.Message}");
+                throw new Exception($"Could not determine wallmount state: exception: {ex.Message}");
             }
         }
 
@@ -151,7 +151,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PutResponseFail($"Wallmount switch failed, exception: {ex.Message}");
+                throw new Exception($"Wallmount switch failed, exception: {ex.Message}");
             }
         }
     }

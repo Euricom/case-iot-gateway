@@ -38,7 +38,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get lazyBones: exception: {ex.Message}");
+                throw new Exception($"Could not get lazyBones: exception: {ex.Message}");
             }
         }
 
@@ -54,7 +54,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get lazybone with devicename {devicename} , exception: {ex.Message}");
+                throw new Exception($"Could not get lazybone with devicename {devicename} , exception: {ex.Message}");
             }
         }
 
@@ -70,7 +70,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not add lazyBone: exception: {ex.Message}");
+                throw new Exception($"Could not add lazyBone: exception: {ex.Message}");
             }
         }
 
@@ -86,7 +86,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PutResponseFail($"Could not edit lazyBone: exception: {ex.Message}");
+                throw new Exception($"Could not edit lazyBone: exception: {ex.Message}");
             }
         }
 
@@ -95,13 +95,13 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var removed = await _lazyBoneManager.Remove(devicename);
-                return ResponseUtilities.DeleteResponseOk(removed.ToString());
+                await _lazyBoneManager.Remove(devicename);
+                return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.DeleteResponseFail($"Could not remove lazyBone: exception: {ex.Message}");
+                throw new Exception($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
 
@@ -118,7 +118,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.GetResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.GetResponseFail($"Could not determine lazybone state: exception: {ex.Message}");
+                throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
             }
         }
 
@@ -164,7 +164,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.PutResponseFail($"LazyBone switch failed, exception: {ex.Message}");
+                throw new Exception($"LazyBone switch failed, exception: {ex.Message}");
             }
         }
 
@@ -184,7 +184,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.PutResponseFail($"LazyBone dimmer failed, exception: {ex.Message}");
+                throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
             }
         }
 
@@ -204,7 +204,7 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var deviceId = new HardwareManager().GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                return ResponseUtilities.PutResponseFail($"LazyBone dimmer failed, exception: {ex.Message}");
+                throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
             }
         }
     }

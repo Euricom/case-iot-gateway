@@ -8,9 +8,12 @@ namespace Euricom.IoT.Models
 {
     public class Camera : Device
     {
+        public Camera()
+        {
+            Type = HardwareType.Camera;
+        }
+
         public string Address { get; set; }
-        //public string Username { get; set; }
-        //public string Password { get; set; }
         public string DropboxPath { get; set; }
         public int PollingTime { get; set; }
         public int MaximumDaysDropbox { get; set; }

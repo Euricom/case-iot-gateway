@@ -33,7 +33,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+                throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
 
@@ -49,7 +49,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+                throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
 
@@ -64,7 +64,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not get log: exception: {ex.Message}");
+                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
     }

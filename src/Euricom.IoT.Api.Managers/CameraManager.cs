@@ -50,8 +50,8 @@ namespace Euricom.IoT.Api.Manager
 
         public async Task<Camera> Add(Camera camera)
         {
-            //Add device to Azure Device IoT
-            camera.DeviceId = await _azureDeviceManager.AddDeviceAsync(camera.Name);
+            // Generate Device Id
+            camera.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
             var json = JsonConvert.SerializeObject(camera);
@@ -80,23 +80,11 @@ namespace Euricom.IoT.Api.Manager
             return await GetByDeviceId(camera.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceName)
+        public async Task Remove(string deviceName)
         {
-            try
-            {
-                // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
-
-                // Remove device from  database
-                var deviceId = new HardwareManager().GetDeviceId(deviceName);
-                Database.Instance.RemoveDevice(deviceId);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            // Remove device from  database
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
+            Database.Instance.RemoveDevice(deviceId);
         }
 
         public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)

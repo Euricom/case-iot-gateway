@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
 
-import { LazyBone } from '../../models/lazyBone';
+import { LazyBone } from '../../models/lazyBone'
 import { LazyBoneService } from '../../services/lazyBoneService'
 
 @Component({
@@ -16,7 +16,6 @@ export class LazyBonesViewComponent implements OnInit {
   lazyBone: LazyBone = new LazyBone({})
   selectedRowIndex: Number = undefined
   isAddMode = false
-  isEditMode = false
 
   constructor(
     private route: ActivatedRoute,

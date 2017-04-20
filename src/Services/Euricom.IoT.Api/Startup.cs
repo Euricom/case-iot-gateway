@@ -53,6 +53,7 @@ namespace Euricom.IoT.Api
                 cfg.AddProfile<SettingsMappingProfile>();
                 cfg.AddProfile<LazyBoneMappingProfile>();
                 cfg.AddProfile<DanaLockMappingProfile>();
+                cfg.AddProfile<WallMountMappingProfile>();
                 cfg.AddProfile<CameraMappingProfile>();
                 cfg.AddProfile<LogMappingProfile>();
             });

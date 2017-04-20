@@ -8,6 +8,11 @@ namespace Euricom.IoT.Models
 {
     public class WallMountSwitch : ZWaveDevice
     {
+        public WallMountSwitch()
+        {
+            Type = HardwareType.WallmountSwitch;
+        }
+
         public int PollingTime { get; set; }
     }
 }

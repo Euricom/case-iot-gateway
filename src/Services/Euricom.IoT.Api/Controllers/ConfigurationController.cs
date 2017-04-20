@@ -35,7 +35,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PutResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 

@@ -20,6 +20,7 @@ import { SettingsService } from './services/settingsService'
 import { CameraService } from './services/cameraService'
 import { LazyBoneService } from './services/lazyBoneService'
 import { DanaLockService } from './services/danaLockService'
+import { WallmountService } from './services/wallmountService'
 import { LogService } from './services/logService'
 
 import { AppComponent } from './app.component'
@@ -33,6 +34,7 @@ import { HardwareViewComponent } from './views/hardware/hardwareView.component'
 import { CameraViewComponent } from './views/camera/cameraView.component'
 import { LazyBonesViewComponent } from './views/lazybone/lazyBoneView.component'
 import { DanaLocksViewComponent } from './views/danalocks/danalocksView.component'
+import { WallMountViewComponent } from './views/wallmount-switches/wallmountView.component'
 import { LogViewComponent } from './views/log/logView.component'
 import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
@@ -59,6 +61,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
     CameraViewComponent,
     LazyBonesViewComponent,
     DanaLocksViewComponent,
+    WallMountViewComponent,
     LogViewComponent,
     OpenZWaveLogViewComponent,
   ],
@@ -84,6 +87,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
     CameraService,
     LazyBoneService,
     DanaLockService,
+    WallmountService,
     LogService,
     EventAggregator,
     { provide: CustomErrorHandler, useClass: CustomErrorHandler },

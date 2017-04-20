@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/finally'
+import 'rxjs/add/observable/throw'
 import { Http, XHRBackend, RequestOptions, Request, RequestOptionsArgs, Response, Headers } from '@angular/http'
 import { EventAggregator } from './eventAggregator'
 // declare var $: any
@@ -29,13 +30,12 @@ export class CustomHttpService extends Http {
 
   request(request: Request, options?: RequestOptionsArgs): Observable<Response> {
       console.info(`HTTP: ${mapMethods[request.method]}: ${request.url}`)
-      // request.headers.set('Authorization', `Bearer ${token}`)
       return super.request(request, options)
         .catch((errorRes) => {
           console.error('ERROR: ', errorRes.statusText, errorRes.status)
-          let errorMessage = `Invalid response from server: [${errorRes.statusText}]`
+          let errorMessage = `${errorRes.json().Message}`
           if (errorRes.status === 0) {
-            errorMessage = `Failed to connect to server. Bad connectitify or server down.`
+            errorMessage = `Failed to connect to server. Bad connectivity or server down.`
           }
           this.eventAggregator.publish('ERROR', errorMessage)
           return Observable.throw(errorMessage)

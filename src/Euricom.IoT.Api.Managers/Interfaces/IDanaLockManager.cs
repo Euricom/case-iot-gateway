@@ -10,10 +10,9 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Euricom.IoT.Models.DanaLock> GetByDeviceName(string deviceName);
         Task<Euricom.IoT.Models.DanaLock> Add(Euricom.IoT.Models.DanaLock danaLock);
         Task<Euricom.IoT.Models.DanaLock> Edit(Euricom.IoT.Models.DanaLock danaLock);
-
+        Task Remove(string devicename);
         bool TestConnection(string deviceid);
         Task<bool> IsLocked(string deviceId);
         Task Switch(string deviceid, string state);
-        Task<bool> Remove(string devicename);
     }
 }

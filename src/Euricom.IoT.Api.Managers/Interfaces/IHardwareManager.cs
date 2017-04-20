@@ -7,7 +7,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     public interface IHardwareManager
     {
         Task<Device> AddHardware(Device device);
-        Task<bool> DeleteHardware(string deviceName);
+        Task DeleteHardware(string deviceName);
         Device GetDeviceById(string deviceId);
         Device GetDeviceByName(string deviceName);
         string GetDeviceId(string deviceName);

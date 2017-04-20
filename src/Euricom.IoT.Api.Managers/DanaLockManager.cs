@@ -48,8 +48,8 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<Euricom.IoT.Models.DanaLock> Add(Euricom.IoT.Models.DanaLock danaLock)
         {
-            //Add device to Azure Device IoT
-            danaLock.DeviceId = await _azureDeviceManager.AddDeviceAsync(danaLock.Name);
+            // Generate Device Id
+            danaLock.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
             var json = JsonConvert.SerializeObject(danaLock);
@@ -78,23 +78,11 @@ namespace Euricom.IoT.Api.Managers
             return await GetByDeviceId(danaLock.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceName)
-        {
-            try
-            {
-                // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
-
-                // Remove device from  database
-                var deviceId = new HardwareManager().GetDeviceId(deviceName);
-                Database.Instance.RemoveDevice(deviceId);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+        public async Task Remove(string deviceName)
+        { 
+            // Remove device from  database
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
+            Database.Instance.RemoveDevice(deviceId);       
         }
 
         public bool TestConnection(string deviceId)

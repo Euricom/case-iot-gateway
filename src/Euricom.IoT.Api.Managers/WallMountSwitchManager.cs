@@ -48,8 +48,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<Euricom.IoT.Models.WallMountSwitch> Add(Euricom.IoT.Models.WallMountSwitch wallmount)
         {
-            // Add device to Azure Device IoT
-            // wallmount.DeviceId = await _azureDeviceManager.AddDeviceAsync(wallmount.Name);
+            // Generate Device Id
             wallmount.DeviceId = Guid.NewGuid().ToString();
 
             //Convert to json
@@ -79,23 +78,11 @@ namespace Euricom.IoT.Api.Managers
             return await GetByDeviceId(wallmount.DeviceId);
         }
 
-        public async Task<bool> Remove(string deviceName)
+        public async Task Remove(string deviceName)
         {
-            try
-            {
-                // Remove device from Azure
-                await _azureDeviceManager.RemoveDeviceAsync(deviceName);
-
-                // Remove device from  database
-                var deviceId = new HardwareManager().GetDeviceId(deviceName);
-                Database.Instance.RemoveDevice(deviceId);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            // Remove device from  database
+            var deviceId = new HardwareManager().GetDeviceId(deviceName);
+            Database.Instance.RemoveDevice(deviceId);
         }
 
         public bool TestConnection(string deviceId)

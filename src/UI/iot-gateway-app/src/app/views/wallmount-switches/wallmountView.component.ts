@@ -3,17 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
 
-import { DanaLock } from '../../models/danaLock'
-import { DanaLockService } from '../../services/danaLockService'
+import { Wallmount } from '../../models/wallmount'
+import { WallmountService } from '../../services/wallmountService'
 
 @Component({
   selector: 'overview',
-  templateUrl: './danaLocksView.component.html',
+  templateUrl: './wallmountView.component.html',
 })
-export class DanaLocksViewComponent implements OnInit {
+export class WallMountViewComponent implements OnInit {
 
-  danalocks: DanaLock[]
-  danalock: DanaLock = new DanaLock({})
+  wallmounts: Wallmount[]
+  wallmount: Wallmount = new Wallmount({})
   selectedRowIndex: Number = undefined
   isAddMode = false
 
@@ -22,7 +22,7 @@ export class DanaLocksViewComponent implements OnInit {
     private router: Router,
     private location: Location,
     // private formBuilder: FormBuilder,
-    private danaLockService: DanaLockService,
+    private wallmountService: WallmountService,
     private toastr: ToastsManager,
   ) {
     this.refresh()
@@ -31,7 +31,7 @@ export class DanaLocksViewComponent implements OnInit {
   setAddMode(): void {
     this.selectedRowIndex = undefined
     this.isAddMode = true
-    this.danalock = new DanaLock({})
+    this.wallmount = new Wallmount({})
   }
 
   cancelEdit(): void {
@@ -40,11 +40,11 @@ export class DanaLocksViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.danaLockService.save(this.danalock)
+    this.wallmountService.save(this.wallmount)
       .subscribe(
       (data) => {
         this.isAddMode = false
-        this.toastr.info('DanaLock updated successfully')
+        this.toastr.info('Wallmount updated successfully')
         this.refresh()
       },
       (err) => {
@@ -52,57 +52,51 @@ export class DanaLocksViewComponent implements OnInit {
       })
   }
 
-  delete(danaLock: DanaLock, event: Event): void {
+  delete(wallmount: Wallmount, event: Event): void {
     event.stopPropagation()
-    this.danaLockService.delete(danaLock.Name)
+    this.wallmountService.delete(wallmount.Name)
       .subscribe(
       (data) => {
         this.selectedRowIndex = undefined
-        this.toastr.info('DanaLock removed successfully')
+        this.toastr.info('Wallmount removed successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   ngOnInit(): void {
-    this.danalock = new DanaLock({})
+    this.wallmount = new Wallmount({})
   }
 
   refresh() {
-    this.danaLockService.getAll()
+    this.wallmountService.getAll()
       .subscribe(
       (data) => {
-        this.danalocks = data
+        this.wallmounts = data
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  testConnection(danaLock: DanaLock, event: Event) {
+  testConnection(wallmount: Wallmount, event: Event) {
     event.stopPropagation()
-    if (!this.validate(danaLock)) {
+    if (!this.validate(wallmount)) {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.danaLockService.testConnection(danaLock.Name)
+    this.wallmountService.testConnection(wallmount.Name)
       .subscribe(
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  isLocked(danaLock: DanaLock) {
-    if (!this.validate(danaLock)) {
-      this.toastr.error('Cannot get danalock state without valid Node ID')
+  getState(wallmount: Wallmount) {
+    if (!this.validate(wallmount)) {
+      this.toastr.error('Cannot get wallmount state without valid Node ID')
       return
     }
-    this.danaLockService.isLocked(danaLock.Name)
+    this.wallmountService.getState(wallmount.Name)
       .subscribe(
       (data) => {
         if (data === 'True') {
@@ -111,17 +105,15 @@ export class DanaLocksViewComponent implements OnInit {
           this.toastr.info('DanaLock door is unlocked')
         }
       },
-      (err) => {
-        this.toastr.error('error occurred while requesting door lock state' + err)
-      })
+      )
   }
 
-  switch(danaLock: DanaLock, state: String) {
-    if (!this.validate(danaLock)) {
+  switch(wallmount: Wallmount, state: String) {
+    if (!this.validate(wallmount)) {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.danaLockService.switch(danaLock.Name, state)
+    this.wallmountService.switch(wallmount.Name, state)
       .subscribe(
       (data) => {
         this.toastr.info(data)
@@ -131,12 +123,12 @@ export class DanaLocksViewComponent implements OnInit {
       })
   }
 
-  setClickedRow(i: Number, danaLock: DanaLock) {
+  setClickedRow(i: Number, wallmount: Wallmount) {
     this.selectedRowIndex = i
-    this.danalock = danaLock
+    this.wallmount = wallmount
   }
 
-  validate(danalock: DanaLock): boolean {
+  validate(danalock: Wallmount): boolean {
     if (!danalock.NodeId) {
       return false
     }

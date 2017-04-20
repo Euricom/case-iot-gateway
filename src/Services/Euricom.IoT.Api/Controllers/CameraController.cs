@@ -38,7 +38,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get cameras: exception: {ex.Message}");
+                throw new Exception($"Could not get cameras: exception: {ex.Message}");
             }
         }
 
@@ -54,7 +54,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get camera: exception: {ex.Message}");
+                throw new Exception($"Could not get camera: exception: {ex.Message}");
             }
         }
 
@@ -70,7 +70,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not add camera: exception: {ex.Message}");
+                throw new Exception($"Could not add camera: exception: {ex.Message}");
             }
         }
 
@@ -86,7 +86,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PutResponseFail($"Could not edit camera: exception: {ex.Message}");
+                throw new Exception($"Could not edit camera: exception: {ex.Message}");
             }
         }
 
@@ -95,13 +95,13 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var removed = await _cameraManager.Remove(devicename);
-                return ResponseUtilities.DeleteResponseOk(removed.ToString());
+                await _cameraManager.Remove(devicename);
+                return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.DeleteResponseFail($"Could not remove camera: exception: {ex.Message}");
+                throw new Exception($"Could not remove camera: exception: {ex.Message}");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
     }

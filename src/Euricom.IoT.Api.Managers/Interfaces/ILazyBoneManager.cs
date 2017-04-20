@@ -11,6 +11,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Euricom.IoT.Models.LazyBone> GetByDeviceName(string deviceName);
         Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone danaLock);
         Task<Euricom.IoT.Models.LazyBone> Edit(Euricom.IoT.Models.LazyBone danaLock);
+        Task Remove(string devicename);
         Task<bool> TestConnection(string deviceId);
         Task<bool> GetCurrentStateSwitch(string deviceId);
         Task<LazyBoneDimmerState> GetCurrentStateDimmer(string deviceId);
@@ -30,6 +31,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         /// <param name="deviceId"></param>
         /// <returns></returns>
         Task TestChangeLightIntensity(string deviceId);
-        Task<bool> Remove(string devicename);
+
     }
 }

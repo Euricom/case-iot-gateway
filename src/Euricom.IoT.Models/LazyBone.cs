@@ -8,6 +8,11 @@ namespace Euricom.IoT.Models
 {
     public class LazyBone : Device
     {
+        public LazyBone()
+        {
+            Type = IsDimmer == false ? HardwareType.LazyBoneSwitch : HardwareType.LazyBoneDimmer;
+        }
+
         public string Host { get; set; }
         public short Port { get; set; }
         public int PollingTime { get; set; }
