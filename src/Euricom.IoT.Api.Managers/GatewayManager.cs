@@ -1,11 +1,9 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 using Euricom.IoT.Models.Messages;
 using Euricom.IoT.Security;
 using Microsoft.Azure.Devices.Client;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
 using System.Text;
@@ -15,14 +13,15 @@ namespace Euricom.IoT.Api.Managers
 {
     public class GatewayManager : IGatewayManager
     {
-        private MemoryCache _cache;
         private IDanaLockManager _danaLockManager;
         private ILazyBoneManager _lazyBoneManager;
+        private IWallMountSwitchManager _wallmountSwitchManager;
 
         public GatewayManager()
         {
             _danaLockManager = new DanaLockManager();
             _lazyBoneManager = new LazyBoneManager();
+            _wallmountSwitchManager = new WallMountSwitchManager();
         }
 
         public async Task Initialize()
@@ -78,58 +77,39 @@ namespace Euricom.IoT.Api.Managers
             if (message == null)
                 throw new ArgumentNullException("message");
 
-            if (String.IsNullOrEmpty(message.CommandToken))
-                throw new ArgumentNullException("message.CommandToken");
+            if (message.MessageType == null)
+                throw new ArgumentNullException("message.MessageType");
 
-            if (String.IsNullOrEmpty(message.DeviceType))
-                throw new ArgumentNullException("message.DeviceType");
+            return await HandleCommandMessage((CommandMessage) message);
+        }
 
-            if (String.IsNullOrEmpty(message.Message))
-                throw new ArgumentNullException("message.Message");
-
+        private async Task<bool> HandleCommandMessage(CommandMessage message)
+        {
             // Verify JWT token
             var isValid = JwtSecurity.VerifyJwt(message.CommandToken);
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
 
-            return await ExecuteCommand(message);
-        }
-
-        private async Task<bool> ExecuteCommand(GatewayMessage message)
-        {
-            var deviceType = GetDeviceType(message.DeviceType);
-            switch (deviceType)
+            var deviceId = new HardwareManager().GetDeviceId(message.Device);
+            switch (message.MessageType)
             {
-                case HardwareType.Camera:
-                    return false;
-                case HardwareType.DanaLock:
-                    return await HandleDanaLockMessage(message);
-                case HardwareType.LazyBoneSwitch:
-                    return await HandleLazyBoneMessage(message);
-                case HardwareType.LazyBoneDimmer:
-                    return await HandleLazyBoneMessage(message);
-                case HardwareType.WallmountSwitch:
-                    return await HandleWallMountSwitchMessage(message);
+                case "danalock":
+                    return await HandleDanaLockMessage(deviceId, (DanaLockMessage)message);
+                case "lazybone_switch":
+                    return await HandleLazyBoneMessage(deviceId, (LazyBoneSwitchMessage)message);
+                case "lazybone_dimmer":
+                    return await HandleLazyBoneMessage(deviceId, (LazyBoneDimmerMessage)message);
+                case "wallmount_switch":
+                    return await HandleWallMountSwitchMessage(deviceId, (WallmountSwitchMessage)message);
                 default:
-                    throw new InvalidOperationException("unknown hardware type");
+                    throw new InvalidOperationException("unknown message type");
             }
         }
-
-
-
-        private async Task<bool> HandleDanaLockMessage(GatewayMessage message)
+        private async Task<bool> HandleDanaLockMessage(string deviceId, DanaLockMessage message)
         {
             try
             {
-                if (String.IsNullOrEmpty(message.Message))
-                {
-                    Logger.Instance.LogWarningWithContext(this.GetType(), "message was empty");
-                    return false;
-                }
-
-                var danaLockmessage = JsonConvert.DeserializeObject<DanaLockMessage>(message.Message);
-                var deviceId = new HardwareManager().GetDeviceId(danaLockmessage.Name);
-                await _danaLockManager.Switch(deviceId, danaLockmessage.Locked == true ? "close" : "open");
+                await _danaLockManager.Switch(deviceId, message.Locked == true ? "close" : "open");
                 return true;
             }
             catch (Exception ex)
@@ -139,38 +119,40 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        private async Task<bool> HandleWallMountSwitchMessage(GatewayMessage message)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task<bool> HandleLazyBoneMessage(GatewayMessage message)
+        private async Task<bool> HandleWallMountSwitchMessage(string deviceId, WallmountSwitchMessage message)
         {
             try
             {
-                if (String.IsNullOrEmpty(message.Message))
-                {
-                    Logger.Instance.LogWarningWithContext(this.GetType(), "message was empty");
-                    return false;
-                }
+                await _wallmountSwitchManager.Switch(deviceId, message.State == true ? "close" : "open");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                return false;
+            }
+        }
 
-                var deviceType = GetDeviceType(message.DeviceType);
-                if (deviceType == HardwareType.LazyBoneSwitch)
+        private async Task<bool> HandleLazyBoneMessage(string deviceId, GatewayMessage message)
+        {
+            try
+            {
+                var isLazyBoneSwitch = message.MessageType == "lazybone_switch";
+                var isLazyBoneDimmer = message.MessageType == "lazybone_dimmer";
+
+                if (isLazyBoneSwitch)
                 {
-                    var lazyBoneMessage = JsonConvert.DeserializeObject<LazyBoneSwitchMessage>(message.Message);
-                    var deviceId = new HardwareManager().GetDeviceId(lazyBoneMessage.Name);
-                    await _lazyBoneManager.Switch(deviceId, lazyBoneMessage.State == true ? "on" : "off");
+                    var lazyBoneMsg = (LazyBoneSwitchMessage)message;
+                    await _lazyBoneManager.Switch(deviceId, lazyBoneMsg.State == true ? "on" : "off");
                     return true;
                 }
-                else if (deviceType == HardwareType.LazyBoneDimmer)
+                else if (isLazyBoneDimmer)
                 {
-                    var lazyBoneMessage = JsonConvert.DeserializeObject<LazyBoneDimmerMessage>(message.Message);
-                    var deviceId = new HardwareManager().GetDeviceId(lazyBoneMessage.Name);
+                    var lazyBoneMsg = (LazyBoneDimmerMessage)message;
+                    await _lazyBoneManager.Switch(deviceId, lazyBoneMsg.State == true ? "on" : "off");
 
-                    await _lazyBoneManager.Switch(deviceId, lazyBoneMessage.State == true ? "on" : "off");
-
-                    if (lazyBoneMessage.LightIntensity.HasValue)
-                        await _lazyBoneManager.SetLightValue(deviceId, lazyBoneMessage.LightIntensity);
+                    if (lazyBoneMsg.LightIntensity.HasValue)
+                        await _lazyBoneManager.SetLightValue(deviceId, lazyBoneMsg.LightIntensity);
 
                     return true;
                 }

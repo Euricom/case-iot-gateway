@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models.Messages
 {
-    public class LazyBoneDimmerMessage
+    public class LazyBoneDimmerMessage : CommandMessage
     {
-        public string Name { get; set; }
         public bool State { get; set; }
         public short? LightIntensity { get; set; }
     }

@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\CommandMessage.cs" />
     <Compile Include="Messages\LazyBoneDimmerMessage.cs" />
     <Compile Include="Messages\WallmountSwitchMessage.cs" />
     <Compile Include="Notifications\WallMountSwitchNotification.cs" />
