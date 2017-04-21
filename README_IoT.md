@@ -2,11 +2,25 @@
 
 ## Requesting command token
 
+Must be on WIFI:
+
+POST http://10.0.1.31:8800/api/security/requestcommandtoken
+
+Headers {"Content-Type":"application/json"}
+
+Body: include the JWT accesstoken
+
 ```json
 {
   "AccesToken": "..."
 }
 ```
+
+Returns a JWT (example)
+```json
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+```
+(this jwt is just a sample jwt from https://jwt.io/)
 
 
 ## Euricom IoT Gateway IoT Hub messages
@@ -24,6 +38,17 @@ public class GatewayMessage
     public string Message { get; set; }
 }
 ```
+
+- CommandToken: JWT (expires after 1 min), App must request new CommandToken every 1 minute or else the following commands do not succeed!
+
+- DeviceType must be one of the following strings:
+	-  "danalock"
+	-  "camera"
+	-  "lazybone_switch"
+	-  "lazybone_dimmer"
+	-  "wallmount_swith"
+
+- Message contains the device command message (open door, close door, switch lazybone on, etc)
 
 ### DanaLock
 
@@ -44,22 +69,22 @@ public class DanaLockMessage
 Examples:
 
 
-**Lock** DanaLock with name "danalock_front_door"
+**Lock door** DanaLock with name "danalock_front_door"
 
 
 ```json
 {  
-   "CommandToken": "command_token_jwt", //**Replace with the correct jwt**
+   "CommandToken": "command_token_jwt", //Replace with the correct jwt
    "DeviceType":"danalock",
    "Message": { "Name": "danalock_front_door", "Locked": "true" }
 }
 ```
 
-**Unlock** DanaLock with name "danalock_front_door"
+**Unlock door** DanaLock with name "danalock_front_door"
 
 ```json
 {  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
+   "CommandToken": "jwt", //Replace with the correct jwt
    "DeviceType": "danalock",
    "Message": { "Name": "danalock_front_door", "Locked": "false" }
 }
@@ -84,22 +109,22 @@ public class LazyBoneSwitchMessage
 Examples:
 
 
-**On** LazyBone with name "lazybone1"
+**Set lazybone ON** LazyBone with name "lazybone1"
 
 
 ```json
 {  
-   "CommandToken":"jwt", //**Replace with the correct jwt**
+   "CommandToken":"jwt", //Replace with the correct jwt
    "DeviceType":"lazybone_switch",
    "Message": { "Name": "lazybone1", "State": "true" }
 }
 ```
 
-**Off** LazyBone with name "lazybone1"
+**Set lazybone OFF** LazyBone with name "lazybone1"
 
 ```json
 {  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
+   "CommandToken": "jwt", //Replace with the correct jwt
    "DeviceType": "lazybone_switch",
    "Message": { "Name": "lazybone1", "State": "false" }
 }
@@ -127,35 +152,35 @@ public class LazyBoneDimmerMessage
 Examples:
 
 
-**Set dimmer on** LazyBone with name "lazybone2"
+**Set dimmer ON** LazyBone with name "lazybone2"
 
 
 ```json
 {  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
+   "CommandToken": "jwt", //Replace with the correct jwt
    "DeviceType":"lazybone_dimmer",
    "Message": { "Name": "lazybone1", "State": "" }
 }
 ```
 
-**Set dimmer off** LazyBone with name "lazybone2"
+**Set dimmer OFF** LazyBone with name "lazybone2"
 
 ```json
 {  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
+   "CommandToken": "jwt", //Replace with the correct jwt
    "DeviceType":"lazybone_dimmer",
-   "Message": { "Name": "lazybone1", "State": "false" }
+   "Message": { "Name": "lazybone2", "State": "false" }
 }
 ```
 
-**Set dimmer on and change light value**
+**Set dimmer ON and change light value**
 
 
 ```json
 {  
    "CommandToken": "jwt", //**Replace with the correct jwt**
    "DeviceType":"lazybone_dimmer",
-   "Message": { "Name": "lazybone1", "State": "true", "LightIntensity": "180" }
+   "Message": { "Name": "lazybone2", "State": "true", "LightIntensity": "180" }
 }
 ```
 
@@ -179,7 +204,7 @@ public class WallmountSwitchMessage
 Examples:
 
 
-**On** Wallmount switch with name "wallmount1"
+**Set wallmount ON** Wallmount switch with name "wallmount1"
 
 
 ```json
@@ -190,7 +215,7 @@ Examples:
 }
 ```
 
-**Off** Wallmount switch with name "lazybone1"
+**Set wallmount OFF** Wallmount switch with name "wallmount1"
 
 ```json
 {  
