@@ -1,12 +1,10 @@
 import { Config } from '../../config'
 
-export class LazyBone {
+export class Wallmount {
   DeviceId?: String
   Name?: String
-  IsDimmer?: boolean
   Type?: String
-  Address?: String
-  Port?: Number
+  NodeId?: Number
   PollingTime?: Number
   Enabled?: boolean
 

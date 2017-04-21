@@ -15,6 +15,7 @@ export class LazyBonesViewComponent implements OnInit {
   lazyBones: LazyBone[]
   lazyBone: LazyBone = new LazyBone({})
   selectedRowIndex: Number = undefined
+  isAddMode = false
 
   constructor(
     private route: ActivatedRoute,
@@ -27,16 +28,38 @@ export class LazyBonesViewComponent implements OnInit {
     this.refresh()
   }
 
+  setAddMode(): void {
+    this.selectedRowIndex = undefined
+    this.isAddMode = true
+    this.lazyBone = new LazyBone({})
+  }
+
+  cancelEdit(): void {
+    this.selectedRowIndex = undefined
+    this.refresh()
+  }
+
   onSubmit(): void {
-    this.lazyBoneService.update(this.lazyBone)
+    this.lazyBoneService.save(this.lazyBone)
       .subscribe(
       (data) => {
-        this.toastr.info('lazy bone updated successfully')
+        this.isAddMode = false
+        this.toastr.info('Lazy bone updated successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
+  }
+
+  delete(lazyBone: LazyBone, event: Event): void {
+    event.stopPropagation()
+    this.lazyBoneService.delete(lazyBone.Name)
+      .subscribe(
+      (data) => {
+        this.selectedRowIndex = undefined
+        this.toastr.info('Lazy bone removed successfully')
+        this.refresh()
+      },
+      )
   }
 
   ngOnInit(): void {
@@ -49,64 +72,80 @@ export class LazyBonesViewComponent implements OnInit {
       (data) => {
         this.lazyBones = data
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  testConnection(lazyBone: LazyBone) {
-    if (!lazyBone.Address) {
-      this.toastr.error('Cannot test connection without valid ip address')
+  testConnection(lazyBone: LazyBone, event: Event) {
+    event.stopPropagation()
+    if (!this.validate(lazyBone)) {
       return
     }
     this.toastr.info('testing connection, please wait')
     this.lazyBoneService.testConnection(lazyBone.Name)
-    .subscribe(
+      .subscribe(
       (data) => {
         if (data) {
           this.toastr.info('Connection succesfull')
+        } else {
+          this.toastr.error('Connection failed')
         }
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  getCurrentState(lazyBone: LazyBone) {
-    if (!lazyBone.Address) {
-      this.toastr.error('Cannot get lazy bone state without valid ip address')
+  getCurrentState(lazyBone: LazyBone, event: Event) {
+    event.stopPropagation()
+    if (!this.validate(lazyBone)) {
       return
     }
     this.toastr.info('getting state, please wait')
     this.lazyBoneService.getCurrentState(lazyBone.Name)
-    .subscribe(
+      .subscribe(
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
-  switch(lazyBone: LazyBone, state: String) {
-    if (!lazyBone.Address) {
-      this.toastr.error('Cannot switch without valid ip address')
+  switch(lazyBone: LazyBone, state: String, event: Event) {
+    event.stopPropagation()
+    if (!this.validate(lazyBone)) {
       return
     }
     this.toastr.info('switching, please wait')
     this.lazyBoneService.switch(lazyBone.Name, state)
-    .subscribe(
+      .subscribe(
       (data) => {
         this.toastr.info(data)
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
+  }
+
+  testChangeLightIntensity(lazyBone: LazyBone, event: Event) {
+    event.stopPropagation()
+    if (!this.validate(lazyBone)) {
+      return
+    }
+    this.toastr.info('changing light intensity 3 times, please wait')
+    this.lazyBoneService.testChangeLightIntensity(lazyBone.Name)
+      .subscribe(
+      (data) => {
+        this.toastr.info(data)
+      },
+      )
   }
 
   setClickedRow(i: Number, lazyBone: LazyBone) {
     this.selectedRowIndex = i
     this.lazyBone = lazyBone
+  }
+
+  validate(lazyBone: LazyBone) {
+    if (!lazyBone.Address || !lazyBone.Port) {
+      this.toastr.error('Cannot test without valid ip address and valid port')
+      return false
+    }
+    return true
   }
 
 }

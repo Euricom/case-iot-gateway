@@ -9,6 +9,7 @@ import { HardwareViewComponent } from './views/hardware/hardwareView.component'
 import { CameraViewComponent } from './views/camera/cameraView.component'
 import { LazyBonesViewComponent } from './views/lazybone/lazyBoneView.component'
 import { DanaLocksViewComponent } from './views/danalocks/danalocksView.component'
+import { WallMountViewComponent } from './views/wallmount-switches/wallmountView.component'
 import { LogViewComponent } from './views/log/logView.component'
 import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'hardware', component: HardwareViewComponent, canActivate: [AuthGuardService] },
   { path: 'cameras', component: CameraViewComponent, canActivate: [AuthGuardService] },
   { path: 'switches', component: LazyBonesViewComponent, canActivate: [AuthGuardService] },
+  { path: 'wallmounts', component: WallMountViewComponent, canActivate: [AuthGuardService] },
   { path: 'danalocks', component: DanaLocksViewComponent, canActivate: [AuthGuardService] },
   { path: 'log', component: LogViewComponent, canActivate: [AuthGuardService] },
   { path: 'openzwavelog', component: OpenZWaveLogViewComponent, canActivate: [AuthGuardService] },

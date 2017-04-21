@@ -33,7 +33,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get log: exception: {ex.Message}");
+                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
 
@@ -48,7 +48,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get log: exception: {ex.Message}");
+                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
 
@@ -64,7 +64,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.GetResponseFail($"Could not get log: exception: {ex.Message}");
+                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
     }

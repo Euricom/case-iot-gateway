@@ -23,7 +23,7 @@ namespace Euricom.IoT.Api.Utilities
             data);
         }
 
-        public static DeleteResponse DeleteResponseOk(string message)
+        public static DeleteResponse DeleteResponseOk(string message = null)
         {
             return new DeleteResponse(
             DeleteResponse.ResponseStatus.OK);
@@ -34,41 +34,6 @@ namespace Euricom.IoT.Api.Utilities
             return new PutResponse(
             PutResponse.ResponseStatus.OK,
             data);
-        }
-
-        public static GetResponse GetResponseFail(object data)
-        {
-            return new GetResponse(
-            GetResponse.ResponseStatus.NotFound,
-            data);
-
-        }
-
-        public static PostResponse PostResponseFail(string message)
-        {
-            return new PostResponse(
-            PostResponse.ResponseStatus.Conflict,
-            "",
-            new ResponseData()
-            {
-                Message = message
-            });
-        }
-
-        public static DeleteResponse DeleteResponseFail(string message)
-        {
-            return new DeleteResponse(
-            DeleteResponse.ResponseStatus.NotFound);
-        }
-
-        public static PutResponse PutResponseFail(string message)
-        {
-            return new PutResponse(
-            PutResponse.ResponseStatus.NotFound,
-            new ResponseData()
-            {
-                Message = message
-            });
         }
     }
 }

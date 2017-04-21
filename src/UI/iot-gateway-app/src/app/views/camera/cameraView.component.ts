@@ -15,6 +15,7 @@ export class CameraViewComponent implements OnInit {
   cameras: Camera[]
   camera: Camera = new Camera({})
   selectedRowIndex: Number = undefined
+  isAddMode = false
 
   constructor(
     private route: ActivatedRoute,
@@ -27,16 +28,36 @@ export class CameraViewComponent implements OnInit {
     this.refresh()
   }
 
+  setAddMode(): void {
+    this.selectedRowIndex = undefined
+    this.isAddMode = true
+    this.camera = new Camera({})
+  }
+
+  cancelEdit(): void {
+    this.selectedRowIndex = undefined
+    this.refresh()
+  }
+
   onSubmit(): void {
-    this.cameraService.update(this.camera)
+    this.cameraService.save(this.camera)
       .subscribe(
       (data) => {
+        this.isAddMode = false
         this.toastr.info('camera updated successfully')
         this.refresh()
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
+  }
+
+  delete(camera: Camera, event: Event): void {
+    event.stopPropagation()
+    this.cameraService.delete(camera.Name)
+      .subscribe(
+      (data) => {
+        this.selectedRowIndex = undefined
+        this.toastr.info('Camera removed successfully')
+        this.refresh()
+      },)
   }
 
   ngOnInit(): void {
@@ -48,25 +69,21 @@ export class CameraViewComponent implements OnInit {
       .subscribe(
       (data) => {
         this.cameras = data
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
-  testConnection(camera: Camera) {
+  testConnection(camera: Camera, event: Event) {
+    event.stopPropagation()
     if (!camera.Address) {
       this.toastr.error('Cannot test connection without valid ip address')
       return
     }
+    this.toastr.info('testing connection, please wait')
     this.cameraService.testConnection(camera.Name)
-    .subscribe(
+      .subscribe(
       (data) => {
         this.toastr.info(data)
-      },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      },)
   }
 
   setClickedRow(i: Number, camera: Camera) {

@@ -4,5 +4,5 @@
 	branch = Dev
 [submodule "restup"]
 	path = restup
-	url = https://github.com/tomkuijsten/restup.git
+	url = https://github.com/wimvandenrul/restup.git
 	branch = feature-implement-basic-authorization

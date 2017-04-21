@@ -181,7 +181,7 @@ namespace Euricom.IoT.Monitoring
         {
             var deviceIds = hardware.Cameras.Select(x => x.DeviceId).ToList();
             deviceIds.AddRange(hardware.DanaLocks.Select(x => x.DeviceId).ToList());
-            deviceIds.AddRange(hardware.Switches.Select(x => x.DeviceId).ToList());
+            deviceIds.AddRange(hardware.LazyBones.Select(x => x.DeviceId).ToList());
 
             var keys = _cancellationDevicesPolling.Keys;
             var results = deviceIds.Except(keys).ToList();
@@ -214,7 +214,7 @@ namespace Euricom.IoT.Monitoring
                 }
             }
 
-            foreach (var lazyBone in hardware.Switches)
+            foreach (var lazyBone in hardware.LazyBones)
             {
                 if (lazyBone.Enabled &&
                     _pollingTimesCache.ContainsKey(lazyBone.DeviceId) &&
@@ -264,7 +264,7 @@ namespace Euricom.IoT.Monitoring
         {
             var deviceIds = hardware.Cameras.Select(x => x.DeviceId).ToList();
             deviceIds.AddRange(hardware.DanaLocks.Select(x => x.DeviceId).ToList());
-            deviceIds.AddRange(hardware.Switches.Select(x => x.DeviceId).ToList());
+            deviceIds.AddRange(hardware.LazyBones.Select(x => x.DeviceId).ToList());
 
             var keys = _cancellationDevicesPolling.Keys;
             var results = keys.Except(deviceIds).ToList();

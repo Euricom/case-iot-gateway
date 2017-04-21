@@ -45,8 +45,11 @@ namespace Euricom.IoT.LazyBone
             }
         }
 
-        public async Task SetLightValue(int value)
+        public async Task SetLightValue(short? value)
         {
+            if (!value.HasValue)
+                return;
+
             if (value < 0x00)
                 throw new ArgumentOutOfRangeException("value must not be less than 0");
 
@@ -56,7 +59,7 @@ namespace Euricom.IoT.LazyBone
             lock (_client)
             {
                 var cmdStr = HexUtilities.ToHexString(0x67);
-                cmdStr += HexUtilities.ToHexString(value);
+                cmdStr += HexUtilities.ToHexString(value.Value);
                 cmdStr += HexUtilities.ToHexString(0x0D);
                 var response = _client.Send(cmdStr, false).Result;
             }

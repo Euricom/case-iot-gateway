@@ -306,8 +306,24 @@ namespace Euricom.IoT.DataLayer
                             removed = true;
                         }
                     }
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_WALLMOUNTS))
+                    {
+                        if (row.Key == deviceId)
+                        {
+                            tran.RemoveKey(Constants.DBREEZE_TABLE_WALLMOUNTS, row.Key);
+                            removed = true;
+                        }
+                    }
+
+                    // Commit changes
                     tran.Commit();
                 }
+
+                if (!removed)
+                {
+                    throw new Exception("Remove failed because key was not found in any table");
+                }
+
                 return removed;
             }
             catch (Exception ex)
@@ -341,8 +357,9 @@ namespace Euricom.IoT.DataLayer
             {
                 var hardware = new Hardware();
                 hardware.Cameras = GetCameras();
-                hardware.Switches = GetLazyBones();
+                hardware.LazyBones = GetLazyBones();
                 hardware.DanaLocks = GetDanaLocks();
+                hardware.WallMountSwitches = GetWallMountSwitches();
                 return hardware;
             }
             catch (Exception ex)
@@ -411,6 +428,7 @@ namespace Euricom.IoT.DataLayer
                         var deviceConfig = JsonConvert.DeserializeObject<LazyBone>(row.Value);
                         lazyBones.Add(deviceConfig);
                     }
+                    tran.Commit();
                 }
                 return lazyBones;
             }

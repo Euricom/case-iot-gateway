@@ -33,7 +33,7 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+                throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
 
@@ -49,22 +49,22 @@ namespace Euricom.IoT.Api.Controllers
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not login: exception: {ex.Message}");
+                throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/security/getcommandtoken")]
+        [UriFormat("/security/requestcommandtoken")]
         public IPostResponse RequestCommandToken([FromContent] RequestForAccessToken request)
         {
             try
             {
-                var commandTokenJwt = _securityManager.RequestCommandToken(request.JWT);
+                var commandTokenJwt = _securityManager.RequestCommandToken(request.AccessToken);
                 return ResponseUtilities.PostResponseOk(commandTokenJwt);
             }
             catch (Exception ex)
             {
                 Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                return ResponseUtilities.PostResponseFail($"Could not get log: exception: {ex.Message}");
+                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
     }

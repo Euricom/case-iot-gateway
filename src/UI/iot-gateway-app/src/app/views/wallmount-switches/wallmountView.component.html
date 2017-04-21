@@ -1,4 +1,4 @@
-<h2>Danalocks</h2>
+<h2>Wallmount Switches</h2>
 
 <style type="text/css">
   .top-buffer {
@@ -29,25 +29,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let danalock of danalocks; let i=index" (click)="setClickedRow(i, danalock)" [class.active]="i == selectedRowIndex">
-          <td>{{danalock.Name}}</td>
-          <td>{{danalock.NodeId}}</td>
-          <td>{{danalock.PollingTime}}</td>
-          <td>{{danalock.Enabled}}</td>
+        <tr *ngFor="let wallmount of wallmounts; let i=index" (click)="setClickedRow(i, wallmount)" [class.active]="i == selectedRowIndex">
+          <td>{{wallmount.Name}}</td>
+          <td>{{wallmount.NodeId}}</td>
+          <td>{{wallmount.PollingTime}}</td>
+          <td>{{wallmount.Enabled}}</td>
           <td>
-            <button type="button" (click)="testConnection(danalock, $event)" class="btn btn-primary">Test Connection</button>
+            <button type="button" (click)="testConnection(wallmount, $event)" class="btn btn-primary">Test Connection</button>
           </td>
           <td>
-            <button type="button" (click)="isLocked(danalock, $event)" class="btn btn-primary">Get door lock state (open or closed)</button>
+            <button type="button" (click)="getState(wallmount, $event)" class="btn btn-primary">Get state (on or off)</button>
           </td>
           <td>
-            <button type="button" (click)="switch(danalock, 'open', $event)" class="btn btn-primary">Open door</button>
+            <button type="button" (click)="switch(wallmount, 'on', $event)" class="btn btn-primary">Set to ON</button>
           </td>
           <td>
-            <button type="button" (click)="switch(danalock, 'close', $event)" class="btn btn-primary">Close door</button>
+            <button type="button" (click)="switch(wallmount, 'off', $event)" class="btn btn-primary">Set to OFF</button>
           </td>
           <td>
-            <button type="button" (click)="delete(danalock, $event)" class="btn btn-danger">Delete</button>
+            <button type="button" (click)="delete(wallmount, $event)" class="btn btn-danger">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -58,7 +58,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <button type="button" class="btn btn-primary" (click)="setAddMode()">Add new DanaLock</button>
+    <button type="button" class="btn btn-primary" (click)="setAddMode()">Add new WallMount</button>
   </div>
 </div>
 
@@ -66,27 +66,27 @@
   <div class="col-md-4">
     <div *ngIf="isAddMode || (selectedRowIndex != undefined)" class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title" *ngIf="isAddMode && (selectedRowIndex == undefined)">Add DanaLock</h3>
-        <h3 class="panel-title" *ngIf="(selectedRowIndex != undefined)">Edit DanaLock</h3>
+        <h3 class="panel-title" *ngIf="isAddMode && (selectedRowIndex == undefined)">Add Wallmount Switch</h3>
+        <h3 class="panel-title" *ngIf="(selectedRowIndex != undefined)">Edit Wallmount Switch</h3>
       </div>
       <div class="panel-body">
         <form class="form-horizontal" role="form" (ngSubmit)="onSubmit(form)" novalidate>
           <div class="form-group">
-            <label for="name" class="control-label col-sm-4">DanaLock name</label>
+            <label for="name" class="control-label col-sm-4">Wallmount Switch name</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="name" id="name" [(ngModel)]="danalock.Name" placeholder="Enter DanaLock name">
+              <input type="text" class="form-control" name="name" id="name" [(ngModel)]="wallmount.Name" placeholder="Enter Wallmount Switch name">
             </div>
           </div>
           <div class="form-group">
             <label for="port" class="control-label col-sm-4"> (OpenZWave) Node ID</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="nodeId" id="nodeId" [(ngModel)]="danalock.NodeId" placeholder="Enter DanaLock Node Id">
+              <input type="text" class="form-control" name="nodeId" id="nodeId" [(ngModel)]="wallmount.NodeId" placeholder="Enter Wallmount Switch Node Id">
             </div>
           </div>
           <div class="form-group">
             <label for="pollingtime" class="control-label col-sm-4">Polling time</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="danalock.PollingTime" placeholder="Enter polling time in milliseconds">
+              <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="wallmount.PollingTime" placeholder="Enter polling time in milliseconds">
             </div>
           </div>
           <div class="form-group">
@@ -94,7 +94,7 @@
             <div class=" col-sm-8">
               <div class="checkbox">
                 <label>
-            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="danalock.Enabled">
+            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="wallmount.Enabled">
           </label>
               </div>
             </div>

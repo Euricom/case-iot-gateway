@@ -65,4 +65,9 @@ export class LazyBoneService {
     return this.authHttp.put(`${this.config.baseUrl}/api/lazyBone/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
+
+  testChangeLightIntensity(id: String) {
+    return this.authHttp.put(`${this.config.baseUrl}/api/lazyBone/testchangelightintensity?devicename=${id}`, null)
+      .map((res: Response) => (res.json()))
+  }
 }

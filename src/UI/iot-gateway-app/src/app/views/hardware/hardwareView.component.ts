@@ -39,9 +39,7 @@ export class HardwareViewComponent implements OnInit {
         this.toastr.info('device created successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   ngOnInit(): void {
@@ -71,9 +69,7 @@ export class HardwareViewComponent implements OnInit {
         this.toastr.info('device deleted successfully')
         this.refresh()
       },
-      (err) => {
-        this.toastr.error('error occurred' + err)
-      })
+      )
   }
 
   refresh() {

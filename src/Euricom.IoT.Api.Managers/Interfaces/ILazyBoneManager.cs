@@ -11,11 +11,26 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<Euricom.IoT.Models.LazyBone> GetByDeviceName(string deviceName);
         Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone danaLock);
         Task<Euricom.IoT.Models.LazyBone> Edit(Euricom.IoT.Models.LazyBone danaLock);
+        Task Remove(string devicename);
         Task<bool> TestConnection(string deviceId);
         Task<bool> GetCurrentStateSwitch(string deviceId);
         Task<LazyBoneDimmerState> GetCurrentStateDimmer(string deviceId);
         Task Switch(string deviceId, string state);
-        Task SetLightValue(string deviceId, int value);
-        Task<bool> Remove(string devicename);
+
+        /// <summary>
+        /// Changes light intensity of specific device
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <param name="value">Must be between 1 and 255 inclusive (1 is brightest, 255 is darkest)</param>
+        /// <returns></returns>
+        Task SetLightValue(string deviceId, short? value);
+
+        /// <summary>
+        /// Changes light intensity three times as a test
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <returns></returns>
+        Task TestChangeLightIntensity(string deviceId);
+
     }
 }

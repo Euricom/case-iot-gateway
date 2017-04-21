@@ -8,6 +8,11 @@ namespace Euricom.IoT.Models
 {
     public class DanaLock : ZWaveDevice
     {
+        public DanaLock()
+        {
+            Type = HardwareType.DanaLock;
+        }
+
         public int PollingTime { get; set; }
     }
 }

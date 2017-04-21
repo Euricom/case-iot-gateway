@@ -14,13 +14,14 @@ namespace Euricom.IoT.Api.Managers
         private readonly ICameraManager _cameraManager;
         private readonly IDanaLockManager _danaLockManager;
         private readonly ILazyBoneManager _lazyBoneManager;
-
+        private readonly IWallMountSwitchManager _wallmountManager;
 
         public HardwareManager()
         {
             _cameraManager = new CameraManager();
             _danaLockManager = new DanaLockManager();
             _lazyBoneManager = new LazyBoneManager();
+            _wallmountManager = new WallMountSwitchManager();
         }
 
         public string GetDeviceId(string deviceName)
@@ -58,13 +59,13 @@ namespace Euricom.IoT.Api.Managers
                 });
             }
 
-            foreach (var hardwareItem in hardware.Switches)
+            foreach (var hardwareItem in hardware.LazyBones)
             {
                 devices.Add(new Device()
                 {
                     DeviceId = hardwareItem.DeviceId,
                     Name = hardwareItem.Name,
-                    Type = HardwareType.LazyBoneSwitch
+                    Type = hardwareItem.IsDimmer == false ? HardwareType.LazyBoneSwitch : HardwareType.LazyBoneDimmer
                 });
             }
 
@@ -75,6 +76,16 @@ namespace Euricom.IoT.Api.Managers
                     DeviceId = hardwareItem.DeviceId,
                     Name = hardwareItem.Name,
                     Type = HardwareType.DanaLock
+                });
+            }
+
+            foreach (var hardwareItem in hardware.WallMountSwitches)
+            {
+                devices.Add(new Device()
+                {
+                    DeviceId = hardwareItem.DeviceId,
+                    Name = hardwareItem.Name,
+                    Type = HardwareType.WallmountSwitch
                 });
             }
 
@@ -122,23 +133,40 @@ namespace Euricom.IoT.Api.Managers
                         Type = HardwareType.LazyBoneSwitch
                     });
                     break;
+                case HardwareType.LazyBoneDimmer:
+                    device = await _lazyBoneManager.Add(new Euricom.IoT.Models.LazyBone()
+                    {
+                        Name = device.Name,
+                        Type = HardwareType.LazyBoneDimmer
+                    });
+                    break;
+                case HardwareType.WallmountSwitch:
+                    device = await _wallmountManager.Add(new Euricom.IoT.Models.WallMountSwitch()
+                    {
+                        Name = device.Name,
+                        Type = HardwareType.WallmountSwitch
+                    });
+                    break;
                 default:
                     throw new ArgumentException($"type: {device.Type} has no implementation..");
             }
             return device;
         }
 
-        public async Task<bool> DeleteHardware(string deviceName)
+        public async Task DeleteHardware(string deviceName)
         {
             var device = GetDeviceByName(deviceName);
             switch (device.Type)
             {
                 case HardwareType.Camera:
-                    return await _cameraManager.Remove(device.Name);
+                    await _cameraManager.Remove(device.Name);
+                    break;
                 case HardwareType.DanaLock:
-                    return await _danaLockManager.Remove(device.Name);
+                    await _danaLockManager.Remove(device.Name);
+                    break;
                 case HardwareType.LazyBoneSwitch:
-                    return await _lazyBoneManager.Remove(device.Name);
+                    await _lazyBoneManager.Remove(device.Name);
+                    break;
                 default:
                     throw new ArgumentException($"type: {device.Type} has no implementation..");
             }

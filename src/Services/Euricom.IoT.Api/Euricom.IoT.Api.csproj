@@ -110,6 +110,7 @@
     <Compile Include="Controllers\DanaLockController.cs" />
     <Compile Include="Controllers\WallMountSwitchController.cs" />
     <Compile Include="Dtos\DanaLockDto.cs" />
+    <Compile Include="Dtos\WallMountSwitchDto.cs" />
     <Compile Include="Dtos\LazyBoneDto.cs" />
     <Compile Include="Dtos\CameraDto.cs" />
     <Compile Include="Dtos\DeviceDto.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Dtos\SettingsDto.cs" />
     <Compile Include="Mappings\DanaLockMappingProfile.cs" />
     <Compile Include="Mappings\CameraMappingProfile.cs" />
+    <Compile Include="Mappings\WallMountMappingProfile.cs" />
     <Compile Include="Mappings\SettingsMappingProfile.cs" />
     <Compile Include="Mappings\LogMappingProfile.cs" />
     <Compile Include="Mappings\LazyBoneMappingProfile.cs" />

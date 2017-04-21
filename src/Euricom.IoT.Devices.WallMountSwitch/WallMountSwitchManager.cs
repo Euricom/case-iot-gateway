@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.WallMountSwitch
 {
+    // This class uses the SwitchBinary implementation of OpenZWave
     // https://github.com/OpenZWave/open-zwave/blob/Dev/cpp/src/command_classes/SwitchBinary.h
     public class WallMountSwitchManager : IWallMountSwitchManager
     {
@@ -26,15 +27,12 @@ namespace Euricom.IoT.WallMountSwitch
         public void SetOn(byte nodeId)
         {
             uint homeId = GetHomeId();
-
-            // Unlock or lock door
             ZWManager.Instance.SetValue(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x25, 1, 0, ZWValueType.Bool, 0), false);
         }
 
         public void SetOff(byte nodeId)
         {
             uint homeId = GetHomeId();
-            //Unlock or lock door
             ZWManager.Instance.SetValue(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x25, 1, 0, ZWValueType.Bool, 0), true);
         }
 

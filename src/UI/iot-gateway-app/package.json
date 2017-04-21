@@ -20,13 +20,15 @@
     "@angular/platform-browser": "^2.4.9",
     "@angular/platform-browser-dynamic": "^2.4.9",
     "@angular/router": "^3.4.9",
+    "angular2-jwt": "^0.2.2",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "moment": "^2.18.1",
     "ng2-bootstrap": "^1.6.0",
     "ng2-datepicker": "^1.8.3",
-    "rxjs": "^5.1.0",
-    "zone.js": "^0.7.6"
+    "rxjs": "^5.2.0",
+    "spin.js": "^2.3.2",
+    "zone.js": "^0.7.7"
   },
   "devDependencies": {
     "@angular/cli": "1.0.0-rc.4",
@@ -44,8 +46,8 @@
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
-    "tslint": "~4.5.0",
-    "typescript": "~2.0.0",
+    "tslint": "^4.5.1",
+    "typescript": "^2.2.1",
     "bootstrap": "^3.3.7",
     "ng2-toastr": "^1.6.0"
   }

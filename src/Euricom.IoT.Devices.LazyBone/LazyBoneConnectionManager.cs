@@ -70,7 +70,7 @@ namespace Euricom.IoT.LazyBone
             }
         }
 
-        public async Task SetLightValue(string deviceId, Euricom.IoT.Models.LazyBone config, int lightValue)
+        public async Task SetLightValue(string deviceId, Euricom.IoT.Models.LazyBone config, short? lightValue)
         {
             var lazyBoneDimmer = (Euricom.IoT.LazyBone.LazyBoneDimmer)GetLazyBone(deviceId, config);
             await lazyBoneDimmer.SetLightValue(lightValue);

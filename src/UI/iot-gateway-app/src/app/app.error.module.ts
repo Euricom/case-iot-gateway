@@ -1,15 +1,18 @@
 import { NgModule, ErrorHandler, OnInit, Injector } from '@angular/core'
 import { Response } from '@angular/http'
 import { Router } from '@angular/router'
+import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 
 @NgModule({
-  providers: [{ provide: ErrorHandler, useClass: MyErrorHandler }],
+  providers: [{ provide: CustomErrorHandler, useClass: CustomErrorHandler }],
 })
-export class MyErrorHandler implements OnInit, ErrorHandler {
+export class CustomErrorHandler implements OnInit, ErrorHandler {
 
   router: Router
 
-  constructor(private injector: Injector) {
+  constructor(
+    private injector: Injector,
+    private toastr: ToastsManager) {
     this.router = this.injector.get(Router)
   }
 
@@ -25,7 +28,7 @@ export class MyErrorHandler implements OnInit, ErrorHandler {
         }
         break
       default:
-        alert('error: ' + error)
+        this.toastr.error(error.statusText)
     }
   }
 }
