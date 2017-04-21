@@ -53,12 +53,12 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/security/getcommandtoken")]
+        [UriFormat("/security/requestcommandtoken")]
         public IPostResponse RequestCommandToken([FromContent] RequestForAccessToken request)
         {
             try
             {
-                var commandTokenJwt = _securityManager.RequestCommandToken(request.JWT);
+                var commandTokenJwt = _securityManager.RequestCommandToken(request.AccessToken);
                 return ResponseUtilities.PostResponseOk(commandTokenJwt);
             }
             catch (Exception ex)

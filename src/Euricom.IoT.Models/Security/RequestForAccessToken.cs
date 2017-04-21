@@ -8,7 +8,6 @@ namespace Euricom.IoT.Models.Security
 {
     public class RequestForAccessToken
     {
-        public string JWT;
-
+        public string AccessToken;
     }
 }

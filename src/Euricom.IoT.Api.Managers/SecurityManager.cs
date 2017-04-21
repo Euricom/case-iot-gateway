@@ -9,6 +9,8 @@ namespace Euricom.IoT.Api.Managers
     public class SecurityManager : ISecurityManager
     {
         private IMailer _mailer;
+        private static int _loginExpires = 60;
+        private static int _wifiExpires = 1;
 
         public SecurityManager(Mailer mailer)
         {
@@ -26,7 +28,7 @@ namespace Euricom.IoT.Api.Managers
             if (!valid)
                 throw new Exception("Invalid login");
 
-            var jwt = JwtSecurity.GenerateJwt(username);
+            var jwt = JwtSecurity.GenerateJwt(username, _loginExpires);
             return jwt;
         }
 
@@ -35,16 +37,21 @@ namespace Euricom.IoT.Api.Managers
             if (PUK != Constants.PUK)
                 throw new Exception("PUK code invalid!");
 
-            var jwt = JwtSecurity.GenerateJwt(PUK);
+            var jwt = JwtSecurity.GenerateJwt(PUK, _loginExpires);
             return jwt;
         }
 
         public string RequestCommandToken(string accessToken)
         {
+            // Verify if access token is valid
             var isValid = JwtSecurity.VerifyAccessTokenJwt(accessToken);
             if (isValid)
             {
-                return JwtSecurity.GenerateJwt("_IOT_GATEWAY_");
+                // TODO get user from accesstoken
+                var user = "user";
+
+                // Generate a jwt with a secret
+                return JwtSecurity.GenerateJwt(user, _wifiExpires);
             }
             throw new UnauthorizedAccessException();
         }

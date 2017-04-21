@@ -91,8 +91,7 @@ namespace Euricom.IoT.Api.Managers
                 throw new ArgumentNullException("message.Message");
 
             // Verify JWT token
-            //var isValid = JwtSecurity.VerifyAccessTokenJwt(message.CommandToken);
-            var isValid = true;
+            var isValid = JwtSecurity.VerifyJwt(message.CommandToken);
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
 

@@ -10,11 +10,10 @@ namespace Euricom.IoT.Security
 {
     public static class JwtSecurity
     {
-        private static int _tokenExpiryInMinutes = 60;
         // TODO change key
         private static byte[] _secretKey = new byte[] { 164, 60, 194, 0, 161, 189, 41, 38, 130, 89, 141, 164, 45, 170, 159, 209, 69, 137, 243, 216, 191, 131, 47, 250, 32, 107, 231, 117, 37, 158, 225, 234 };
 
-        public static string GenerateJwt(string username)
+        public static string GenerateJwt(string username, int expiryInMinutes)
         {
             var now = DateTimeOffset.Now;
             var iat = now.ToUnixTimeSeconds();
@@ -22,7 +21,7 @@ namespace Euricom.IoT.Security
             {
                 iss = "IoT Gateway",
                 iat = now.ToUnixTimeSeconds(),
-                exp = now.AddMinutes(_tokenExpiryInMinutes).ToUnixTimeSeconds(),
+                exp = now.AddMinutes(expiryInMinutes).ToUnixTimeSeconds(),
                 sub = username
             });
             string jwt = JoseRT.Jwt.Encode(payload, JwsAlgorithms.HS256, _secretKey);
@@ -57,17 +56,16 @@ namespace Euricom.IoT.Security
 
         public static bool VerifyAccessTokenJwt(string accessToken)
         {
-            try
-            {
-                // TODO verify if accessToken is valid
-                // TODO check exp time
-                DecodeJwt(accessToken);
-                return true;
-            }
-            catch (Exception ex)
+            if (String.IsNullOrEmpty(accessToken))
             {
                 return false;
             }
+            return true;
+        }
+
+        private static bool IsValidExpiry(string accessToken)
+        {
+            throw new NotImplementedException();
         }
 
         public class JwtPayload
