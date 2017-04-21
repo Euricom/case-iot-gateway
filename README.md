@@ -269,6 +269,10 @@ Every time raspberry pi loses power/reboots, set date and time  in raspberry usi
 
 
 
+## IoT messages
+
+See [Readme IoT Message format](README_IoT.md)
+
 ## References
 
 https://developer.microsoft.com/en-us/windows/iot/docs/buildingappsforiotcore

@@ -206,7 +206,7 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public async Task SetLightValue(string deviceId, int value)
+        public async Task SetLightValue(string deviceId, short? value)
         {
             if (string.IsNullOrEmpty(deviceId))
             {
@@ -214,7 +214,7 @@ namespace Euricom.IoT.Api.Managers
             }
             else if (value < 0 || value > 255)
             {
-                throw new ArgumentOutOfRangeException("value must be between 0 and 255");
+                throw new ArgumentOutOfRangeException("value must be between 0 and 255 inclusive");
             }
 
             try
@@ -234,12 +234,12 @@ namespace Euricom.IoT.Api.Managers
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed light value: {value}");
 
                 // Publish to IoT Hub
-                var notification = new LazyBoneLightValueNotification
-                {
-                    DeviceKey = deviceId,
-                    Value = value,
-                    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
-                };
+                //var notification = new LazyBoneLightValueNotification
+                //{
+                //    DeviceKey = deviceId,
+                //    Value = value,
+                //    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
+                //};
                 //PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)

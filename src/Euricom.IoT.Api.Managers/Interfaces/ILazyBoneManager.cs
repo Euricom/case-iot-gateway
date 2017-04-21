@@ -23,7 +23,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         /// <param name="deviceId"></param>
         /// <param name="value">Must be between 1 and 255 inclusive (1 is brightest, 255 is darkest)</param>
         /// <returns></returns>
-        Task SetLightValue(string deviceId, int value);
+        Task SetLightValue(string deviceId, short? value);
 
         /// <summary>
         /// Changes light intensity three times as a test

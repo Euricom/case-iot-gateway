@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models.Messages
 {
-    public class LazyBoneMessage
+    public class LazyBoneSwitchMessage
     {
-        public string DeviceId { get; set; }
-        public bool On { get; set; }
+        public string Name { get; set; }
+        public bool State { get; set; }
     }
 }

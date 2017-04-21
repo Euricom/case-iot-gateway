@@ -169,7 +169,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/lazybone/setlightvalue?devicename={devicename}&value={value}")]
-        public async Task<IPutResponse> SetLightValue(string devicename, int value)
+        public async Task<IPutResponse> SetLightValue(string devicename, short? value)
         {
             try
             {

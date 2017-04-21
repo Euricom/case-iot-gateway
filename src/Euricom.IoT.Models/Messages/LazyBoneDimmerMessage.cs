@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models.Messages
 {
-    public class DanaLockMessage
+    public class LazyBoneDimmerMessage
     {
         public string Name { get; set; }
-        public bool Locked { get; set; }
+        public bool State { get; set; }
+        public short? LightIntensity { get; set; }
     }
 }

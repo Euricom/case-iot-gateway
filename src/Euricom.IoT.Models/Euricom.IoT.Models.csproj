@@ -107,6 +107,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\LazyBoneDimmerMessage.cs" />
+    <Compile Include="Messages\WallmountSwitchMessage.cs" />
     <Compile Include="Notifications\WallMountSwitchNotification.cs" />
     <Compile Include="WallMountSwitch.cs" />
     <Compile Include="DropboxFile.cs" />
@@ -114,7 +116,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogProperties.cs" />
     <Compile Include="Logging\OpenZWaveLog.cs" />
-    <Compile Include="Messages\LazyBoneMessage.cs" />
+    <Compile Include="Messages\LazyBoneSwitchMessage.cs" />
     <Compile Include="Messages\DanaLockMessage.cs" />
     <Compile Include="Messages\GatewayMessage.cs" />
     <Compile Include="Notifications\CameraNotification.cs" />
