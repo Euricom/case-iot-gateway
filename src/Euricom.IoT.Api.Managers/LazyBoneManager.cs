@@ -1,17 +1,16 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureDeviceManager;
+using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.LazyBone;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging;
-using Euricom.IoT.Models.Notifications;
+using Euricom.IoT.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Euricom.IoT.Models;
-using Euricom.IoT.Common;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -189,15 +188,6 @@ namespace Euricom.IoT.Api.Managers
 
                 // Log command
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
-
-                // Publish to IoT Hub
-                var notification = new LazyBoneSwitchNotification
-                {
-                    DeviceKey = deviceId,
-                    State = state == "on" ? true : false,
-                    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
-                };
-                //PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {
@@ -232,15 +222,6 @@ namespace Euricom.IoT.Api.Managers
 
                 // Log command
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed light value: {value}");
-
-                // Publish to IoT Hub
-                //var notification = new LazyBoneLightValueNotification
-                //{
-                //    DeviceKey = deviceId,
-                //    Value = value,
-                //    Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
-                //};
-                //PublishLazyBoneEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {
@@ -262,12 +243,5 @@ namespace Euricom.IoT.Api.Managers
             // Set to 255
             await SetLightValue(deviceId, 255);
         }
-
-        private void PublishLazyBoneEvent(Settings settings, string deviceName, string deviceKey, LazyBoneNotification notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
-        }
-
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Common;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
-using Euricom.IoT.Models.Notifications;
+using Euricom.IoT.Models.Messages;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,21 +36,21 @@ namespace Euricom.IoT.Monitoring
                     {
                         Debug.WriteLine($"MONITOR lazyBone {lazyBone.DeviceId} is running");
 
-                        LazyBoneNotification notification;
+                        LazyBoneMessage message;
                         if (!lazyBone.IsDimmer)
                         {
-                            notification = await PollLazyBoneSwitch(lazyBone.DeviceId);
+                            message = await PollLazyBoneSwitch(lazyBone.Name, lazyBone.DeviceId);
                         }
                         else
                         {
-                            notification = await PollLazyBoneDimmer(lazyBone.DeviceId);
+                            message = await PollLazyBoneDimmer(lazyBone.Name, lazyBone.DeviceId);
                         }
 
                         Debug.WriteLine($"MONITOR polling lazyBone {lazyBone.DeviceId} was done");
 
-                        PublishNotification(settings, lazyBone, notification);
+                        PublishNotification(settings, lazyBone, message);
 
-                        Debug.WriteLine($"MONITOR pushing notification lazyBone {lazyBone.DeviceId} was done");
+                        Debug.WriteLine($"MONITOR pushing notification message lazyBone {lazyBone.DeviceId} was done");
 
                         await Task.Delay(pollingTime);
 
@@ -68,29 +68,34 @@ namespace Euricom.IoT.Monitoring
             return cts;
         }
 
-        private async Task<LazyBoneSwitchNotification> PollLazyBoneSwitch(string deviceId)
+        private async Task<LazyBoneSwitchMessage> PollLazyBoneSwitch(string name, string deviceId)
         {
             var currentState = await new LazyBoneManager().GetCurrentStateSwitch(deviceId);
-            return new LazyBoneSwitchNotification()
+            return new LazyBoneSwitchMessage()
             {
-                DeviceKey = deviceId,
+                Gateway = "IoTGateway",
+                Device = name,
                 State = currentState,
-                Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
+                CommandToken = null,
+                MessageType = MessageTypes.LazyBoneSwitch
             };
         }
 
-        private async Task<LazyBoneDimmerNotification> PollLazyBoneDimmer(string deviceId)
+        private async Task<LazyBoneDimmerMessage> PollLazyBoneDimmer(string name, string deviceId)
         {
             var currentState = await new LazyBoneManager().GetCurrentStateDimmer(deviceId);
-            return new LazyBoneDimmerNotification()
+            return new LazyBoneDimmerMessage()
             {
-                DeviceKey = deviceId,
-                State = currentState,
-                Timestamp = Common.Utilities.DateTimeHelpers.Timestamp(),
+                Gateway = "IoTGateway",
+                Device = name,
+                State = currentState.LightOn,
+                LightIntensity = currentState.LightValue,
+                CommandToken = null,
+                MessageType = MessageTypes.LazyBoneDimmer
             };
         }
 
-        private void PublishNotification(Settings settings, Euricom.IoT.Models.LazyBone lazyBone, Models.Notifications.LazyBoneNotification notification)
+        private void PublishNotification(Settings settings, Euricom.IoT.Models.LazyBone lazyBone, LazyBoneMessage notification)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(notification);
             new Messaging.MqttMessagePublisher(settings, lazyBone.Name, lazyBone.DeviceId).Publish(json);

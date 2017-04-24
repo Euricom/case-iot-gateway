@@ -91,6 +91,16 @@ namespace Euricom.IoT.Monitoring
                         }
                         break;
 
+                    case HardwareType.WallmountSwitch:
+                        var configWallmount = ((Euricom.IoT.Models.WallMountSwitch)config);
+                        if (configWallmount.Enabled && configWallmount.PollingTime >= MIN_POLLING_TIME)
+                        {
+                            var ctsWallmount = new WallmountMonitor().StartMonitor(configWallmount, configWallmount.PollingTime);
+                            _pollingTimesCache[deviceId] = configWallmount.PollingTime;
+                            _cancellationDevicesPolling[deviceId] = ctsWallmount;
+                        }
+                        break;
+
                     case HardwareType.Camera:
                         var configCamera = ((Camera)config);
                         if (configCamera.Enabled && configCamera.PollingTime >= MIN_POLLING_TIME)
@@ -156,8 +166,16 @@ namespace Euricom.IoT.Monitoring
                         new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
                         break;
 
+                    case HardwareType.LazyBoneDimmer:
+                        new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
+                        break;
+
                     case HardwareType.DanaLock:
                         new DanaLockMonitor().StartMonitor((Euricom.IoT.Models.DanaLock)config, pollingTime);
+                        break;
+
+                    case HardwareType.WallmountSwitch:
+                        new WallmountMonitor().StartMonitor((Euricom.IoT.Models.WallMountSwitch)config, pollingTime);
                         break;
                 }
             }
@@ -182,6 +200,7 @@ namespace Euricom.IoT.Monitoring
             var deviceIds = hardware.Cameras.Select(x => x.DeviceId).ToList();
             deviceIds.AddRange(hardware.DanaLocks.Select(x => x.DeviceId).ToList());
             deviceIds.AddRange(hardware.LazyBones.Select(x => x.DeviceId).ToList());
+            deviceIds.AddRange(hardware.WallMountSwitches.Select(x => x.DeviceId).ToList());
 
             var keys = _cancellationDevicesPolling.Keys;
             var results = deviceIds.Except(keys).ToList();
@@ -203,16 +222,6 @@ namespace Euricom.IoT.Monitoring
                 }
             }
 
-            foreach (var danaLock in hardware.DanaLocks)
-            {
-                if (danaLock.Enabled &&
-                    _pollingTimesCache.ContainsKey(danaLock.DeviceId) &&
-                    danaLock.PollingTime != _pollingTimesCache[danaLock.DeviceId])
-                {
-                    results.Add(danaLock.DeviceId);
-                    _pollingTimesCache[danaLock.DeviceId] = danaLock.PollingTime;
-                }
-            }
 
             foreach (var lazyBone in hardware.LazyBones)
             {
@@ -224,6 +233,29 @@ namespace Euricom.IoT.Monitoring
                     _pollingTimesCache[lazyBone.DeviceId] = lazyBone.PollingTime;
                 }
             }
+
+            foreach (var danaLock in hardware.DanaLocks)
+            {
+                if (danaLock.Enabled &&
+                    _pollingTimesCache.ContainsKey(danaLock.DeviceId) &&
+                    danaLock.PollingTime != _pollingTimesCache[danaLock.DeviceId])
+                {
+                    results.Add(danaLock.DeviceId);
+                    _pollingTimesCache[danaLock.DeviceId] = danaLock.PollingTime;
+                }
+            }
+
+            foreach (var wallmountSwitch in hardware.WallMountSwitches)
+            {
+                if (wallmountSwitch.Enabled &&
+                    _pollingTimesCache.ContainsKey(wallmountSwitch.DeviceId) &&
+                    wallmountSwitch.PollingTime != _pollingTimesCache[wallmountSwitch.DeviceId])
+                {
+                    results.Add(wallmountSwitch.DeviceId);
+                    _pollingTimesCache[wallmountSwitch.DeviceId] = wallmountSwitch.PollingTime;
+                }
+            }
+
 
             return results;
         }
@@ -265,6 +297,7 @@ namespace Euricom.IoT.Monitoring
             var deviceIds = hardware.Cameras.Select(x => x.DeviceId).ToList();
             deviceIds.AddRange(hardware.DanaLocks.Select(x => x.DeviceId).ToList());
             deviceIds.AddRange(hardware.LazyBones.Select(x => x.DeviceId).ToList());
+            deviceIds.AddRange(hardware.WallMountSwitches.Select(x => x.DeviceId).ToList());
 
             var keys = _cancellationDevicesPolling.Keys;
             var results = keys.Except(deviceIds).ToList();

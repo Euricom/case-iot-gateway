@@ -99,7 +99,7 @@ namespace Euricom.IoT.LazyBone
             return new LazyBoneDimmerState()
             {
                 LightOn = lightOn,
-                LightValue = (int)lightValue
+                LightValue = (short?)lightValue
             };
         }
     }

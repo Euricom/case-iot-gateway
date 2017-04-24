@@ -7,6 +7,13 @@ namespace Euricom.IoT.Models
         public string Password { get; set; }
         public LogLevel LogLevel { get; set; }
         public int HistoryLog { get; set; }
+        public string GatewayName
+        {
+            get
+            {
+                return "IoTGateway"; //TODO make setting configurable
+            }
+        }
         public string GatewayDeviceKey { get; set; }
         public string AzureIotHubUri { get; set; }
         public string AzureIotHubUriConnectionString { get; set; }

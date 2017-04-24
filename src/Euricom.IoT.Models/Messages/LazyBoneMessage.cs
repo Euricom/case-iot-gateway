@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Models.Notifications
+namespace Euricom.IoT.Models.Messages
 {
-    public abstract class LazyBoneNotification
+    public abstract class LazyBoneMessage : CommandMessage
     {
     }
 }

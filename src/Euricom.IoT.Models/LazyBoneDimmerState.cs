@@ -9,6 +9,6 @@ namespace Euricom.IoT.Models
     public class LazyBoneDimmerState
     {
         public bool LightOn { get; set; }
-        public int LightValue { get; set; }
+        public short? LightValue { get; set; }
     }
 }

@@ -16,7 +16,9 @@ Body: include the JWT accesstoken
 }
 ```
 
-Returns a JWT (example)
+Returns a JWT with **expiry 1 minute**
+
+Example: 
 ```json
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
 ```
@@ -33,22 +35,29 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 ```csharp
 public class GatewayMessage
 {
+	public string Gateway { get; set; }
+    public string Device { get; set; }
+    public string MessageType { get; set; }
+}
+```
+
+- MessageType must be one of the following strings:
+	-  "danalock"
+	-  "camera"
+	-  "lazybone_switch"
+	-  "lazybone_dimmer"
+	-  "wallmount_switch"
+
+```csharp
+public class CommandMessage : GatewayMessage
+{
     public string CommandToken { get; set; }
-    public string DeviceType { get; set; }
-    public string Message { get; set; }
 }
 ```
 
 - CommandToken: JWT (expires after 1 min), App must request new CommandToken every 1 minute or else the following commands do not succeed!
 
-- DeviceType must be one of the following strings:
-	-  "danalock"
-	-  "camera"
-	-  "lazybone_switch"
-	-  "lazybone_dimmer"
-	-  "wallmount_swith"
 
-- Message contains the device command message (open door, close door, switch lazybone on, etc)
 
 ### DanaLock
 
@@ -58,9 +67,8 @@ Parameters:
 
 
 ```csharp
-public class DanaLockMessage
+public class DanaLockMessage : CommandMessage
 {
-    public string Name { get; set; }
     public bool Locked { get; set; }
 }
 ```
@@ -73,20 +81,24 @@ Examples:
 
 
 ```json
-{  
-   "CommandToken": "command_token_jwt", //Replace with the correct jwt
-   "DeviceType":"danalock",
-   "Message": { "Name": "danalock_front_door", "Locked": "true" }
+{
+	"Gateway":"IoTGateway",
+	"Locked":true,
+	"CommandToken":"secret_jwt",
+	"Device":"danalock_front_door",
+	"MessageType":"danalock"
 }
 ```
 
 **Unlock door** DanaLock with name "danalock_front_door"
 
 ```json
-{  
-   "CommandToken": "jwt", //Replace with the correct jwt
-   "DeviceType": "danalock",
-   "Message": { "Name": "danalock_front_door", "Locked": "false" }
+{
+	"Gateway":"IoTGateway",
+	"Locked":false,
+	"CommandToken":"secret_jwt",
+	"Device":"danalock_front_door",
+	"MessageType":"danalock"
 }
 ```
 
@@ -98,9 +110,8 @@ State: true / false (If true: sets lazybone to ON, else OFF)
 
 
 ```csharp
-public class LazyBoneSwitchMessage
+public class LazyBoneSwitchMessage : CommandMessage
 {
-    public string Name { get; set; }
     public bool State { get; set; }
 }
 ```
@@ -113,20 +124,24 @@ Examples:
 
 
 ```json
-{  
-   "CommandToken":"jwt", //Replace with the correct jwt
-   "DeviceType":"lazybone_switch",
-   "Message": { "Name": "lazybone1", "State": "true" }
+{
+	"Gateway":"IoTGateway",
+	"State":true,
+	"CommandToken":"secret_jwt",
+	"Device":"lazybone1",
+	"MessageType":"lazybone_switch"
 }
 ```
 
 **Set lazybone OFF** LazyBone with name "lazybone1"
 
 ```json
-{  
-   "CommandToken": "jwt", //Replace with the correct jwt
-   "DeviceType": "lazybone_switch",
-   "Message": { "Name": "lazybone1", "State": "false" }
+{
+	"Gateway":"IoTGateway",
+	"State":false,
+	"CommandToken":"secret_jwt",
+	"Device":"lazybone1",
+	"MessageType":"lazybone_switch"
 }
 ```
 
@@ -140,9 +155,8 @@ Parameters:
 
 
 ```csharp
-public class LazyBoneDimmerMessage
+public class LazyBoneDimmerMessage : CommandMessage
 {
-    public string Name { get; set; }
     public bool State { get; set; }
     public short? LightIntensity { get; set; }
 }
@@ -156,20 +170,24 @@ Examples:
 
 
 ```json
-{  
-   "CommandToken": "jwt", //Replace with the correct jwt
-   "DeviceType":"lazybone_dimmer",
-   "Message": { "Name": "lazybone1", "State": "" }
+{
+	"Gateway":"IoTGateway",
+	"State":true,
+	"CommandToken":"secret_jwt",
+	"Device":"lazybone2",
+	"MessageType":"lazybone_dimmer"
 }
 ```
 
 **Set dimmer OFF** LazyBone with name "lazybone2"
 
 ```json
-{  
-   "CommandToken": "jwt", //Replace with the correct jwt
-   "DeviceType":"lazybone_dimmer",
-   "Message": { "Name": "lazybone2", "State": "false" }
+{
+	"Gateway":"IoTGateway",
+	"State":false,
+	"CommandToken":"secret_jwt",
+	"Device":"lazybone2",
+	"MessageType":"lazybone_dimmer"
 }
 ```
 
@@ -177,10 +195,13 @@ Examples:
 
 
 ```json
-{  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
-   "DeviceType":"lazybone_dimmer",
-   "Message": { "Name": "lazybone2", "State": "true", "LightIntensity": "180" }
+{
+	"Gateway":"IoTGateway",
+	"State":true,
+	"LightIntensity":"150",
+	"CommandToken":"secret_jwt",
+	"Device":"lazybone2",
+	"MessageType":"lazybone_dimmer"
 }
 ```
 
@@ -189,13 +210,12 @@ Examples:
 
 Parameters: 
 
-State: true / false (If true: sets lazybone to ON, else OFF)
+State: true / false (If true: sets wallmount to ON, else OFF)
 
 
 ```csharp
-public class WallmountSwitchMessage
+public class WallmountSwitchMessage : CommandMessage
 {
-    public string Name { get; set; }
     public bool State { get; set; }
 }
 ```
@@ -208,19 +228,23 @@ Examples:
 
 
 ```json
-{  
-   "CommandToken":"jwt", //**Replace with the correct jwt**
-   "DeviceType":"lazybone_switch",
-   "Message": { "Name": "wallmount1", "State": "true" }
+{
+	"Gateway":"IoTGateway",
+	"State":true,
+	"CommandToken":"secret_jwt",
+	"Device":"wallmount1",
+	"MessageType":"wallmount_switch"
 }
 ```
 
 **Set wallmount OFF** Wallmount switch with name "wallmount1"
 
 ```json
-{  
-   "CommandToken": "jwt", //**Replace with the correct jwt**
-   "DeviceType": "lazybone_switch",
-   "Message": { "Name": "wallmount1", "State": "false" }
+{
+	"Gateway":"IoTGateway",
+	"State":false,
+	"CommandToken":"secret_jwt",
+	"Device":"wallmount1",
+	"MessageType":"wallmount_switch"
 }
 ```
