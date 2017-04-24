@@ -2,8 +2,8 @@ import { OnInit, Component, Input } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { AuthService } from '../../services/authService'
-import { Credentials } from '../../models/credentials';
-import { User } from '../../models/user';
+import { Credentials } from '../../models/credentials'
+import { User } from '../../models/user'
 
 @Component({
   selector: 'login',

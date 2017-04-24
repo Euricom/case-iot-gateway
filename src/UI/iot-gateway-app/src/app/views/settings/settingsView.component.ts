@@ -2,9 +2,9 @@ import { OnInit, Component } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
-import { Settings } from '../../models/settings';
+import { Settings } from '../../models/settings'
 import { SettingsService } from '../../services/settingsService'
-import { LogLevel } from '../../models/logLevel';
+import { LogLevel } from '../../models/logLevel'
 
 @Component({
   selector: 'overview',
@@ -62,10 +62,7 @@ export class SettingsViewComponent implements OnInit {
       (data: any) => {
         this.settings = <Settings>data
         this.settings.LogLevel = this.logLevelsEnum[data.LogLevel]
-      }//,
-      // (err) => {
-      //   this.toastr.error('error occurred' + err)
-      // })
+      },
       )
   }
 

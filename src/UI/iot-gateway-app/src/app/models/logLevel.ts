@@ -23,7 +23,7 @@ export enum LogLevel {
   //
   // Summary:
   //     If you have a pager, it goes off when one of these occurs.
-  Fatal = 5
+  Fatal = 5,
 }
 
 

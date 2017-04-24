@@ -8,7 +8,7 @@ import { Subject } from 'rxjs/Subject'
 import { tokenNotExpired } from 'angular2-jwt'
 import { Config } from '../../config'
 import { User } from '../models/user'
-import { Credentials } from '../models/credentials';
+import { Credentials } from '../models/credentials'
 
 @Injectable()
 export class AuthService {
