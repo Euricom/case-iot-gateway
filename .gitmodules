@@ -6,3 +6,7 @@
 	path = restup
 	url = https://github.com/wimvandenrul/restup.git
 	branch = feature-implement-basic-authorization
+[submodule "restup"]
+	path = zwave-app
+	url = https://github.com/OpenZWave/openzwave-dotnet-uwp
+	branch = master

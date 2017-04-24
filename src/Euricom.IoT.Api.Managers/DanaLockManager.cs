@@ -6,7 +6,7 @@ using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging;
 using Euricom.IoT.Models;
-using Euricom.IoT.Models.Notifications;
+using Euricom.IoT.Models.Messages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -160,16 +160,6 @@ namespace Euricom.IoT.Api.Managers
 
                 // Log command
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
-
-                // Publish to IoT Hub
-                var notification = new DanaLockNotification
-                {
-                    DeviceKey = deviceId,
-                    Locked = state == "closed" ? true : false,
-                    Timestamp = DateTimeHelpers.Timestamp(),
-                };
-
-                // PublishDanaLockEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {
@@ -178,7 +168,7 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        private void PublishDanaLockEvent(Settings settings, string deviceName, string deviceId, DanaLockNotification notification)
+        private void PublishDanaLockEvent(Settings settings, string deviceName, string deviceId, DanaLockMessage notification)
         {
             var json = JsonConvert.SerializeObject(notification);
             new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);

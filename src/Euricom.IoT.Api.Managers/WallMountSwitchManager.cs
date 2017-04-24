@@ -1,12 +1,8 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common;
-using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Messaging;
-using Euricom.IoT.Models;
-using Euricom.IoT.Models.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -160,28 +156,12 @@ namespace Euricom.IoT.Api.Managers
 
                 // Log command
                 Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
-
-                // Publish to IoT Hub
-                var notification = new WallMountSwitchNotification
-                {
-                    DeviceKey = deviceId,
-                    On = state == "on" ? true : false,
-                    Timestamp = DateTimeHelpers.Timestamp(),
-                };
-
-                // PublishWallMountEvent(settings, config.Name, config.DeviceId, notification);
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
-        }
-
-        private void PublishWallMountEvent(Settings settings, string deviceName, string deviceId, WallMountSwitchNotification notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);
         }
     }
 }

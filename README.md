@@ -55,7 +55,7 @@ Other sort of devices can be added/programmed if you can build it in UWP because
 
 The DanaLock is controlled using the open source library called [OpenZWave](http://openzwave.com/). The Gateway uses the [Z-Stick GEn5 from Aeotec](https://aeotec.freshdesk.com/support/solutions/folders/6000146720)
 
-**The following steps must be done ONLY ONCE on the Gateway (if gateway was reinstalled):**
+**The following steps must be done ONLY ONCE on the Gateway (again if gateway is reinstalled or sd card corrupt):**
 
 **Step 1**
 
@@ -92,7 +92,8 @@ USB\VID_0658&PID_0200\5&3753427A&0&4
 
 **Step 2**
 
-
+Add Z-Wave device (**add secure device** instead of **add device**).
+See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
 
 
 #### LazyBone Switch
@@ -108,6 +109,8 @@ Example code: see doc\LazyBone.zip
 The camera is not really controlled by the gateway. The camera only sends notifications to the gateway when motion is detected. It also uploads those motion frames/movies to the Euricom dropbox account (via the settings of motionEyeOS)
 
 ##### Settings
+
+Open the camera settings (go to http://ip of your camera)
 
 1) Under file storage: enter /Apps/EuricomIoT/camera1 for Dropbox
 2) Generate a Dropbox token in MotionEye and also set it in gateway settings.

@@ -6,7 +6,7 @@ using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.Messaging;
 using Euricom.IoT.Models;
-using Euricom.IoT.Models.Notifications;
+using Euricom.IoT.Models.Messages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -93,17 +93,19 @@ namespace Euricom.IoT.Api.Manager
             var config = Database.Instance.GetCameraConfig(deviceId);
             if (config.Enabled)
             {
-                var notification = new CameraNotification
+                var notification = new CameraMotionMessage
                 {
+                    Gateway = "IoTGateway",
+                    Device = config.Name,
+                    CommandToken = null,
+                    MessageType = MessageTypes.Camera,
                     FilePath = url,
                     EventNumber = eventNumber,
                     FrameNumber = frameNumber,
-                    Timestamp = timestamp,
-                    DeviceKey = config.DeviceId,
                 };
 
                 // Publish to IoT Hub
-                // PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
+                PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
             }
         }
 
@@ -166,7 +168,7 @@ namespace Euricom.IoT.Api.Manager
             }
         }
 
-        private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraNotification notification)
+        private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraMotionMessage notification)
         {
             var json = JsonConvert.SerializeObject(notification);
             new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);

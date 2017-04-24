@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Euricom.IoT.Models.Messages
 {
-    public class LazyBoneSwitchMessage : CommandMessage
+    public class LazyBoneSwitchMessage : LazyBoneMessage
     {
         public bool State { get; set; }
     }

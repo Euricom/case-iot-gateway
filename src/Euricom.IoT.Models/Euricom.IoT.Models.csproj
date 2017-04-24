@@ -109,8 +109,9 @@
   <ItemGroup>
     <Compile Include="Messages\CommandMessage.cs" />
     <Compile Include="Messages\LazyBoneDimmerMessage.cs" />
+    <Compile Include="Messages\LazyBoneMessage.cs" />
+    <Compile Include="Messages\CameraMotionMessage.cs" />
     <Compile Include="Messages\WallmountSwitchMessage.cs" />
-    <Compile Include="Notifications\WallMountSwitchNotification.cs" />
     <Compile Include="WallMountSwitch.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="LazyBoneDimmerState.cs" />
@@ -120,15 +121,9 @@
     <Compile Include="Messages\LazyBoneSwitchMessage.cs" />
     <Compile Include="Messages\DanaLockMessage.cs" />
     <Compile Include="Messages\GatewayMessage.cs" />
-    <Compile Include="Notifications\CameraNotification.cs" />
     <Compile Include="DanaLock.cs" />
     <Compile Include="Device.cs" />
-    <Compile Include="Notifications\LazyBoneLightValueNotification.cs" />
-    <Compile Include="Notifications\DanaLockNotification.cs" />
     <Compile Include="HardwareType.cs" />
-    <Compile Include="Notifications\LazyBoneDimmerNotification.cs" />
-    <Compile Include="Notifications\LazyBoneNotification.cs" />
-    <Compile Include="Notifications\LazyBoneSwitchNotification.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\LogLine.cs" />
     <Compile Include="LazyBone.cs" />

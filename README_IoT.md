@@ -16,7 +16,9 @@ Body: include the JWT accesstoken
 }
 ```
 
-Returns a JWT (example)
+Returns a JWT with **expiry 1 minute**
+
+Example: 
 ```json
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
 ```
@@ -33,6 +35,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 ```csharp
 public class GatewayMessage
 {
+	public string Gateway { get; set; }
     public string Device { get; set; }
     public string MessageType { get; set; }
 }
@@ -79,6 +82,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"Locked":true,
 	"CommandToken":"secret_jwt",
 	"Device":"danalock_front_door",
@@ -90,6 +94,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"Locked":false,
 	"CommandToken":"secret_jwt",
 	"Device":"danalock_front_door",
@@ -120,6 +125,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"State":true,
 	"CommandToken":"secret_jwt",
 	"Device":"lazybone1",
@@ -131,6 +137,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"State":false,
 	"CommandToken":"secret_jwt",
 	"Device":"lazybone1",
@@ -164,6 +171,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"State":true,
 	"CommandToken":"secret_jwt",
 	"Device":"lazybone2",
@@ -175,6 +183,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"State":false,
 	"CommandToken":"secret_jwt",
 	"Device":"lazybone2",
@@ -187,7 +196,8 @@ Examples:
 
 ```json
 {
-	"State":false,
+	"Gateway":"IoTGateway",
+	"State":true,
 	"LightIntensity":"150",
 	"CommandToken":"secret_jwt",
 	"Device":"lazybone2",
@@ -219,7 +229,8 @@ Examples:
 
 ```json
 {
-	"State":false,
+	"Gateway":"IoTGateway",
+	"State":true,
 	"CommandToken":"secret_jwt",
 	"Device":"wallmount1",
 	"MessageType":"wallmount_switch"
@@ -230,6 +241,7 @@ Examples:
 
 ```json
 {
+	"Gateway":"IoTGateway",
 	"State":false,
 	"CommandToken":"secret_jwt",
 	"Device":"wallmount1",
