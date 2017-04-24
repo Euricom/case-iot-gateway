@@ -26,7 +26,7 @@ The currently used device hardware are:
 
 - [DanaLock](https://danalock.com/)
 - [LazyBone Switch](http://www.tinyosshop.com/index.php?route=product/product&product_id=657)
-- TKB Switch TZ36S
+- [TKB Switch TZ36S](http://products.z-wavealliance.org/products/1411)
 - [MotionEyeOs](https://github.com/ccrisan/motioneyeos) Camera which is a raspberry pi device with motionEye
 
 
@@ -95,6 +95,7 @@ USB\VID_0658&PID_0200\5&3753427A&0&4
 Add Z-Wave device (**add secure device** instead of **add device**).
 See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
 
+If you have problems adding the DanaLock as secure device, try resetting DanaLock first by holding user button for 10 beeps. 
 
 #### LazyBone Switch
 
@@ -103,6 +104,14 @@ The LazyBone is controlled using a tcp telnet connection. See [product manual](h
 The LazyBone switch cannot handle more than 1 connection at same time, so locking must be used to avoid connection exceptions.
 
 Example code: see doc\LazyBone.zip
+
+
+#### Wallmount Switch
+
+
+Add Z-Wave device (**add device**).
+See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
+
 
 #### Camera (MotionEyeOs)
 
@@ -202,7 +211,7 @@ The gateway implements a monitoring system / loop that continuously polls device
 
 ## Development: (Windows and Visual Studio)
 
-There are 2 development environments
+There are 2 development solutions
 
 - Development of the API (must use Visual Studio) 
    => The solution can be found under **src\Euricom.IoT.sln**
@@ -213,6 +222,8 @@ There are 2 development environments
 
 ### API development
 
+For API development: the method I used is basically every time API changed, deploy to the gateway over WIFI/LAN using Visual Studio.
+
 Install Windows 10 IoT core Dashboard watcher from
 
 [Windows 10 IoT Core Dashboard](https://developer.microsoft.com/en-us/windows/iot/docs/iotdashboard)
@@ -220,6 +231,9 @@ Install Windows 10 IoT core Dashboard watcher from
 Use Visual Studio (2017) for debugging/deployment. Don't forget to set the IP address of the remote machine (gateway) in project properties of both UI and API project!
 
 Set startup project to Euricom.IoT.UI (Euricom.IoT.API will be deployed too)
+
+*Other possible development environment could be 
+- setting up Windows 10 IoT Core inside a Virtual Machine - but I could not get this VM to work correctly on my laptop* (bridged network not working, could not connect from host to vm).. If you want to try this: see [Setting up Windows 10 IoT Core VM](https://www.newventuresoftware.com/blog/running-windows-10-iot-core-in-a-virtual-machine)
 
 ### Gateway Administration website development
 
@@ -299,3 +313,5 @@ https://github.com/hhblaze/DBreeze
 https://github.com/serilog/serilog-sinks-rollingfile
 
 https://github.com/Euricom/case-iot-hub (for examples of Azure IoT)
+
+https://www.newventuresoftware.com/blog/running-windows-10-iot-core-in-a-virtual-machine
