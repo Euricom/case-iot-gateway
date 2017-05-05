@@ -105,7 +105,7 @@ namespace Euricom.IoT.Api.Managers
 
         public Device GetDeviceByName(string deviceName)
         {
-            return GetHardwareDevices().SingleOrDefault(x => x.Name == deviceName);
+            return GetHardwareDevices().FirstOrDefault(x => x.Name == deviceName);
         }
 
         public async Task<Device> AddHardware(Device device)
