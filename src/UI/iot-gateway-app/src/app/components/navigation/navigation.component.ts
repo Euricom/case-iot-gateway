@@ -9,7 +9,7 @@ import { Location } from '@angular/common'
   templateUrl: './navigation.component.html',
 })
 export class NavigationComponent implements OnInit {
-  private isAuthenticated = false
+  public isAuthenticated = false
 
   constructor(private authService: AuthService,
     private toastr: ToastsManager,

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="12636daa-e12e-413c-a6c6-037e08210458" Publisher="CN=christoflauriers" Version="1.0.2.0" />
+  <Identity Name="12636daa-e12e-413c-a6c6-037e08210458" Publisher="CN=christoflauriers" Version="1.0.12.0" />
   <mp:PhoneIdentity PhoneProductId="12636daa-e12e-413c-a6c6-037e08210458" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Euricom.IoT.UI</DisplayName>

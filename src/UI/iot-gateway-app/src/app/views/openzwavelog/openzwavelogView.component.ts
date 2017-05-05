@@ -60,6 +60,9 @@ export class OpenZWaveLogViewComponent implements OnInit {
       })
   }
 
+  onChangeFilterText(text) {
+  }
+
   setClickedRow(i: Number, logLine: LogLine) {
     this.selectedRowIndex = i
     this.selectedLogLine = logLine

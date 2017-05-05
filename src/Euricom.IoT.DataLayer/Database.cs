@@ -181,7 +181,7 @@ namespace Euricom.IoT.DataLayer
         public Settings GetConfigSettings()
         {
             var settings = new Settings();
-            settings.HistoryLog = Int32.Parse(GetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog"));
+            settings.HistoryLog = GetValueAsInt(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog");
 
             if (String.IsNullOrEmpty(GetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel")))
                 settings.LogLevel = LogLevel.Information;
@@ -197,13 +197,21 @@ namespace Euricom.IoT.DataLayer
             return settings;
         }
 
+        private int GetValueAsInt(string table, string key)
+        {
+            string v = GetValue(table, key);
+            if (String.IsNullOrEmpty(v))
+                return 31;
+            return Int32.Parse(v);
+        }
+
         public void SaveConfigSettings(Settings settings)
         {
             if (settings != null)
             {
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel", settings.LogLevel.ToString());
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey.ToString());
+                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey);
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
                 SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
@@ -473,10 +481,13 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                var exception = new Exception($"Could not get value for table: {table}, key: {key}, exception: " + ex);
-                Logger.Instance.LogErrorWithContext(this.GetType(), exception);
-                throw exception;
+                //Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                //var exception = new Exception($"Could not get value for table: {table}, key: {key}, exception: " + ex);
+                //Logger.Instance.LogErrorWithContext(this.GetType(), exception);
+                //throw exception;
+
+                Logger.Instance.LogWarningWithContext(this.GetType(), ex.ToString());
+                return null;
             }
         }
 

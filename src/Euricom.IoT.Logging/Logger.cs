@@ -73,7 +73,7 @@ namespace Euricom.IoT.Logging
                 var jsonFormatter = new JsonFormatter(null, false, null);
 
                 var logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(jsonFormatter, pathFormat, LogEventLevel.Information, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
+                .WriteTo.RollingFile(jsonFormatter, pathFormat, _logEventLevel, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
                 .CreateLogger();
 
                 _logger = logger;
