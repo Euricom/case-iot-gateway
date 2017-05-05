@@ -62,23 +62,23 @@ namespace Euricom.IoT.Monitoring
                 switch (config.Type)
                 {
                     case HardwareType.LazyBoneSwitch:
-                        var configLazyBoneSwitch = ((Euricom.IoT.Models.LazyBone)config);
-                        if (configLazyBoneSwitch.Enabled && configLazyBoneSwitch.PollingTime >= MIN_POLLING_TIME)
-                        {
-                            var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBoneSwitch, configLazyBoneSwitch.PollingTime);
-                            _pollingTimesCache[deviceId] = configLazyBoneSwitch.PollingTime;
-                            _cancellationDevicesPolling[deviceId] = ctsLazyBone;
-                        }
+                        //var configLazyBoneSwitch = ((Euricom.IoT.Models.LazyBone)config);
+                        //if (configLazyBoneSwitch.Enabled && configLazyBoneSwitch.PollingTime >= MIN_POLLING_TIME)
+                        //{
+                        //    var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBoneSwitch, configLazyBoneSwitch.PollingTime);
+                        //    _pollingTimesCache[deviceId] = configLazyBoneSwitch.PollingTime;
+                        //    _cancellationDevicesPolling[deviceId] = ctsLazyBone;
+                        //}
                         break;
 
                     case HardwareType.LazyBoneDimmer:
-                        var configLazyBoneDimmer = ((Euricom.IoT.Models.LazyBone)config);
-                        if (configLazyBoneDimmer.Enabled && configLazyBoneDimmer.PollingTime >= MIN_POLLING_TIME)
-                        {
-                            var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBoneDimmer, configLazyBoneDimmer.PollingTime);
-                            _pollingTimesCache[deviceId] = configLazyBoneDimmer.PollingTime;
-                            _cancellationDevicesPolling[deviceId] = ctsLazyBone;
-                        }
+                        //var configLazyBoneDimmer = ((Euricom.IoT.Models.LazyBone)config);
+                        //if (configLazyBoneDimmer.Enabled && configLazyBoneDimmer.PollingTime >= MIN_POLLING_TIME)
+                        //{
+                        //    var ctsLazyBone = new LazyBoneMonitor().StartMonitor(configLazyBoneDimmer, configLazyBoneDimmer.PollingTime);
+                        //    _pollingTimesCache[deviceId] = configLazyBoneDimmer.PollingTime;
+                        //    _cancellationDevicesPolling[deviceId] = ctsLazyBone;
+                        //}
                         break;
 
                     case HardwareType.DanaLock:
@@ -163,11 +163,11 @@ namespace Euricom.IoT.Monitoring
                 switch (config.Type)
                 {
                     case HardwareType.LazyBoneSwitch:
-                        new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
+                        //new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
                         break;
 
                     case HardwareType.LazyBoneDimmer:
-                        new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
+                        //new LazyBoneMonitor().StartMonitor((Euricom.IoT.Models.LazyBone)config, pollingTime);
                         break;
 
                     case HardwareType.DanaLock:

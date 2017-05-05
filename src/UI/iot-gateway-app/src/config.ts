@@ -10,12 +10,12 @@ export class Config {
   }
 
   private InitDevConfig() {
-    // this.baseUrl = 'http://localhost:8800/'
-    this.baseUrl = 'http://10.0.1.31:8800'
+    this.baseUrl = 'http://10.0.1.124:8800'
     this.logLevel = 'debug'
   }
 
   private InitProdConfig() {
+    this.baseUrl = 'http://10.0.1.124:8800'
     this.logLevel = 'info'
   }
 }
