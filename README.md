@@ -35,6 +35,9 @@ The gateway includes a website (Angular) to set configuration parameters and to 
 Other sort of devices can be added/programmed if you can build it in UWP because Windows 10 IoT only supports UWP development.
 
 
+## Gateway
+
+
 **Important**
 
 1) Every time raspberry pi loses power/reboots, set date and time  in raspberry using powershell. You can do this with the IoT core dashboard. Right click on the device and connect with powershell. Then type in username/password. Then **copy paste and change** date and time:
@@ -48,10 +51,11 @@ Other sort of devices can be added/programmed if you can build it in UWP because
 2) If password is lost or is forgotten, there is the possibility to login with another code.
 
 
-### IoT devices
+## IP addresses / Node IDs
 
+See [Readme environment](README_Env.md)
 
-#### DanaLock
+## DanaLock
 
 The DanaLock is controlled using the open source library called [OpenZWave](http://openzwave.com/). The Gateway uses the [Z-Stick GEn5 from Aeotec](https://aeotec.freshdesk.com/support/solutions/folders/6000146720)
 
@@ -97,7 +101,7 @@ See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
 
 If you have problems adding the DanaLock as secure device, try resetting DanaLock first by holding user button for 10 beeps. 
 
-#### LazyBone Switch
+## LazyBone Switch
 
 The LazyBone is controlled using a tcp telnet connection. See [product manual](http://www.tinyosshop.com/datasheet/LazyBone%20User%20Manual.pdf) 
 
@@ -106,18 +110,18 @@ The LazyBone switch cannot handle more than 1 connection at same time, so lockin
 Example code: see doc\LazyBone.zip
 
 
-#### Wallmount Switch
+## Wallmount Switch
 
 
 Add Z-Wave device (**add device**).
 See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
 
 
-#### Camera (MotionEyeOs)
+## Camera (MotionEyeOs)
 
 The camera is not really controlled by the gateway. The camera only sends notifications to the gateway when motion is detected. It also uploads those motion frames/movies to the Euricom dropbox account (via the settings of motionEyeOS)
 
-##### Settings
+### Settings
 
 Open the camera settings (go to http://ip of your camera)
 
