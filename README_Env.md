@@ -6,7 +6,7 @@
 | ------------- 		|----------------------------	| --------------------------------------------------|
 | Gateway     			| 10.0.1.101 					| [Gateway configuration](http://10.0.1.101:8800) 	|
 | DanaLock      		| Z-Wave Node: 3				| 													|
-| Camera 				| 10.0.1.103					|													|
+| Camera 				| 10.0.1.102					|													|
 | Lazybone switch_1 	| 10.0.1.103					|													|
 | Lazybone dimmer_1		| 10.0.1.104    				| 													|
 | Wallmount switch_1 	| Z-Wave Node: 5				| 													|

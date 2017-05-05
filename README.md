@@ -25,7 +25,8 @@ We use **Azure IoT Hub**:
 The currently used device hardware are:
 
 - [DanaLock](https://danalock.com/)
-- [LazyBone Switch](http://www.tinyosshop.com/index.php?route=product/product&product_id=657)
+- [LazyBone Wifi Switch](http://www.tinyosshop.com/index.php?route=product/product&product_id=657)
+- [LazyBone Wifi Dimmer](http://www.tinyosshop.com/index.php?route=product/product&product_id=582)
 - [TKB Switch TZ36S](http://products.z-wavealliance.org/products/1411)
 - [MotionEyeOs](https://github.com/ccrisan/motioneyeos) Camera which is a raspberry pi device with motionEye
 
