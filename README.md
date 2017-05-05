@@ -121,6 +121,19 @@ See [Readme adding devices / removing devices from Z-Wave](README_ZWave.md)
 ## Camera (MotionEyeOs)
 
 The camera is not really controlled by the gateway. The camera only sends notifications to the gateway when motion is detected. It also uploads those motion frames/movies to the Euricom dropbox account (via the settings of motionEyeOS)
+The camera must be linked with the Dropbox account via a access token.
+
+1) Go to the camera configuration page
+
+	![Configuring camera dropbox account](/doc/euricomseccamera_dropbox_accesstoken.png)
+
+2) Click obtain key
+
+3) Login with your dropbox account and allow this camera access to dropbox
+
+	![Configuring camera dropbox account obtain key](/doc/dropbox_token.png)
+
+4) Enter correct dropbox location: /Apps/EuricomIoT/camera1
 
 ### Settings
 
