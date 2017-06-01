@@ -4,7 +4,7 @@
 
 Must be on WIFI:
 
-POST http://10.0.1.31:8800/api/security/requestcommandtoken
+POST http://10.0.1.101:8800/api/security/requestcommandtoken
 
 Headers {"Content-Type":"application/json"}
 
