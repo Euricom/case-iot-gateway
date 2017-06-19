@@ -36,14 +36,14 @@ namespace Euricom.IoT.Api
             // Init DanaLock
             await ZWaveManager.Instance.Initialize();
 
+            // Set up monitoring of devices / regular tasks that cleanup files
+            StartMonitors();
+
             // Init Webserver
             await new WebServer().InitializeWebServer();
 
             // Process incoming IoT Hub messages
             await new GatewayManager().Initialize();
-
-            // Set up monitoring devices
-            MonitorDevices();
         }
 
         private static void AddAutoMapperMappings()
@@ -59,7 +59,7 @@ namespace Euricom.IoT.Api
             });
         }
 
-        private void MonitorDevices()
+        private void StartMonitors()
         {
             var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
         }

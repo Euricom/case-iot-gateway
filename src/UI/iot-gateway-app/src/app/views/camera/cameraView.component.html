@@ -96,6 +96,13 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="maxStorageDropbox" class="control-label col-sm-4">Start delete camera images/mp4s when Dropbox storage reaches (GigaBytes)</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="maxStorageDropbox" id="maxStorageDropbox" [(ngModel)]="camera.MaximumStorageDropbox"
+                placeholder="Enter gigabytes">
+            </div>
+          </div>
+          <div class="form-group">
             <label for="maxDaysOfCameraFilesAzure" class="control-label col-sm-4">Keep camera images/mp4s for maximum days on Azure Blob storage</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" name="maxDaysOfCameraFilesAzure" id="maxDaysOfCameraFilesAzure" [(ngModel)]="camera.MaximumDaysAzureBlobStorage"

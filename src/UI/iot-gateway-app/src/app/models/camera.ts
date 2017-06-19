@@ -6,6 +6,9 @@ export class Camera {
   Type?: String
   Address?: String
   PollingTime?: Number
+  MaximumDaysDropbox?: Number
+  MaximumStorageDropbox?: Number
+  MaximumDaysAzureBlobStorage?: Number
   Enabled?: boolean
 
   constructor(resource) {

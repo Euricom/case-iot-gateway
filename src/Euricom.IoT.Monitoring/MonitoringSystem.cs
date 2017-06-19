@@ -49,7 +49,7 @@ namespace Euricom.IoT.Monitoring
 
             MonitorDevices();
 
-            CleanupDropboxFolder(DROPBOX_CLEANUP_CHECK_INTERVAl);
+            CleanupCameraDropboxFolders(DROPBOX_CLEANUP_CHECK_INTERVAl);
 
             CleanupAzureBlobStorage(AZURE_CLEANUP_CHECK_INTERVAl);
         }
@@ -185,14 +185,14 @@ namespace Euricom.IoT.Monitoring
         {
             _cancellationDropboxCleanup.Cancel();
 
-            CleanupDropboxFolder(DROPBOX_CLEANUP_CHECK_INTERVAl);
+            CleanupCameraDropboxFolders(DROPBOX_CLEANUP_CHECK_INTERVAl);
         }
 
         public void ChangeAzureCleanupParameter(string deviceId)
         {
             _cancellationAzureCleanup.Cancel();
 
-            CleanupDropboxFolder(DROPBOX_CLEANUP_CHECK_INTERVAl);
+            CleanupCameraDropboxFolders(DROPBOX_CLEANUP_CHECK_INTERVAl);
         }
 
         private IList<string> GetNewDevices(Hardware hardware)
@@ -367,7 +367,7 @@ namespace Euricom.IoT.Monitoring
             });
         }
 
-        private void CleanupDropboxFolder(int waitInterval)
+        private void CleanupCameraDropboxFolders(int waitInterval)
         {
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
@@ -384,7 +384,7 @@ namespace Euricom.IoT.Monitoring
                             Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera (if there are old files..)");
 
                             // Cleanup 
-                            await DropboxCleanup.DropboxCleanup.Instance.Cleanup(camera.Name, camera.MaximumDaysDropbox);
+                            await DropboxCleanup.DropboxCleanup.Instance.Cleanup(camera.Name, camera.MaximumDaysDropbox, camera.MaximumStorageDropbox);
 
                             Logging.Logger.Instance.LogDebugWithDeviceContext(camera.DeviceId, $"Cleaning dropbox for camera completed");
                         }
