@@ -1,0 +1,86 @@
+
+
+<style type="text/css">
+  .loglevel.verbose {
+    background-color: lightslategray !important
+  }
+
+  .loglevel.debug {
+    background-color: #dff0d8 !important
+  }
+
+  .loglevel.information {
+    background-color: #d9edf7 !important
+  }
+
+  .loglevel.warning {
+    background-color: orange !important
+  }
+
+  .loglevel.error {
+    background-color: orangered !important
+  }
+
+  .loglevel.fatal {
+    background-color: red !important
+  }
+
+</style>
+
+<h2>Logging</h2>
+
+<div class="row form-group">
+  <div class="col-md-8">
+    <button type="button" class="btn btn-primary" (click)="refresh()">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
+    </button>
+  </div>
+  <div class="col-md-4">
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-4">
+    <label>Select a day</label>
+    <ng2-datepicker [options]="options" (ngModelChange)="onChangeDate($event)" [(ngModel)]="currentDate"></ng2-datepicker>
+  </div>
+  <div class="col-md-4">
+    <label>Filter on level</label>
+    <select required (ngModelChange)="onChangeLogLevel($event)" [(ngModel)]="logLevel" name="logLevel" id="inputLogLevel">
+      <option value="">--</option>
+      <option *ngFor="let logLevelOption of logLevelOptions" value="{{logLevelOption}}">{{logLevelOption}}</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label>Filter log</label>
+    <input type="text" class="" id="inputFilter" name="inputFilter" (ngModelChange)="onChangeFilterText($event)" [(ngModel)]="filterText"
+      placeholder="">
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Device</th>
+          <th>Level</th>
+          <th>Message</th>
+          <th>Exception</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loglevel" *ngFor="let logline of log.LogLines; let i=index" (click)="setClickedRow(i, logLine)" [class.active]="i == selectedRowIndex">
+          <td>
+            {{logline.Timestamp | date: 'dd/MM/yyyy H:m:s'}}
+          </td>
+          <td>{{logline.DeviceName}}</td>
+          <td class="loglevel" [ngClass]="getLogLevelClass(logline.Level)">{{logline.Level}}</td>
+          <td>{{logline.MessageTemplate}}</td>
+          <td>{{logline.Exception}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
