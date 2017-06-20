@@ -66,7 +66,7 @@ namespace Euricom.IoT.DropboxCleanup
                     spaceUsed = ConvertToGB((await dropboxClient.Users.GetSpaceUsageAsync()).Used);
 
                     // Delete files
-                    var filteredEntries = folder.Entries.Where(x => x.IsFile).OrderByDescending(x=> x.AsFile.ServerModified).ToList();
+                    var filteredEntries = folder.Entries.Where(x => x.IsFile && !x.IsDeleted).OrderBy(x=> x.AsFile.ServerModified).ToList();
                     filteredEntries = filteredEntries.Take(50).ToList();
                     foreach(var entry in filteredEntries)
                     {
@@ -78,7 +78,7 @@ namespace Euricom.IoT.DropboxCleanup
             // Delete files older than max days
             if (folder.Entries.Any())
             {
-                var filteredEntries = folder.Entries.Where(x => x.IsFile && x.AsFile.ServerModified.AddDays(maxDays) < DateTime.Now).ToList();
+                var filteredEntries = folder.Entries.Where(x => x.IsFile && !x.IsDeleted && x.AsFile.ServerModified.AddDays(maxDays) < DateTime.Now).ToList();
                 if (filteredEntries.Any())
                     Logger.Instance.LogInformationWithDeviceContext(device.DeviceId, $"Deleting {filteredEntries.Count} files from dropbox");
 
