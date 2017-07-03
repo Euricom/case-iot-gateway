@@ -16,13 +16,13 @@ export class HardwareService {
   }
 
   getAll(): Observable<Device[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/hardware`)
+    return this.authHttp.get(`/api/hardware`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new Device(element)))
   }
 
   getById(id: String): Observable<Device> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/hardware/${id}`)
+    return this.authHttp.get(`/api/hardware/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }
@@ -36,17 +36,17 @@ export class HardwareService {
   }
 
   update(id: String, device: Device): Observable<Device> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/hardware/${id}`, device)
+    return this.authHttp.put(`/api/hardware/${id}`, device)
       .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }
 
   delete(name: String) {
-    return this.authHttp.delete(`${this.config.baseUrl}/api/hardware/${name}`)
+    return this.authHttp.delete(`/api/hardware/${name}`)
   }
 
   create(device: Device) {
-    return this.authHttp.post(`${this.config.baseUrl}/api/hardware`, device)
+    return this.authHttp.post(`/api/hardware`, device)
       .map((res: Response) => (res.json()))
       .map((data) => new Device(data))
   }

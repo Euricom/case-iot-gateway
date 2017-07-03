@@ -16,13 +16,13 @@ export class WallmountService {
   }
 
   getAll(): Observable<Wallmount[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/wallmount`)
+    return this.authHttp.get(`/api/wallmount`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new Wallmount(element)))
   }
 
   getById(id: String): Observable<Wallmount> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/wallmount/${id}`)
+    return this.authHttp.get(`/api/wallmount/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new Wallmount(data))
   }
@@ -36,33 +36,33 @@ export class WallmountService {
   }
 
   update(wallmount: Wallmount): Observable<Wallmount> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/wallmount`, wallmount)
+    return this.authHttp.put(`/api/wallmount`, wallmount)
       .map((res: Response) => (res.json()))
       .map((data) => new Wallmount(data))
   }
 
   delete(id: String) {
-    return this.authHttp.delete(`${this.config.baseUrl}/api/wallmount/${id}`)
+    return this.authHttp.delete(`/api/wallmount/${id}`)
   }
 
   create(wallmount: Wallmount) {
-    return this.authHttp.post(`${this.config.baseUrl}/api/wallmount`, wallmount)
+    return this.authHttp.post(`/api/wallmount`, wallmount)
       .map((res: Response) => (res.json()))
       .map((data) => new Wallmount(data))
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/wallmount/testconnection/${id}`)
+    return this.authHttp.get(`/api/wallmount/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   getState(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/wallmount/getState/${id}`)
+    return this.authHttp.get(`/api/wallmount/getState/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.authHttp.put(`${this.config.baseUrl}/api/wallmount/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`/api/wallmount/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

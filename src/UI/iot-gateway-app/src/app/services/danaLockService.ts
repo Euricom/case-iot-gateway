@@ -16,13 +16,13 @@ export class DanaLockService {
   }
 
   getAll(): Observable<DanaLock[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/danalock`)
+    return this.authHttp.get(`/api/danalock`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new DanaLock(element)))
   }
 
   getById(id: String): Observable<DanaLock> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/${id}`)
+    return this.authHttp.get(`/api/danalock/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
@@ -36,33 +36,33 @@ export class DanaLockService {
   }
 
   update(danaLock: DanaLock): Observable<DanaLock> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/danalock`, danaLock)
+    return this.authHttp.put(`/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
 
   delete(id: String) {
-    return this.authHttp.delete(`${this.config.baseUrl}/api/danalock/${id}`)
+    return this.authHttp.delete(`/api/danalock/${id}`)
   }
 
   create(danaLock: DanaLock) {
-    return this.authHttp.post(`${this.config.baseUrl}/api/danalock`, danaLock)
+    return this.authHttp.post(`/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))
       .map((data) => new DanaLock(data))
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/testconnection/${id}`)
+    return this.authHttp.get(`/api/danalock/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   isLocked(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/danalock/isLocked/${id}`)
+    return this.authHttp.get(`/api/danalock/isLocked/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.authHttp.put(`${this.config.baseUrl}/api/danalock/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`/api/danalock/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

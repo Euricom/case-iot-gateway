@@ -16,13 +16,13 @@ export class LazyBoneService {
   }
 
   getAll(): Observable<LazyBone[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/lazyBone`)
+    return this.authHttp.get(`/api/lazyBone`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new LazyBone(element)))
   }
 
   getById(id: String): Observable<LazyBone> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/lazyBone/${id}`)
+    return this.authHttp.get(`/api/lazyBone/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new LazyBone(data))
   }
@@ -36,38 +36,38 @@ export class LazyBoneService {
   }
 
   update(lazyBone: LazyBone): Observable<LazyBone> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/lazyBone`, lazyBone)
+    return this.authHttp.put(`/api/lazyBone`, lazyBone)
       .map((res: Response) => (res.json()))
       .map((data) => new LazyBone(data))
   }
 
   delete(id: String) {
-    return this.authHttp.delete(`${this.config.baseUrl}/api/lazyBone/${id}`)
+    return this.authHttp.delete(`/api/lazyBone/${id}`)
   }
 
   create(lazyBone: LazyBone) {
-    return this.authHttp.post(`${this.config.baseUrl}/api/lazyBone`, lazyBone)
+    return this.authHttp.post(`/api/lazyBone`, lazyBone)
       .map((res: Response) => (res.json()))
       .map((data) => new LazyBone(data))
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/lazyBone/testconnection/${id}`)
+    return this.authHttp.get(`/api/lazyBone/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   getCurrentState(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/lazyBone/getstate/${id}`)
+    return this.authHttp.get(`/api/lazyBone/getstate/${id}`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.authHttp.put(`${this.config.baseUrl}/api/lazyBone/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`/api/lazyBone/switch?devicename=${id}&state=${state}`, null)
       .map((res: Response) => (res.json()))
   }
 
   testChangeLightIntensity(id: String) {
-    return this.authHttp.put(`${this.config.baseUrl}/api/lazyBone/testchangelightintensity?devicename=${id}`, null)
+    return this.authHttp.put(`/api/lazyBone/testchangelightintensity?devicename=${id}`, null)
       .map((res: Response) => (res.json()))
   }
 }

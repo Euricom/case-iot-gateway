@@ -16,13 +16,13 @@ export class CameraService {
   }
 
   getAll(): Observable<Camera[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/camera`)
+    return this.authHttp.get(`/api/camera`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new Camera(element)))
   }
 
   getById(id: String): Observable<Camera> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/camera/${id}`)
+    return this.authHttp.get(`/api/camera/${id}`)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
@@ -36,23 +36,23 @@ export class CameraService {
   }
 
   update(camera: Camera): Observable<Camera> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/camera`, camera)
+    return this.authHttp.put(`/api/camera`, camera)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
 
   delete(id: String) {
-    return this.authHttp.delete(`${this.config.baseUrl}/api/camera/${id}`)
+    return this.authHttp.delete(`/api/camera/${id}`)
   }
 
   create(camera: Camera) {
-    return this.authHttp.post(`${this.config.baseUrl}/api/camera`, camera)
+    return this.authHttp.post(`/api/camera`, camera)
       .map((res: Response) => (res.json()))
       .map((data) => new Camera(data))
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`${this.config.baseUrl}/api/camera/testconnection/${id}`)
+    return this.authHttp.get(`/api/camera/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
 }

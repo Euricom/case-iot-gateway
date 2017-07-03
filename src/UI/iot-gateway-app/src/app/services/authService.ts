@@ -53,11 +53,11 @@ export class AuthService {
   login(credentials: Credentials, puk): Observable<any> {
 
     if (credentials && credentials.Username && credentials.Password) {
-      return this.http.post(`${this.config.baseUrl}/api/security/login/`, credentials)
+      return this.http.post(`/api/security/login/`, credentials)
         .map(res => res.json())
     } else {
       if (puk) {
-        return this.http.post(`${this.config.baseUrl}/api/security/loginByPUK/`, { puk })
+        return this.http.post(`/api/security/loginByPUK/`, { puk })
           .map(res => res.json())
       }
     }

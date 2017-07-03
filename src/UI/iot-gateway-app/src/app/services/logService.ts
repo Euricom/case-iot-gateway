@@ -17,17 +17,17 @@ export class LogService {
   }
 
   queryLogs(): Observable<string[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/logs`)
+    return this.authHttp.get(`/api/logs`)
       .map((res: Response) => (res.json()))
   }
 
   getLog(day: string): Observable<Log> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/logs/${day}`)
+    return this.authHttp.get(`/api/logs/${day}`)
       .map((res: Response) => (res.json()))
   }
 
   getOpenZWaveLog(): Observable<string[]> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/logs_openzwave/`)
+    return this.authHttp.get(`/api/logs_openzwave/`)
       .map((res: Response) => (res.json()))
   }
 }

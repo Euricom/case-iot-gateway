@@ -16,11 +16,11 @@ export class SettingsService {
   }
 
   getSettings(): Observable<Settings> {
-    return this.authHttp.get(`${this.config.baseUrl}/api/settings`)
+    return this.authHttp.get(`/api/settings`)
       .map((res: Response) => (res.json()))
   }
 
   saveSettings(settings: Settings): Observable<Settings> {
-    return this.authHttp.put(`${this.config.baseUrl}/api/settings`, settings)
+    return this.authHttp.put(`/api/settings`, settings)
   }
 }
