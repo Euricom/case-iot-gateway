@@ -9,6 +9,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
+    "noStrictGenericChecks": true,   // required for typescript@2.4.x 
     "typeRoots": [
       "node_modules/@types"
     ],

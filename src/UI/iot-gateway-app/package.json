@@ -29,7 +29,7 @@
     "zone.js": "^0.7.7"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.0-rc.4",
+    "@angular/cli": "1.2.0",
     "@angular/compiler-cli": "^2.4.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
@@ -45,7 +45,7 @@
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "^4.5.1",
-    "typescript": "^2.2.1",
+    "typescript": "~2.4.0",
     "bootstrap": "^3.3.7",
     "ng2-toastr": "^1.6.0"
   }
