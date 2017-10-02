@@ -111,8 +111,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
-    <IntDir>$(SolutionDir)\Intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\Output\$(MSBuildProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>Intermediate\$(MSBuildProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>Output\$(MSBuildProjectName)\$(PlatformTarget)\$(Configuration)\</OutDir>
     <TargetName>OpenZWave</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -149,7 +149,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\x86\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Xdcmake>
@@ -172,7 +172,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\x86\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Xdcmake>
       <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
@@ -195,7 +195,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Xdcmake>
@@ -218,7 +218,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Xdcmake>
       <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
@@ -240,7 +240,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Xdcmake>
@@ -263,7 +263,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)OpenZWave\$(Platform)\$(Configuration)\OpenZWave\OpenZWave.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Xdcmake>
       <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
