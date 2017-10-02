@@ -1,0 +1,1 @@
+schtasks /create /tn "Set Time Zone" /tr "`"powershell.exe`" -command C:\set-time-zone.ps1"  /sc onstart /ru SYSTEM /F

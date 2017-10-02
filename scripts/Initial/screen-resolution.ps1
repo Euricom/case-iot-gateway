@@ -1,0 +1,1 @@
+SetDisplayResolution 1920 1080
