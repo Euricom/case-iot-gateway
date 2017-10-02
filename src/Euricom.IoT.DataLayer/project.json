@@ -1,11 +1,11 @@
 ﻿{
   "dependencies": {
     "DBreeze": "1.84.0",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.2",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
     "Newtonsoft.Json": "10.0.2"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10586": {}
   },
   "runtimes": {
     "win10-arm": {},
