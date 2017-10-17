@@ -10,20 +10,27 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api
 {
-    public class Startup
+    public class Startup: IDisposable
     {
+        private readonly IContainer _container;
+
+        public Startup()
+        {
+            _container = Bootstrapper.Initialize();
+        }
+
         public async void Run()
         {
             // Add AutoMapper mappings
             AddAutoMapperMappings();
 
-            // Init Database
-            var db = DataLayer.Database.Instance;
-            var settings = db.GetConfigSettings();
-
+            var settings = _container.Resolve<Settings>();
+            
             // Get setting for preserving history log (days)
             var preserveHistoryLogDays = settings.HistoryLog;
             // Get setting for log level
@@ -34,16 +41,19 @@ namespace Euricom.IoT.Api
             var instLogger = Logger.Instance;
 
             // Init DanaLock
-            await ZWaveManager.Instance.Initialize();
+            var zWaveManager = _container.Resolve<IZWaveManager>();
+            await zWaveManager.Initialize();
 
             // Set up monitoring of devices / regular tasks that cleanup files
-            StartMonitors();
+            //StartMonitors();
 
             // Init Webserver
-            await new WebServer().InitializeWebServer();
+            
+
+            await _container.Resolve<WebServer>().InitializeWebServer();
 
             // Process incoming IoT Hub messages
-            await new GatewayManager().Initialize();
+            //await new GatewayManager().Initialize();
         }
 
         private static void AddAutoMapperMappings()
@@ -61,7 +71,14 @@ namespace Euricom.IoT.Api
 
         private void StartMonitors()
         {
-            var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
+            //var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
+        }
+
+        public void Dispose()
+        {
+
+
+            _container.Dispose();
         }
     }
 }

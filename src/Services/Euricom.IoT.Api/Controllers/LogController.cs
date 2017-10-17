@@ -17,9 +17,9 @@ namespace Euricom.IoT.Api.Controllers
     {
         private readonly ILogManager _logManager;
 
-        public LogController()
+        public LogController(ILogManager logManager)
         {
-            _logManager = new LogManager();
+            _logManager = logManager;
         }
 
         [UriFormat("/logs")]

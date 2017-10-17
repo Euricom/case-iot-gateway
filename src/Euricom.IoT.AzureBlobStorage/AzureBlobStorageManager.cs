@@ -13,14 +13,15 @@ namespace Euricom.IoT.AzureBlobStorage
 {
     public class AzureBlobStorageManager : IAzureBlobStorageManager
     {
+        private readonly Database _database;
         private StorageCredentials _credentials;
         CloudStorageAccount _storageAccount;
         CloudBlobClient _blobClient;
 
-        public AzureBlobStorageManager()
+        public AzureBlobStorageManager(Settings settings, Database database)
         {
-            var configSettings = Database.Instance.GetConfigSettings();
-            CreateCredentialsConnectToClient(configSettings);
+            _database = database;
+            CreateCredentialsConnectToClient(settings);
         }
 
         public async Task<DropboxFile> GetFileByIdAsync(string containerName, String fileName)
@@ -89,7 +90,7 @@ namespace Euricom.IoT.AzureBlobStorage
             return await blockblob.DeleteIfExistsAsync().ConfigureAwait(false);
         }
 
-        public async Task Cleanup(string containerName, int maxDays)
+        public async Task CleanupAsync(string containerName, int maxDays)
         {
             if (maxDays <= 0)
             {
@@ -98,7 +99,7 @@ namespace Euricom.IoT.AzureBlobStorage
             }
             string deviceName = containerName.Replace("/", "");
 
-            var device = DataLayer.Database.Instance.GetCameras().SingleOrDefault(x => x.Name == deviceName);
+            var device = _database.GetCameras().SingleOrDefault(x => x.Name == deviceName);
             if (device == null)
             {
                 Logger.Instance.LogWarningWithContext(this.GetType(), $"Could not find camera device with name: {deviceName}.. Azure Blob Storage cleanup was not initiated!");

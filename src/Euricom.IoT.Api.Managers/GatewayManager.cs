@@ -8,26 +8,31 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Euricom.IoT.DataLayer;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class GatewayManager : IGatewayManager
     {
-        private IDanaLockManager _danaLockManager;
-        private ILazyBoneManager _lazyBoneManager;
-        private IWallMountSwitchManager _wallmountSwitchManager;
+        private readonly Database _database;
+        private readonly IWallMountSwitchManager _wallMountSwitchManager;
+        private readonly IDanaLockManager _danaLockManager;
+        private readonly ILazyBoneManager _lazyBoneManager;
+        private readonly IHardwareManager _hardwareManager;
 
-        public GatewayManager()
+        public GatewayManager(Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager, IHardwareManager hardwareManager)
         {
-            _danaLockManager = new DanaLockManager();
-            _lazyBoneManager = new LazyBoneManager();
-            _wallmountSwitchManager = new WallMountSwitchManager();
+            _database = database;
+            _danaLockManager = danaLockManager;
+            _lazyBoneManager = lazyBoneManager;
+            _wallMountSwitchManager = wallMountSwitchManager;
+            _hardwareManager = hardwareManager;
         }
 
         public async Task Initialize()
         {
             Logger.Instance.LogInformationWithContext(this.GetType(), "Forwarding IoT hub messages from IoTGateway device to hardware");
-            var settings = DataLayer.Database.Instance.GetConfigSettings();
+            var settings = _database.GetConfigSettings();
             if (settings == null || String.IsNullOrEmpty(settings.GatewayDeviceKey))
             {
                 Logger.Instance.LogWarningWithContext(this.GetType(), "Setting: 'Gateway Device key' was not provided.. Cannot proccess device messages");
@@ -90,7 +95,7 @@ namespace Euricom.IoT.Api.Managers
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
 
-            var deviceId = new HardwareManager().GetDeviceId(message.Device);
+            var deviceId = _hardwareManager.GetDeviceId(message.Device);
             switch (message.MessageType)
             {
                 case "danalock":
@@ -123,7 +128,7 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
-                await _wallmountSwitchManager.Switch(deviceId, message.State == true ? "close" : "open");
+                await _wallMountSwitchManager.Switch(deviceId, message.State == true ? "close" : "open");
                 return true;
             }
             catch (Exception ex)

@@ -9,5 +9,6 @@ namespace Euricom.IoT.AzureBlobStorage
         Task<bool> DeleteImageByIdAsync(string containerName, string imageName);
         Task<DropboxFile> GetFileByIdAsync(string containerName, string fileName);
         Task<DropboxFile> PostImage(string containerName, string name, Stream body);
+        Task CleanupAsync(string containerName, int maxDays);
     }
 }

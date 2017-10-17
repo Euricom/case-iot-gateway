@@ -26,7 +26,7 @@ namespace Euricom.IoT.Monitoring
         //    var cts = new CancellationTokenSource();
         //    var ct = cts.Token;
 
-        //    var settings = DataLayer.Database.Instance.GetConfigSettings();
+        //    var settings = _database.GetConfigSettings();
 
         //    Task.Run(async () =>
         //    {

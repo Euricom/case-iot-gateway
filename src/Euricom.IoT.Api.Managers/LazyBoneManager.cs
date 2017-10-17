@@ -16,30 +16,39 @@ namespace Euricom.IoT.Api.Managers
 {
     public class LazyBoneManager : ILazyBoneManager
     {
-        private IAzureDeviceManager _azureDeviceManager;
+        private readonly Database _database;
 
-        public LazyBoneManager()
+        public LazyBoneManager(Database database)
         {
-            var settings = Database.Instance.GetConfigSettings();
-            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
+            _database = database;
         }
 
         public Task<IEnumerable<Euricom.IoT.Models.LazyBone>> GetAll()
         {
-            var lazyBones = Database.Instance.GetLazyBones();
+            var lazyBones = _database.GetLazyBones();
             return Task.FromResult(lazyBones.AsEnumerable());
         }
 
         public Task<Euricom.IoT.Models.LazyBone> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.LazyBone>(json));
+        }
+
+        private string GetDeviceId(string deviceName)
+        {
+            var device = _database.GetCameras().FirstOrDefault(x => x.Name == deviceName);
+            if (device == null)
+            {
+                throw new Exception($"Could not find deviceName: {deviceName}");
+            }
+            return device.DeviceId;
         }
 
         public Task<Euricom.IoT.Models.LazyBone> GetByDeviceName(string deviceName)
         {
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_LAZYBONES, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.LazyBone>(json));
         }
 
@@ -52,7 +61,7 @@ namespace Euricom.IoT.Api.Managers
             var json = JsonConvert.SerializeObject(lazyBone);
 
             //Save to database
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
 
             return lazyBone;
         }
@@ -70,7 +79,7 @@ namespace Euricom.IoT.Api.Managers
 
             var json = JsonConvert.SerializeObject(lazyBone);
 
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_LAZYBONES, lazyBone.DeviceId, json);
 
             return await GetByDeviceId(lazyBone.DeviceId);
         }
@@ -78,8 +87,8 @@ namespace Euricom.IoT.Api.Managers
         public async Task Remove(string deviceName)
         {
             // Remove device from  database
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            Database.Instance.RemoveDevice(deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            _database.RemoveDevice(deviceId);
         }
 
         public async Task<bool> TestConnection(string deviceId)
@@ -89,7 +98,7 @@ namespace Euricom.IoT.Api.Managers
                 throw new ArgumentNullException("deviceId");
             }
 
-            var config = Database.Instance.GetLazyBoneConfig(deviceId);
+            var config = _database.GetLazyBoneConfig(deviceId);
             return await LazyBoneConnectionManager.Instance.TestConnection(deviceId, config);
         }
 
@@ -102,7 +111,7 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                var config = _database.GetLazyBoneConfig(deviceId);
                 if (!config.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
@@ -129,7 +138,7 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                var config = _database.GetLazyBoneConfig(deviceId);
                 if (!config.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
@@ -165,8 +174,8 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = Database.Instance.GetConfigSettings();
-                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                var settings = _database.GetConfigSettings();
+                var config = _database.GetLazyBoneConfig(deviceId);
 
                 if (!config.Enabled)
                 {
@@ -209,8 +218,8 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = Database.Instance.GetConfigSettings();
-                var config = Database.Instance.GetLazyBoneConfig(deviceId);
+                var settings = _database.GetConfigSettings();
+                var config = _database.GetLazyBoneConfig(deviceId);
 
                 if (!config.Enabled)
                 {

@@ -18,9 +18,9 @@ namespace Euricom.IoT.Api.Controllers
     {
         private readonly IConfigurationManager _configurationManager;
 
-        public ConfigurationController()
+        public ConfigurationController(IConfigurationManager configurationManager)
         {
-            _configurationManager = new ConfigurationManager();
+            _configurationManager = configurationManager;
         }
 
         [UriFormat("/settings")]

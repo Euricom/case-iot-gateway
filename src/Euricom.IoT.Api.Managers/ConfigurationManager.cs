@@ -6,20 +6,23 @@ namespace Euricom.IoT.Api.Managers
 {
     public class ConfigurationManager : IConfigurationManager
     {
-        public ConfigurationManager()
+        private readonly Database _database;
+
+        public ConfigurationManager(Database database)
         {
+            _database = database;
         }
 
         public Settings GetConfigSettings()
         {
-            var settings = Database.Instance.GetConfigSettings();
+            var settings = _database.GetConfigSettings();
             settings.Password = string.Empty;
             return settings;
         }
 
         public void SaveConfigSettings(Settings settings)
         {
-            Database.Instance.SaveConfigSettings(settings);
+            _database.SaveConfigSettings(settings);
         }
     }
 }

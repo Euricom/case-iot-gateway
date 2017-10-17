@@ -16,9 +16,9 @@ namespace Euricom.IoT.Api.Controllers
     {
         private readonly ISecurityManager _securityManager;
 
-        public SecurityController()
+        public SecurityController(ISecurityManager securityManager)
         {
-            _securityManager = new SecurityManager(new Mailer());
+            _securityManager = securityManager;
         }
 
         [UriFormat("/security/login")]

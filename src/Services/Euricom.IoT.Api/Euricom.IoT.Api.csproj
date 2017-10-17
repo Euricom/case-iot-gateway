@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="Authentication\JwtValidator.cs" />
     <Compile Include="Authentication\JwtAuthenticationProvider.cs" />
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
@@ -183,6 +184,22 @@
     <ProjectReference Include="..\..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
       <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
+      <Project>{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}</Project>
+      <Name>Euricom.IoT.AzureBlobStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Devices.DanaLock\Euricom.IoT.Devices.DanaLock.csproj">
+      <Project>{3021fe48-a1a3-4c3d-9aa6-8601813acaed}</Project>
+      <Name>Euricom.IoT.Devices.DanaLock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Devices.LazyBone\Euricom.IoT.Devices.LazyBone.csproj">
+      <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
+      <Name>Euricom.IoT.Devices.LazyBone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Devices.WallMountSwitch\Euricom.IoT.Devices.WallMountSwitch.csproj">
+      <Project>{9edc1c3d-7e2b-4769-a260-8885487d45b7}</Project>
+      <Name>Euricom.IoT.Devices.WallMountSwitch</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Mailing\Euricom.IoT.Mailing.csproj">
       <Project>{621670D2-9491-4C59-AEA8-85F819DDF811}</Project>

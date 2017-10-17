@@ -6,40 +6,18 @@ using Euricom.IoT.Models.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace Euricom.IoT.DataLayer
 {
     public class Database : IDisposable, IDatabase
     {
-        private static volatile Database _instance;
-        private static object _syncRoot = new Object();
-        private static DBreeze.DBreezeEngine _engine;
+        private readonly DBreeze.DBreezeEngine _engine;
 
-        private Database()
+        public Database(DBreezeEngine engine)
         {
-            InitDB();
+            _engine = engine;
         }
-
-        public static Database Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new Database();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
+        
         public bool ExistsUser(string username)
         {
             try
@@ -505,24 +483,6 @@ namespace Euricom.IoT.DataLayer
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 throw new Exception($"Could not set value for table: {table}, key: {key}, exception: " + ex);
-            }
-        }
-
-
-        private void InitDB()
-        {
-            if (_engine == null)
-            {
-                try
-                {
-                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                    _engine = new DBreezeEngine(new DBreezeConfiguration { DBreezeDataFolderName = localFolder.Path });
-                    Logger.Instance.LogInformationWithContext(this.GetType(), "Database DBreeze (settings DB) Initialized succesfully");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                }
             }
         }
 

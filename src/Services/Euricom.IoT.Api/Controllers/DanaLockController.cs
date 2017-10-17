@@ -19,10 +19,12 @@ namespace Euricom.IoT.Api.Controllers
     public class DanaLockController
     {
         private readonly IDanaLockManager _danaLockManager;
+        private readonly IHardwareManager _hardwareManager;
 
-        public DanaLockController()
+        public DanaLockController(IDanaLockManager danaLockManager, IHardwareManager hardwareManager)
         {
-            _danaLockManager = new DanaLockManager();
+            _danaLockManager = danaLockManager;
+            _hardwareManager = hardwareManager;
         }
 
         [UriFormat("/danalock")]
@@ -62,7 +64,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var danaLock = Mapper.Map<DanaLock>(danaLockDto);
+                var danaLock = Mapper.Map<Models.DanaLock>(danaLockDto);
                 var newLazyBone = await _danaLockManager.Add(danaLock);
                 return ResponseUtilities.PostResponseOk(newLazyBone);
             }
@@ -78,7 +80,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var danaLock = Mapper.Map<DanaLock>(danaLockDto);
+                var danaLock = Mapper.Map<Models.DanaLock>(danaLockDto);
                 var danaLockEdited = await _danaLockManager.Edit(danaLock);
                 return ResponseUtilities.PutResponseOk(danaLockEdited);
             }
@@ -109,7 +111,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 bool succeeded = _danaLockManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
@@ -125,7 +127,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 var isLocked = await _danaLockManager.IsLocked(deviceId);
                 return ResponseUtilities.GetResponseOk(isLocked.ToString());
             }
@@ -142,7 +144,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 await _danaLockManager.Switch(deviceId, state);
 
                 //If it works, send response back to client

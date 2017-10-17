@@ -18,9 +18,9 @@ namespace Euricom.IoT.Api.Controllers
     {
         private readonly IHardwareManager _hardwareManager;
 
-        public DevicesController()
+        public DevicesController(IHardwareManager hardwareManager)
         {
-            _hardwareManager = new HardwareManager();
+            _hardwareManager = hardwareManager;
         }
 
         [UriFormat("/hardware")]

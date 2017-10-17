@@ -1,68 +1,68 @@
-﻿using Dropbox.Api.Files;
-using Euricom.IoT.Api.Manager;
-using Euricom.IoT.Dropbox;
-using Euricom.IoT.Logging;
-using Euricom.IoT.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+﻿//using Dropbox.Api.Files;
+//using Euricom.IoT.Api.Manager;
+//using Euricom.IoT.Dropbox;
+//using Euricom.IoT.Logging;
+//using Euricom.IoT.Models;
+//using System;
+//using System.Collections.Generic;
+//using System.Diagnostics;
+//using System.Threading;
+//using System.Threading.Tasks;
 
-namespace Euricom.IoT.Monitoring
-{
-    public class CameraMonitor
-    {
-        private IDropbox _dropBoxManager = new Dropbox.Dropbox();
+//namespace Euricom.IoT.Monitoring
+//{
+//    public class CameraMonitor
+//    {
+//        private IDropbox _dropBoxManager = new Dropbox.Dropbox();
 
-        public CameraMonitor()
-        {
-        }
+//        public CameraMonitor()
+//        {
+//        }
 
-        public CancellationTokenSource StartMonitor(Camera camera, int pollingTime)
-        {
-            var cts = new CancellationTokenSource();
-            var ct = cts.Token;
+//        public CancellationTokenSource StartMonitor(Camera camera, int pollingTime)
+//        {
+//            var cts = new CancellationTokenSource();
+//            var ct = cts.Token;
 
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        var entries = await _dropBoxManager.PollDropboxNewFiles(camera.DropboxPath);
-                        if (entries != null && entries.Count > 0)
-                        {
-                            var files = await _dropBoxManager.DownloadFiles(entries);
-                            new CameraManager().UploadFilesToBlobStorage(camera.DropboxPath, files);
-                        }
-                        await Task.Delay(pollingTime);
+//            Task.Run(async () =>
+//            {
+//                while (true)
+//                {
+//                    try
+//                    {
+//                        var entries = await _dropBoxManager.PollDropboxNewFiles(camera.DropboxPath);
+//                        if (entries != null && entries.Count > 0)
+//                        {
+//                            var files = await _dropBoxManager.DownloadFiles(entries);
+//                            new CameraManager().UploadFilesToBlobStorage(camera.DropboxPath, files);
+//                        }
+//                        await Task.Delay(pollingTime);
 
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                        Logger.Instance.LogErrorWithDeviceContext(camera.DeviceId, ex);
-                        Debug.WriteLine($"Exception occurred while monitoring Camera device {camera.DeviceId}, exception message: {ex.Message}");
-                    }
-                }
-            }, ct);
+//                    }
+//                    catch (Exception ex)
+//                    {
+//                        Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+//                        Logger.Instance.LogErrorWithDeviceContext(camera.DeviceId, ex);
+//                        Debug.WriteLine($"Exception occurred while monitoring Camera device {camera.DeviceId}, exception message: {ex.Message}");
+//                    }
+//                }
+//            }, ct);
 
-            return cts;
-        }
+//            return cts;
+//        }
 
-        private List<string> GetFileNames(IList<Metadata> entries)
-        {
-            List<string> results = new List<string>();
-            foreach (var entry in entries)
-            {
-                if (entry.IsFile && !entry.IsDeleted)
-                {
-                    results.Add(entry.Name);
-                }
-            }
-            return results;
-        }
+//        private List<string> GetFileNames(IList<Metadata> entries)
+//        {
+//            List<string> results = new List<string>();
+//            foreach (var entry in entries)
+//            {
+//                if (entry.IsFile && !entry.IsDeleted)
+//                {
+//                    results.Add(entry.Name);
+//                }
+//            }
+//            return results;
+//        }
 
-    }
-}
+//    }
+//}

@@ -19,10 +19,12 @@ namespace Euricom.IoT.Api.Controllers
     public class WallMountSwitchController
     {
         private readonly IWallMountSwitchManager _wallmountSwitchManager;
+        private readonly IHardwareManager _hardwareManager;
 
-        public WallMountSwitchController()
+        public WallMountSwitchController(IWallMountSwitchManager wallMountSwitchManager, IHardwareManager hardwareManager)
         {
-            _wallmountSwitchManager = new WallMountSwitchManager();
+            _wallmountSwitchManager = wallMountSwitchManager;
+            _hardwareManager = hardwareManager;
         }
 
         [UriFormat("/wallmount")]
@@ -62,7 +64,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var wallmount = Mapper.Map<WallMountSwitch>(wallmountSwitchDto);
+                var wallmount = Mapper.Map<Models.WallMountSwitch>(wallmountSwitchDto);
                 var newWallMount = await _wallmountSwitchManager.Add(wallmount);
                 return ResponseUtilities.PostResponseOk(newWallMount);
             }
@@ -78,7 +80,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var wallmountSwitch = Mapper.Map<WallMountSwitch>(wallmountSwitchDto);
+                var wallmountSwitch = Mapper.Map<Models.WallMountSwitch>(wallmountSwitchDto);
                 var wallmountSwitchEdited = await _wallmountSwitchManager.Edit(wallmountSwitch);
                 return ResponseUtilities.PutResponseOk(wallmountSwitchEdited);
             }
@@ -109,7 +111,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 bool succeeded = _wallmountSwitchManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
@@ -125,7 +127,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 var isOn = await _wallmountSwitchManager.IsOn(deviceId);
                 return ResponseUtilities.GetResponseOk(isOn.ToString());
             }
@@ -142,7 +144,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = new HardwareManager().GetDeviceId(devicename);
+                var deviceId = _hardwareManager.GetDeviceId(devicename);
                 await _wallmountSwitchManager.Switch(deviceId, state);
 
                 //If it works, send response back to client

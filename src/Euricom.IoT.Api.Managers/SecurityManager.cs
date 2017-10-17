@@ -3,28 +3,31 @@ using Euricom.IoT.Common;
 using Euricom.IoT.Mailing;
 using Euricom.IoT.Security;
 using System;
+using Euricom.IoT.DataLayer;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class SecurityManager : ISecurityManager
     {
+        private readonly IDatabase _database;
         private IMailer _mailer;
         private static int _loginExpires = 60;
         private static int _wifiExpires = 1;
 
-        public SecurityManager(Mailer mailer)
+        public SecurityManager(IDatabase database, Mailer mailer)
         {
+            _database = database;
             _mailer = mailer;
 
-            if (!DataLayer.Database.Instance.ExistsUser("admin"))
+            if (!_database.ExistsUser("admin"))
             {
-                DataLayer.Database.Instance.AddUser("admin", "secret_password");
+                _database.AddUser("admin", "secret_password");
             }
         }
 
         public string Login(string username, string password)
         {
-            var valid = DataLayer.Database.Instance.CheckUser(username, password);
+            var valid = _database.CheckUser(username, password);
             if (!valid)
                 throw new Exception("Invalid login");
 
@@ -79,7 +82,7 @@ namespace Euricom.IoT.Api.Managers
         {
             // 
             // Add to d
-            // DataLayer.Database.Instance.VerifyResetPasswordGuid(resetGuid);
+            // _database.VerifyResetPasswordGuid(resetGuid);
 
             // Generate a new password
             // var password = RandomPasswordGenerator.CreateRandomPassword(10);

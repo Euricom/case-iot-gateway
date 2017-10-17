@@ -124,7 +124,6 @@
     <ProjectReference Include="..\UWP\OpenZWaveUWP.vcxproj">
       <Project>{46641b66-9271-4234-8e8b-1547def4bebb}</Project>
       <Name>OpenZWaveUWP</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

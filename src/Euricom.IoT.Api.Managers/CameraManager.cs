@@ -1,7 +1,5 @@
-﻿using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureBlobStorage;
-using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.Messaging;
@@ -19,32 +17,41 @@ namespace Euricom.IoT.Api.Manager
 {
     public class CameraManager : ICameraManager
     {
-        private readonly IAzureBlobStorageManager _azureBlobStorage;
-        private readonly IAzureDeviceManager _azureDeviceManager;
+        private readonly Database _database;
+        private readonly IAzureBlobStorageManager _azureBlobStorageManager;
 
-        public CameraManager()
+        public CameraManager(Database database, IAzureBlobStorageManager azureBlobStorageManager)
         {
-            var settings = Database.Instance.GetConfigSettings();
-            _azureBlobStorage = new IoT.AzureBlobStorage.AzureBlobStorageManager();
-            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
+            _database = database;
+            _azureBlobStorageManager = azureBlobStorageManager;
         }
 
         public Task<IEnumerable<Camera>> GetAll()
         {
-            var cameras = Database.Instance.GetCameras();
+            var cameras = _database.GetCameras();
             return Task.FromResult(cameras.AsEnumerable());
         }
 
         public Task<Camera> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
+        }
+
+        private string GetDeviceId(string deviceName)
+        {
+            var device = _database.GetCameras().FirstOrDefault(x => x.Name == deviceName);
+            if (device == null)
+            {
+                throw new Exception($"Could not find deviceName: {deviceName}");
+            }
+            return device.DeviceId;
         }
 
         public Task<Camera> GetByDeviceName(string deviceName)
         {
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
         }
 
@@ -57,7 +64,7 @@ namespace Euricom.IoT.Api.Manager
             var json = JsonConvert.SerializeObject(camera);
 
             //Save to database
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
             return await GetByDeviceId(camera.DeviceId);
         }
@@ -75,22 +82,24 @@ namespace Euricom.IoT.Api.Manager
 
             var json = JsonConvert.SerializeObject(camera);
 
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
 
             return await GetByDeviceId(camera.DeviceId);
         }
 
-        public async Task Remove(string deviceName)
+        public Task Remove(string deviceName)
         {
             // Remove device from  database
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            Database.Instance.RemoveDevice(deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            _database.RemoveDevice(deviceId);
+
+            return Task.FromResult(0);
         }
 
         public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
         {
-            var settings = Database.Instance.GetConfigSettings();
-            var config = Database.Instance.GetCameraConfig(deviceId);
+            var settings = _database.GetConfigSettings();
+            var config = _database.GetCameraConfig(deviceId);
             if (config.Enabled)
             {
                 var notification = new CameraMotionMessage
@@ -115,7 +124,7 @@ namespace Euricom.IoT.Api.Manager
             {
                 using (MemoryStream ms = new MemoryStream(file.Value))
                 {
-                    await _azureBlobStorage.PostImage(path, file.Key, ms);
+                    await _azureBlobStorageManager.PostImage(path, file.Key, ms);
                 }
             }
         }
@@ -124,7 +133,7 @@ namespace Euricom.IoT.Api.Manager
         {
             try
             {
-                var config = DataLayer.Database.Instance.GetCameraConfig(deviceId);
+                var config = _database.GetCameraConfig(deviceId);
 
                 HttpWebRequest request = (HttpWebRequest)GetAddress(config);
                 request.Credentials = CredentialCache.DefaultCredentials;

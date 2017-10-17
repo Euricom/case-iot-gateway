@@ -11,17 +11,19 @@ namespace Euricom.IoT.Api.Managers
 {
     public class HardwareManager : IHardwareManager
     {
+        private readonly Database _database;
         private readonly ICameraManager _cameraManager;
         private readonly IDanaLockManager _danaLockManager;
         private readonly ILazyBoneManager _lazyBoneManager;
         private readonly IWallMountSwitchManager _wallmountManager;
 
-        public HardwareManager()
+        public HardwareManager(Database database, ICameraManager cameraManager, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
         {
-            _cameraManager = new CameraManager();
-            _danaLockManager = new DanaLockManager();
-            _lazyBoneManager = new LazyBoneManager();
-            _wallmountManager = new WallMountSwitchManager();
+            _database = database;
+            _cameraManager = cameraManager;
+            _danaLockManager = danaLockManager;
+            _lazyBoneManager = lazyBoneManager;
+            _wallmountManager = wallMountSwitchManager;
         }
 
         public string GetDeviceId(string deviceName)
@@ -94,7 +96,7 @@ namespace Euricom.IoT.Api.Managers
 
         public Hardware GetHardware()
         {
-            var hardware = Database.Instance.GetHardware();
+            var hardware = _database.GetHardware();
             return hardware;
         }
 

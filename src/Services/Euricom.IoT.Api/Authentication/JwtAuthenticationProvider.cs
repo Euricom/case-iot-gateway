@@ -20,9 +20,9 @@ namespace Restup.WebServer.Http
         public string Realm { get { return null; } }
 
         //ICredentialValidator is not used
-        public JwtAuthenticationProvider(string realm, ICredentialValidator credentialValidator)
+        public JwtAuthenticationProvider(string realm, ICredentialValidator credentialValidator, ISecurityManager securityManager)
         {
-            _securityManager = new SecurityManager(new Euricom.IoT.Mailing.Mailer());
+            _securityManager = securityManager;
         }
 
         public HttpResponseStatus Authorize(IHttpServerRequest request)

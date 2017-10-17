@@ -13,32 +13,41 @@ namespace Euricom.IoT.Api.Managers
 {
     public class WallMountSwitchManager : IWallMountSwitchManager
     {
-        private readonly Euricom.IoT.WallMountSwitch.IWallMountSwitchManager _manager;
-        private readonly IAzureDeviceManager _azureDeviceManager;
+        private readonly Database _database;
+        private readonly WallMountSwitch.IWallMountSwitchManager _manager;
 
-        public WallMountSwitchManager()
+        public WallMountSwitchManager(Database database, WallMountSwitch.IWallMountSwitchManager switchManager)
         {
-            _manager = new Euricom.IoT.WallMountSwitch.WallMountSwitchManager();
-            var settings = Database.Instance.GetConfigSettings();
-            _azureDeviceManager = new AzureDeviceManager.AzureDeviceManager(settings);
+            _database = database;
+            _manager = switchManager;
         }
 
         public Task<IEnumerable<Euricom.IoT.Models.WallMountSwitch>> GetAll()
         {
-            var wallmounts = Database.Instance.GetWallMountSwitches();
+            var wallmounts = _database.GetWallMountSwitches();
             return Task.FromResult(wallmounts.AsEnumerable());
         }
 
         public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceId(string deviceId)
         {
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
+        }
+
+        private string GetDeviceId(string deviceName)
+        {
+            var device = _database.GetWallMountSwitches().FirstOrDefault(x => x.Name == deviceName);
+            if (device == null)
+            {
+                throw new Exception($"Could not find deviceName: {deviceName}");
+            }
+            return device.DeviceId;
         }
 
         public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceName(string deviceName)
         {
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            var json = Database.Instance.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            var json = _database.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
         }
 
@@ -51,7 +60,7 @@ namespace Euricom.IoT.Api.Managers
             var json = JsonConvert.SerializeObject(wallmount);
 
             //Save to database
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
 
             return await GetByDeviceId(wallmount.DeviceId);
         }
@@ -69,7 +78,7 @@ namespace Euricom.IoT.Api.Managers
 
             var json = JsonConvert.SerializeObject(wallmount);
 
-            Database.Instance.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
+            _database.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
 
             return await GetByDeviceId(wallmount.DeviceId);
         }
@@ -77,20 +86,20 @@ namespace Euricom.IoT.Api.Managers
         public async Task Remove(string deviceName)
         {
             // Remove device from  database
-            var deviceId = new HardwareManager().GetDeviceId(deviceName);
-            Database.Instance.RemoveDevice(deviceId);
+            var deviceId = GetDeviceId(deviceName);
+            _database.RemoveDevice(deviceId);
         }
 
         public bool TestConnection(string deviceId)
         {
-            var config = DataLayer.Database.Instance.GetWallMountConfig(deviceId);
+            var config = _database.GetWallMountConfig(deviceId);
             var nodeId = config.NodeId;
             return _manager.TestConnection(nodeId);
         }
 
         public async Task<bool> IsOn(byte nodeId)
         {
-            var wallmount = Database.Instance.GetWallMountSwitches().SingleOrDefault(x => x.NodeId == nodeId);
+            var wallmount = _database.GetWallMountSwitches().SingleOrDefault(x => x.NodeId == nodeId);
             if (wallmount == null)
             {
                 throw new InvalidOperationException($"Could not find a wallmount by nodeId: {nodeId}");
@@ -102,7 +111,7 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
-                var config = DataLayer.Database.Instance.GetWallMountConfig(deviceId);
+                var config = _database.GetWallMountConfig(deviceId);
                 if (!config.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
@@ -131,8 +140,8 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = Database.Instance.GetConfigSettings();
-                var config = DataLayer.Database.Instance.GetWallMountConfig(deviceId);
+                var settings = _database.GetConfigSettings();
+                var config = _database.GetWallMountConfig(deviceId);
 
                 if (!config.Enabled)
                 {

@@ -10,8 +10,11 @@ namespace Euricom.IoT.Api.Managers
 {
     public class LogManager : ILogManager
     {
-        public LogManager()
+        private readonly IHardwareManager _hardwareManager;
+
+        public LogManager(IHardwareManager hardwareManager)
         {
+            _hardwareManager = hardwareManager;
         }
 
         public string[] QueryLogFiles()
@@ -55,7 +58,7 @@ namespace Euricom.IoT.Api.Managers
                     if (!String.IsNullOrEmpty(jLogLine.Properties.DeviceId))
                     {
                         jLogLine.DeviceId = jLogLine.Properties.DeviceId;
-                        jLogLine.DeviceName = new HardwareManager().GetDeviceName(jLogLine.Properties.DeviceId);
+                        //jLogLine.DeviceName = _hardwareManager.GetDeviceName(jLogLine.Properties.DeviceId);
                     }
                 }
                 copy.Add(jLogLine);
