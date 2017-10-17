@@ -19,7 +19,7 @@
     <AllowCrossPlatformRetargeting>false</AllowCrossPlatformRetargeting>
     <PackageCertificateKeyFile>Euricom.IoT.Api_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackage>true</AppxPackage>
-    <ContainsStartupTask>true</ContainsStartupTask>
+    <ContainsStartupTask>false</ContainsStartupTask>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -102,7 +102,6 @@
     <Compile Include="Authentication\JwtValidator.cs" />
     <Compile Include="Authentication\JwtAuthenticationProvider.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />

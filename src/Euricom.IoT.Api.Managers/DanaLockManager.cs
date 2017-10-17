@@ -38,7 +38,7 @@ namespace Euricom.IoT.Api.Managers
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.DanaLock>(json));
         }
 
-        private string GetDeviceId(string deviceName)
+        public string GetDeviceId(string deviceName)
         {
             var device = _database.GetDanaLocks().FirstOrDefault(x => x.Name == deviceName);
             if (device == null)

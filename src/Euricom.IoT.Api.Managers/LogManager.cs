@@ -10,13 +10,6 @@ namespace Euricom.IoT.Api.Managers
 {
     public class LogManager : ILogManager
     {
-        private readonly IHardwareManager _hardwareManager;
-
-        public LogManager(IHardwareManager hardwareManager)
-        {
-            _hardwareManager = hardwareManager;
-        }
-
         public string[] QueryLogFiles()
         {
             return Logger.Instance.QueryLogFiles();

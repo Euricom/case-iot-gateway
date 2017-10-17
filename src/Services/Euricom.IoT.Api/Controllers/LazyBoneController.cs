@@ -22,13 +22,11 @@ namespace Euricom.IoT.Api.Controllers
     {
         private readonly Database _database;
         private readonly ILazyBoneManager _lazyBoneManager;
-        private readonly IHardwareManager _hardwareManager;
 
-        public LazyBoneController(Database database, ILazyBoneManager lazyBoneManager, IHardwareManager hardwareManager)
+        public LazyBoneController(Database database, ILazyBoneManager lazyBoneManager)
         {
             _database = database;
             _lazyBoneManager = lazyBoneManager;
-            _hardwareManager = hardwareManager;
         }
 
         [UriFormat("/lazybone")]
@@ -115,13 +113,13 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 bool connectionSuccessfull = await _lazyBoneManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(connectionSuccessfull);
             }
             catch (Exception ex)
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception(ex.Message);
             }
@@ -132,7 +130,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 var config = _database.GetLazyBoneConfig(deviceId);
                 if (!config.IsDimmer)
                 {
@@ -147,7 +145,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
             }
@@ -159,7 +157,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 await _lazyBoneManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
@@ -167,7 +165,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception($"LazyBone switch failed, exception: {ex.Message}");
             }
@@ -179,7 +177,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 await _lazyBoneManager.SetLightValue(deviceId, value);
 
                 //If it works, send response back to client
@@ -187,7 +185,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
             }
@@ -199,7 +197,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 await _lazyBoneManager.TestChangeLightIntensity(deviceId);
 
                 //If it works, send response back to client
@@ -207,7 +205,7 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
             }

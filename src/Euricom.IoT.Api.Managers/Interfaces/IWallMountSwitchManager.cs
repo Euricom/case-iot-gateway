@@ -16,5 +16,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<bool> IsOn(string deviceId);
         Task Switch(string deviceId, string state);
         bool TestConnection(string deviceId);
+        string GetDeviceId(string devicename);
     }
 }

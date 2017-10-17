@@ -18,5 +18,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task Remove(string devicename);
         Task<bool> TestConnection(string deviceId);
         void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber);
+        string GetDeviceId(string devicename);
     }
 }

@@ -14,5 +14,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         bool TestConnection(string deviceid);
         Task<bool> IsLocked(string deviceId);
         Task Switch(string deviceid, string state);
+        string GetDeviceId(string devicename);
     }
 }

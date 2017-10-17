@@ -16,7 +16,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task<bool> GetCurrentStateSwitch(string deviceId);
         Task<LazyBoneDimmerState> GetCurrentStateDimmer(string deviceId);
         Task Switch(string deviceId, string state);
-
+        string GetDeviceId(string deviceName);
         /// <summary>
         /// Changes light intensity of specific device
         /// </summary>

@@ -18,15 +18,13 @@ namespace Euricom.IoT.Api.Managers
         private readonly IWallMountSwitchManager _wallMountSwitchManager;
         private readonly IDanaLockManager _danaLockManager;
         private readonly ILazyBoneManager _lazyBoneManager;
-        private readonly IHardwareManager _hardwareManager;
 
-        public GatewayManager(Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager, IHardwareManager hardwareManager)
+        public GatewayManager(Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
         {
             _database = database;
             _danaLockManager = danaLockManager;
             _lazyBoneManager = lazyBoneManager;
             _wallMountSwitchManager = wallMountSwitchManager;
-            _hardwareManager = hardwareManager;
         }
 
         public async Task Initialize()
@@ -94,18 +92,17 @@ namespace Euricom.IoT.Api.Managers
             var isValid = JwtSecurity.VerifyJwt(message.CommandToken);
             if (!isValid)
                 throw new UnauthorizedAccessException("Command token was not valid.. Signature invalid!");
-
-            var deviceId = _hardwareManager.GetDeviceId(message.Device);
+            
             switch (message.MessageType)
             {
                 case "danalock":
-                    return await HandleDanaLockMessage(deviceId, (DanaLockMessage)message);
+                    return await HandleDanaLockMessage(message.Device, (DanaLockMessage)message);
                 case "lazybone_switch":
-                    return await HandleLazyBoneMessage(deviceId, (LazyBoneSwitchMessage)message);
+                    return await HandleLazyBoneMessage(message.Device, (LazyBoneSwitchMessage)message);
                 case "lazybone_dimmer":
-                    return await HandleLazyBoneMessage(deviceId, (LazyBoneDimmerMessage)message);
+                    return await HandleLazyBoneMessage(message.Device, (LazyBoneDimmerMessage)message);
                 case "wallmount_switch":
-                    return await HandleWallMountSwitchMessage(deviceId, (WallmountSwitchMessage)message);
+                    return await HandleWallMountSwitchMessage(message.Device, (WallmountSwitchMessage)message);
                 default:
                     throw new InvalidOperationException("unknown message type");
             }

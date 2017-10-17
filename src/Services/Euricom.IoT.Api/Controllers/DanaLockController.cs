@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Models;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
@@ -19,12 +17,10 @@ namespace Euricom.IoT.Api.Controllers
     public class DanaLockController
     {
         private readonly IDanaLockManager _danaLockManager;
-        private readonly IHardwareManager _hardwareManager;
 
-        public DanaLockController(IDanaLockManager danaLockManager, IHardwareManager hardwareManager)
+        public DanaLockController(IDanaLockManager danaLockManager)
         {
             _danaLockManager = danaLockManager;
-            _hardwareManager = hardwareManager;
         }
 
         [UriFormat("/danalock")]
@@ -111,7 +107,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _danaLockManager.GetDeviceId(devicename);
                 bool succeeded = _danaLockManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
@@ -127,7 +123,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _danaLockManager.GetDeviceId(devicename);
                 var isLocked = await _danaLockManager.IsLocked(deviceId);
                 return ResponseUtilities.GetResponseOk(isLocked.ToString());
             }
@@ -144,7 +140,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send switch command to the manager
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _danaLockManager.GetDeviceId(devicename);
                 await _danaLockManager.Switch(deviceId, state);
 
                 //If it works, send response back to client

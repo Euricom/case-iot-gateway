@@ -76,8 +76,6 @@ namespace Euricom.IoT.Api
 
         public void Dispose()
         {
-
-
             _container.Dispose();
         }
     }

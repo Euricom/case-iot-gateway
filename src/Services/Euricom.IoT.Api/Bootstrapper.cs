@@ -26,7 +26,6 @@ namespace Euricom.IoT.Api
             builder.RegisterType<ConfigurationManager>().As<IConfigurationManager>();
             builder.RegisterType<DanaLockManager>().As<IDanaLockManager>();
             builder.RegisterType<GatewayManager>().As<IGatewayManager>();
-            builder.RegisterType<HardwareManager>().As<IHardwareManager>();
             builder.RegisterType<LazyBoneManager>().As<ILazyBoneManager>();
             builder.RegisterType<LogManager>().As<ILogManager>();
             builder.RegisterType<SecurityManager>().As<ISecurityManager>();

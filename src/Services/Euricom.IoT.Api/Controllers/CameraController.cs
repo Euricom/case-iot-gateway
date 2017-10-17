@@ -19,12 +19,10 @@ namespace Euricom.IoT.Api.Controllers
     [RestController(InstanceCreationType.Singleton)]
     public class CameraController
     {
-        private readonly IHardwareManager _hardwareManager;
         private readonly ICameraManager _cameraManager;
 
-        public CameraController(IHardwareManager hardwareManager, ICameraManager cameraManager)
+        public CameraController(ICameraManager cameraManager)
         {
-            _hardwareManager = hardwareManager;
             _cameraManager = cameraManager;
         }
 
@@ -112,7 +110,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _cameraManager.GetDeviceId(devicename);
                 bool succeeded = await _cameraManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
@@ -129,7 +127,7 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 //Send notification to IoT hub
-                var deviceId = _hardwareManager.GetDeviceId(devicename);
+                var deviceId = _cameraManager.GetDeviceId(devicename);
                 _cameraManager.Notify(deviceId, url, timestamp, frameNumber, eventNumber);
 
                 // Send response back

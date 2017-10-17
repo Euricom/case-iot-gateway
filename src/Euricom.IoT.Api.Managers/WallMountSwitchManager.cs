@@ -34,7 +34,7 @@ namespace Euricom.IoT.Api.Managers
             return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
         }
 
-        private string GetDeviceId(string deviceName)
+        public string GetDeviceId(string deviceName)
         {
             var device = _database.GetWallMountSwitches().FirstOrDefault(x => x.Name == deviceName);
             if (device == null)

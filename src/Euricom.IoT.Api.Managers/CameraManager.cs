@@ -38,7 +38,7 @@ namespace Euricom.IoT.Api.Manager
             return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
         }
 
-        private string GetDeviceId(string deviceName)
+        public string GetDeviceId(string deviceName)
         {
             var device = _database.GetCameras().FirstOrDefault(x => x.Name == deviceName);
             if (device == null)
