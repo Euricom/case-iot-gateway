@@ -52,17 +52,17 @@ export class WallmountService {
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`/api/wallmount/testconnection/${id}`)
+    return this.authHttp.get(`/api/wallmount/${id}/testconnection`)
       .map((res: Response) => (res.json()))
   }
 
   getState(id: String) {
-    return this.authHttp.get(`/api/wallmount/getState/${id}`)
+    return this.authHttp.get(`/api/wallmount/${id}/state`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.authHttp.put(`/api/wallmount/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`/api/wallmount/${id}/switch/${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

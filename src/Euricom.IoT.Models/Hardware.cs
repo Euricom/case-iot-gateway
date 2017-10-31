@@ -13,12 +13,10 @@ namespace Euricom.IoT.Models
             Cameras = new List<Camera>();
             LazyBones = new List<LazyBone>();
             DanaLocks = new List<DanaLock>();
-            WallMountSwitches = new List<WallMountSwitch>();
         }
 
         public List<Camera> Cameras { get; set; }
         public List<LazyBone> LazyBones { get; set; }
         public List<DanaLock> DanaLocks { get; set; }
-        public List<WallMountSwitch> WallMountSwitches { get; set; }
     }
 }

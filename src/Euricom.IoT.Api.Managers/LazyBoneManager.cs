@@ -54,9 +54,6 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<Euricom.IoT.Models.LazyBone> Add(Euricom.IoT.Models.LazyBone lazyBone)
         {
-            // Generate Device Id
-            lazyBone.DeviceId = Guid.NewGuid().ToString();
-
             //Convert to json
             var json = JsonConvert.SerializeObject(lazyBone);
 
@@ -174,7 +171,6 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = _database.GetConfigSettings();
                 var config = _database.GetLazyBoneConfig(deviceId);
 
                 if (!config.Enabled)
@@ -218,7 +214,6 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = _database.GetConfigSettings();
                 var config = _database.GetLazyBoneConfig(deviceId);
 
                 if (!config.Enabled)

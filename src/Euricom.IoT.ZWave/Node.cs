@@ -67,12 +67,7 @@ namespace Euricom.IoT.ZWave
                 ZWManager.Instance.SetNodeName(HomeID, ID, value);
             }
         }
-
-        /// <summary>
-        /// Gets an icon uri matching the <see cref="GenericType"/>.
-        /// </summary>
-        public Uri DeviceIcon => new Uri($"ms-appx:///DeviceIcons/{GenericType}.png");
-
+        
         /// <summary>
         /// Get a node's "generic" type.
         /// </summary>

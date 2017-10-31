@@ -8,18 +8,19 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.DataLayer.Interfaces;
 
 namespace Euricom.IoT.Dropbox
 {
     public class Dropbox : IDropbox
     {
-        private readonly Database _database;
+        private readonly ISettingsRepository _repository;
         private readonly DropboxClientConfig _dropboxClientConfig;
         private readonly Dictionary<string, string> _latestDropboxCursorPerPath;
 
-        public Dropbox(Database database)
+        public Dropbox(ISettingsRepository repository)
         {
-            _database = database;
+            _repository = repository;
             _dropboxClientConfig = new DropboxClientConfig();
             _latestDropboxCursorPerPath = new Dictionary<string, string>();
         }
@@ -41,7 +42,7 @@ namespace Euricom.IoT.Dropbox
                 httpClient.Timeout = TimeSpan.FromMinutes(5);
                 _dropboxClientConfig.HttpClient = httpClient;
 
-                var settings = _database.GetConfigSettings();
+                var settings = _repository.Get();
                 var dropboxClient = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
                 //The cursor is a sort of GUID which we pass to the dropbox api for getting changed files
@@ -89,7 +90,7 @@ namespace Euricom.IoT.Dropbox
                     httpClient.Timeout = TimeSpan.FromMinutes(5);
                     _dropboxClientConfig.HttpClient = httpClient;
 
-                    var settings = _database.GetConfigSettings();
+                    var settings = _repository.Get();
                     var client = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
                     foreach (var entry in entries)

@@ -21,6 +21,6 @@ namespace Euricom.IoT.Models
         [EnumMember(Value = "lazybone_dimmer")]
         LazyBoneDimmer,
         [EnumMember(Value = "wallmount_switch")]
-        WallmountSwitch,
+        WallMountSwitch,
     }
 }

@@ -1,22 +1,22 @@
-<h2>HARDWARE</h2>
+<h2>ZWAVE</h2>
 
 <table class="table table-striped table-bordered">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Guid</th>
-      <th> </th>
+      <th>Icon</th>
+      <th>Id</th>
+      <th>Label</th>
+      <th>Product</th>
+      <th>Manufacturer</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let device of devices">
-      <td>{{device.Name}}</td>
-      <td>{{device.Type}}</td>
-      <td>{{device.DeviceId}}</td>
-      <td>
-        <button type="button" class="btn btn-danger" (click)="deleteDevice(device)">Delete</button>
-      </td>
+    <tr *ngFor="let node of nodes" class="node-row">
+      <td class="node-image"><img [attr.src]="node.DeviceIcon" /></td>
+      <td>{{node.Id}}</td>
+      <td>{{node.Label}}</td>
+      <td>{{node.Product}}</td>
+      <td>{{node.Manufacturer}}</td>
     </tr>
   </tbody>
 </table>

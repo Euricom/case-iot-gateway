@@ -1,103 +1,39 @@
-﻿using OpenZWave;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Euricom.IoT.ZWave.Interfaces;
+using OpenZWave;
 
 namespace Euricom.IoT.ZWave
 {
     public class ZWaveManager : IZWaveManager
     {
-        private static volatile ZWaveManager _instance;
-        private static object _syncRoot = new Object();
+        private readonly ObservableCollection<Node> _nodeList = new ObservableCollection<Node>();
+        private readonly List<ZWaveRequest> _pendingRequests = new List<ZWaveRequest>();
+        private readonly ObservableCollection<SerialPortInfo> _serialPorts = new ObservableCollection<SerialPortInfo>();
 
-        private uint _homeId;
-
-        private List<ZWaveRequest> PendingRequests = new List<ZWaveRequest>();
-
-        public ObservableCollection<SerialPortInfo> SerialPorts { get; } = new ObservableCollection<SerialPortInfo>();
-
-        private ObservableCollection<Node> m_nodeList = new ObservableCollection<Node>();
-
-
-        private ZWaveManager()
+        public ZWaveManager()
         {
+            QueryStatus = NodeQueryStatus.Querying;
         }
 
-        public static ZWaveManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new ZWaveManager();
-                    }
-                }
+        public NodeQueryStatus QueryStatus { get; private set; }
 
-                return _instance;
-            }
-        }
-
-        public uint HomeId
-        {
-            get
-            {
-                return _homeId;
-            }
-        }
-
-        public ZWManager ZWManager
-        {
-            get
-            {
-                return ZWManager.Instance;
-            }
-        }
-
-        private string m_CurrentStatus;
-
-        public string CurrentStatus
-        {
-            get { return m_CurrentStatus; }
-            private set { m_CurrentStatus = value; }
-        }
-
-        public enum NodeQueryStatus
-        {
-            Querying,
-            AwakeNodesQueried,
-            AllNodesQueried,
-            AllNodesQueriedSomeDead
-        }
-
-        public NodeQueryStatus QueryStatus { get; private set; } = NodeQueryStatus.Querying;
+        public uint HomeId { get; private set; }
+        public string CurrentStatus { get; private set; }
+        public static ZWManager ZWManager => ZWManager.Instance;
 
         public async Task Initialize()
         {
-            await Init();
+            ZWManager.Instance.OnNotification -= OnNodeNotification;
 
-            GetSerialPorts();
-
-            Debug.WriteLine("OpenZWave initialized");
-        }
-
-        public bool TestConnection(byte nodeId)
-        {
-            if (_homeId > 0 && m_nodeList != null && m_nodeList.Any(x=> x.ID == nodeId))
-            {
-                return true;
-            }
-            return false;
-        }    
-
-        private async Task Init()
-        {
+            _nodeList.Clear();
+            _pendingRequests.Clear();
+            
             ZWOptions.Instance.Initialize();
 
             // Add any app specific options here...
@@ -121,25 +57,65 @@ namespace Euricom.IoT.ZWave
 #if NETFX_CORE
             var serialPortSelector = Windows.Devices.SerialCommunication.SerialDevice.GetDeviceSelector();
             var devices = await DeviceInformation.FindAllAsync(serialPortSelector);
+
             foreach (var item in devices)
+            {
+                _serialPorts.Add(new SerialPortInfo(item));
+            }
+#else //.NET
+            foreach(var item in System.IO.Ports.SerialPort.GetPortNames())
             {
                 SerialPorts.Add(new SerialPortInfo(item));
             }
-#else //.NET
-                            foreach(var item in System.IO.Ports.SerialPort.GetPortNames())
-                            {
-                                SerialPorts.Add(new SerialPortInfo(item));
-                            }
 #endif
 
+            if (!_serialPorts.Any())
+            {
+                //var _ = new Windows.UI.Popups.MessageDialog("No serial ports found").ShowAsync();
+            }
+            else if (_serialPorts.Count == 1)
+            {
+                _serialPorts[0].Activate(ZWManager.Instance); //Assume if there's only one port, that's the ZStick port
+            }
+            else
+            {
+                var serial = _serialPorts.SingleOrDefault(x => x.PortID.Contains("VID_0658"));
+                serial?.Activate(ZWManager.Instance);
+            }
+
+            Debug.WriteLine("OpenZWave initialized");
         }
 
-        private void OnNodeNotification(ZWNotification notification)
+        public bool TestConnection(byte nodeId)
         {
-            NotificationHandler(notification);
+            if (HomeId > 0 && _nodeList != null && _nodeList.Any(x => x.ID == nodeId))
+            {
+                return ZWManager.Instance.IsNodeAwake(HomeId, nodeId);
+            }
+
+            return false;
         }
 
-        private void NotificationHandler(ZWNotification notification)
+        public bool GetValue(byte nodeId, byte commandId)
+        {
+            ZWManager.Instance.GetValueAsBool(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), out var currentVal);
+            return currentVal;
+        }
+        public void SetValue(byte nodeId, byte commandId, bool value)
+        {
+            ZWManager.Instance.SetValue(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), value);
+        }
+
+        public List<Node> GetNodes()
+        {
+            var nodes = new List<Node>();
+            nodes.AddRange(_nodeList.ToList());
+
+            return nodes;
+        }
+
+        #region Notifications
+        private void OnNodeNotification(ZWNotification notification)
         {
             var homeID = notification.HomeId;
             var nodeId = notification.NodeId;
@@ -147,33 +123,20 @@ namespace Euricom.IoT.ZWave
 
             if (homeID > 0)
             {
-                _homeId = homeID;
+                HomeId = homeID;
             }
 
-            Action<ZWValueID> debugWriteValueID = (v) =>
+            foreach (var item in _pendingRequests.ToArray())
             {
-                //Debug.WriteLine("  Node : " + nodeId.ToString());
-                // Debug.WriteLine("  CC   : " + v.CommandClassId.ToString());
-                // Debug.WriteLine("  Type : " + type.ToString());
-                // Debug.WriteLine("  Index: " + v.Index.ToString());
-                // Debug.WriteLine("  Inst : " + v.Instance.ToString());
-                // Debug.WriteLine("  Value: " + GetValue(v).ToString());
-                // Debug.WriteLine("  Label: " + m_manager.GetValueLabel(v));
-                // Debug.WriteLine("  Help : " + m_manager.GetValueHelp(v));
-                // Debug.WriteLine("  Units: " + m_manager.GetValueUnits(v));
-            };
-
-            foreach (var item in PendingRequests.ToArray())
-            {
-                if (item.HomeID == homeID && (item.NodeID == nodeId || item.NodeID < 0) && item.Type == type)
+                if (item.HomeID == homeID && item.NodeID == nodeId && item.Type == type)
                 {
                     item.TCS.SetResult(notification);
-                    PendingRequests.Remove(item);
+                    _pendingRequests.Remove(item);
                 }
                 else if (item.Age > item.Timeout)
                 {
                     item.TCS.SetException(new TimeoutException());
-                    PendingRequests.Remove(item);
+                    _pendingRequests.Remove(item);
                 }
             }
 
@@ -185,26 +148,24 @@ namespace Euricom.IoT.ZWave
                         //if this node was in zwcfg*.xml, this is the first node notification
                         //if not, the NodeNew notification should already have been received
                         if (GetNode(homeID, nodeId) == null)
-                        {
-                            m_nodeList.Add(new Node(nodeId, homeID));
-                        }
+                            _nodeList.Add(new Node(nodeId, homeID));
                         break;
                     }
 
                 case NotificationType.NodeNew:
                     {
                         //Add the new node to our list(and flag as uninitialized)
-                        m_nodeList.Add(new Node(nodeId, homeID));
+                        _nodeList.Add(new Node(nodeId, homeID));
                         break;
                     }
 
                 case NotificationType.NodeRemoved:
                     {
-                        foreach (Node node in m_nodeList)
+                        foreach (var node in _nodeList)
                         {
                             if (node.ID == nodeId)
                             {
-                                m_nodeList.Remove(node);
+                                _nodeList.Remove(node);
                                 node.RaiseNodeRemoved();
                                 break;
                             }
@@ -221,11 +182,9 @@ namespace Euricom.IoT.ZWave
                 case NotificationType.ValueChanged:
                 case NotificationType.Group:
                     {
-                        Node node = GetNode(homeID, nodeId);
-                        if (node != null)
-                        {
-                            node.HandleNodeEvent(notification);
-                        }
+                        var node = GetNode(homeID, nodeId);
+                        node?.HandleNodeEvent(notification);
+
                         break;
                     }
 
@@ -249,7 +208,7 @@ namespace Euricom.IoT.ZWave
 
                 case NotificationType.DriverFailed:
                     {
-                        Debug.WriteLine("Driver failed for HomeID " + homeID.ToString());
+                        Debug.WriteLine("Driver failed for HomeID " + homeID);
                         break;
                     }
 
@@ -257,7 +216,7 @@ namespace Euricom.IoT.ZWave
                     {
                         var nodes = GetNodes(homeID).ToArray();
                         foreach (var node in nodes)
-                            m_nodeList.Remove(node);
+                            _nodeList.Remove(node);
                         break;
                     }
 
@@ -291,11 +250,8 @@ namespace Euricom.IoT.ZWave
                     {
                         if (nodeId > 0)
                         {
-                            Node node = GetNode(homeID, nodeId);
-                            if (node != null)
-                            {
-                                node.HandleNodeEvent(notification);
-                            }
+                            var node = GetNode(homeID, nodeId);
+                            node?.HandleNodeEvent(notification);
                         }
                         else
                         {
@@ -309,27 +265,26 @@ namespace Euricom.IoT.ZWave
         }
 
         /// <summary>
-        /// Gets the node.
+        ///     Gets the node.
         /// </summary>
         /// <param name="homeId">The home identifier.</param>
         /// <param name="nodeId">The node identifier.</param>
         /// <returns></returns>
-        private Node GetNode(UInt32 homeId, Byte nodeId)
+        private Node GetNode(uint homeId, byte nodeId)
         {
-            foreach (Node node in m_nodeList)
+            foreach (var node in _nodeList)
             {
-                if ((node.ID == nodeId) && (node.HomeID == homeId))
+                if (node.ID == nodeId && node.HomeID == homeId)
                 {
                     return node;
                 }
             }
-
             return null;
         }
 
-        private IEnumerable<Node> GetNodes(UInt32 homeId)
+        private IEnumerable<Node> GetNodes(uint homeId)
         {
-            foreach (Node node in m_nodeList)
+            foreach (var node in _nodeList)
             {
                 if (node.HomeID == homeId)
                 {
@@ -337,26 +292,6 @@ namespace Euricom.IoT.ZWave
                 }
             }
         }
-
-        private void GetSerialPorts()
-        {
-            if (!SerialPorts.Any())
-            {
-                //var _ = new Windows.UI.Popups.MessageDialog("No serial ports found").ShowAsync();
-            }
-            else if (SerialPorts.Count == 1)
-            {
-                SerialPorts[0].IsActive = true; //Assume if there's only one port, that's the ZStick port
-            }
-            else
-            {
-                var serial = SerialPorts.SingleOrDefault(x => x.PortID.Contains("VID_0658"));
-                if (serial != null)
-                {
-                    serial.IsActive = true;
-                }
-            }
-        }
-
+        #endregion
     }
 }

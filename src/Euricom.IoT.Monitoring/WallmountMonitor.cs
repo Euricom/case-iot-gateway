@@ -76,7 +76,7 @@
 //                Device = name,
 //                State = currentState,
 //                CommandToken = null,
-//                MessageType = MessageTypes.WallmountSwitch
+//                MessageType = MessageTypes.WallMountSwitch
 //            };
 //        }
 

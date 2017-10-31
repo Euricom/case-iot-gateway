@@ -109,10 +109,16 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="MessageTypes.cs" />
+    <Compile Include="PrivateResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DateTimeExtensions.cs" />
     <Compile Include="Utilities\HexUtilities.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Constants.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\.nuget\packages\Newtonsoft.Json\7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

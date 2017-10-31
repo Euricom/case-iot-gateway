@@ -4,16 +4,19 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.DataLayer.Interfaces;
 
 namespace Euricom.IoT.DropboxCleanup
 {
     public class DropboxCleanup
     {
+        private readonly ISettingsRepository _repository;
         private readonly Database _database;
         private readonly DropboxClientConfig _dropboxClientConfig;
 
-        private DropboxCleanup(Database database)
+        private DropboxCleanup(ISettingsRepository repository, Database database)
         {
+            _repository = repository;
             _database = database;
             _dropboxClientConfig = new DropboxClientConfig("");
         }
@@ -21,7 +24,7 @@ namespace Euricom.IoT.DropboxCleanup
         public async Task Cleanup(string deviceName, int maxDays, double maxStorage)
         {
             var device = _database.GetCameras().SingleOrDefault(x => x.Name == deviceName);
-            var settings = _database.GetConfigSettings();
+            var settings = _repository.Get();
             var dropboxClient = new DropboxClient(settings.DropboxAccessToken, _dropboxClientConfig);
 
             if (device == null)

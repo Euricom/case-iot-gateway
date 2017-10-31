@@ -208,7 +208,7 @@ var CustomErrorHandler_1, _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__app_routes__ = __webpack_require__("../../../../../src/app/app.routes.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__config__ = __webpack_require__("../../../../../src/config.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__services_authService__ = __webpack_require__("../../../../../src/app/services/authService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_hardwareService__ = __webpack_require__("../../../../../src/app/services/hardwareService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_zwaveService__ = __webpack_require__("../../../../../src/app/services/zwaveService.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_settingsService__ = __webpack_require__("../../../../../src/app/services/settingsService.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_cameraService__ = __webpack_require__("../../../../../src/app/services/cameraService.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__services_lazyBoneService__ = __webpack_require__("../../../../../src/app/services/lazyBoneService.ts");
@@ -221,7 +221,7 @@ var CustomErrorHandler_1, _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__components_navigation_navigation_component__ = __webpack_require__("../../../../../src/app/components/navigation/navigation.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__views_login_loginView_component__ = __webpack_require__("../../../../../src/app/views/login/loginView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__views_settings_settingsView_component__ = __webpack_require__("../../../../../src/app/views/settings/settingsView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__views_hardware_hardwareView_component__ = __webpack_require__("../../../../../src/app/views/hardware/hardwareView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__views_zwave_zwaveView_component__ = __webpack_require__("../../../../../src/app/views/zwave/zwaveView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__views_camera_cameraView_component__ = __webpack_require__("../../../../../src/app/views/camera/cameraView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__views_lazybone_lazyBoneView_component__ = __webpack_require__("../../../../../src/app/views/lazybone/lazyBoneView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__views_danalocks_danalocksView_component__ = __webpack_require__("../../../../../src/app/views/danalocks/danalocksView.component.ts");
@@ -296,7 +296,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_23__components_navigation_navigation_component__["a" /* NavigationComponent */],
             __WEBPACK_IMPORTED_MODULE_24__views_login_loginView_component__["a" /* LoginViewComponent */],
             __WEBPACK_IMPORTED_MODULE_25__views_settings_settingsView_component__["a" /* SettingsViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_26__views_hardware_hardwareView_component__["a" /* HardwareViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_26__views_zwave_zwaveView_component__["a" /* ZwaveViewComponent */],
             __WEBPACK_IMPORTED_MODULE_27__views_camera_cameraView_component__["a" /* CameraViewComponent */],
             __WEBPACK_IMPORTED_MODULE_28__views_lazybone_lazyBoneView_component__["a" /* LazyBonesViewComponent */],
             __WEBPACK_IMPORTED_MODULE_29__views_danalocks_danalocksView_component__["a" /* DanaLocksViewComponent */],
@@ -321,7 +321,7 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_11__config__["a" /* Config */],
             __WEBPACK_IMPORTED_MODULE_12__services_authService__["a" /* AuthService */],
             __WEBPACK_IMPORTED_MODULE_35__services_authGuardService__["a" /* AuthGuardService */],
-            __WEBPACK_IMPORTED_MODULE_13__services_hardwareService__["a" /* HardwareService */],
+            __WEBPACK_IMPORTED_MODULE_13__services_zwaveService__["a" /* ZwaveService */],
             __WEBPACK_IMPORTED_MODULE_14__services_settingsService__["a" /* SettingsService */],
             __WEBPACK_IMPORTED_MODULE_15__services_cameraService__["a" /* CameraService */],
             __WEBPACK_IMPORTED_MODULE_16__services_lazyBoneService__["a" /* LazyBoneService */],
@@ -352,7 +352,7 @@ AppModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_pageNotFound_pageNotFound_component__ = __webpack_require__("../../../../../src/app/components/pageNotFound/pageNotFound.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__views_login_loginView_component__ = __webpack_require__("../../../../../src/app/views/login/loginView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__views_settings_settingsView_component__ = __webpack_require__("../../../../../src/app/views/settings/settingsView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__views_hardware_hardwareView_component__ = __webpack_require__("../../../../../src/app/views/hardware/hardwareView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__views_zwave_zwaveView_component__ = __webpack_require__("../../../../../src/app/views/zwave/zwaveView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__views_camera_cameraView_component__ = __webpack_require__("../../../../../src/app/views/camera/cameraView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__views_lazybone_lazyBoneView_component__ = __webpack_require__("../../../../../src/app/views/lazybone/lazyBoneView.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__views_danalocks_danalocksView_component__ = __webpack_require__("../../../../../src/app/views/danalocks/danalocksView.component.ts");
@@ -381,7 +381,7 @@ var routes = [
     { path: 'unauthorized', component: __WEBPACK_IMPORTED_MODULE_0__components_unauthorized_unauthorized_component__["a" /* UnauthorizedComponent */] },
     { path: 'login', component: __WEBPACK_IMPORTED_MODULE_2__views_login_loginView_component__["a" /* LoginViewComponent */] },
     { path: 'settings', component: __WEBPACK_IMPORTED_MODULE_3__views_settings_settingsView_component__["a" /* SettingsViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
-    { path: 'hardware', component: __WEBPACK_IMPORTED_MODULE_4__views_hardware_hardwareView_component__["a" /* HardwareViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
+    { path: 'zwave', component: __WEBPACK_IMPORTED_MODULE_4__views_zwave_zwaveView_component__["a" /* ZwaveViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
     { path: 'cameras', component: __WEBPACK_IMPORTED_MODULE_5__views_camera_cameraView_component__["a" /* CameraViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
     { path: 'switches', component: __WEBPACK_IMPORTED_MODULE_6__views_lazybone_lazyBoneView_component__["a" /* LazyBonesViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
     { path: 'wallmounts', component: __WEBPACK_IMPORTED_MODULE_8__views_wallmount_switches_wallmountView_component__["a" /* WallMountViewComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_11__services_authGuardService__["a" /* AuthGuardService */]] },
@@ -397,7 +397,7 @@ var routes = [
 /***/ "../../../../../src/app/components/navigation/navigation.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"navbar-header\">\r\n    <button type=\"button\" class=\"navbar-toggle\" data-target=\"#bs-example-navbar-collapse-1\"\r\n      aria-expanded=\"false\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n  </div>\r\n  <div class=\"navbar-collapse\" id=\"bs-example-navbar-collapse-1\" [collapse]=\"false\">\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/settings'> Settings | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/hardware'> Hardware | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/cameras'> Cameras | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/switches'> LazyBones | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/wallmounts'> Wallmount switches | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/danalocks'> DanaLocks | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/log'> System/Device logs | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/openzwavelog'> OpenZWave Logs </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav navbar-right\" style=\"margin-top: 7px;\">\r\n      <li>\r\n        <button class=\"btn btn-primary\" (click)=\"login()\" *ngIf=\"!isAuthenticated && !currentPageIsLogin()\">Log In</button>\r\n        <button class=\"btn btn-primary\" (click)=\"logout()\" *ngIf=\"isAuthenticated\">Log Out</button>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n"
+module.exports = "<nav class=\"navbar navbar-default\">\r\n  <div class=\"navbar-header\">\r\n    <button type=\"button\" class=\"navbar-toggle\" data-target=\"#bs-example-navbar-collapse-1\"\r\n      aria-expanded=\"false\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n  </div>\r\n  <div class=\"navbar-collapse\" id=\"bs-example-navbar-collapse-1\" [collapse]=\"false\">\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/settings'> Settings | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/zwave'> ZWave | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/cameras'> Cameras | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/switches'> LazyBones | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/wallmounts'> Wallmount switches | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/danalocks'> DanaLocks | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/log'> System/Device logs | </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n      <li><a routerLink='/openzwavelog'> OpenZWave Logs </a></li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav navbar-right\" style=\"margin-top: 7px;\">\r\n      <li>\r\n        <button class=\"btn btn-primary\" (click)=\"login()\" *ngIf=\"!isAuthenticated && !currentPageIsLogin()\">Log In</button>\r\n        <button class=\"btn btn-primary\" (click)=\"logout()\" *ngIf=\"isAuthenticated\">Log Out</button>\r\n      </li>\r\n    </ul>\r\n  </div>\r\n</nav>\r\n"
 
 /***/ }),
 
@@ -601,41 +601,6 @@ var DanaLock = (function () {
 
 /***/ }),
 
-/***/ "../../../../../src/app/models/device.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Device; });
-var Device = (function () {
-    function Device(resource) {
-        Object.assign(this, resource);
-    }
-    Device.prototype.isNew = function () {
-        return !(this.DeviceId);
-    };
-    return Device;
-}());
-
-//# sourceMappingURL=device.js.map
-
-/***/ }),
-
-/***/ "../../../../../src/app/models/deviceType.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DeviceType; });
-var DeviceType = (function () {
-    function DeviceType(resource) {
-        Object.assign(this, resource);
-    }
-    return DeviceType;
-}());
-
-//# sourceMappingURL=deviceType.js.map
-
-/***/ }),
-
 /***/ "../../../../../src/app/models/lazyBone.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -704,6 +669,22 @@ var LogLevel;
     LogLevel[LogLevel["Fatal"] = 5] = "Fatal";
 })(LogLevel || (LogLevel = {}));
 //# sourceMappingURL=logLevel.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/models/node.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Node; });
+var Node = (function () {
+    function Node(resource) {
+        Object.assign(this, resource);
+    }
+    return Node;
+}());
+
+//# sourceMappingURL=node.js.map
 
 /***/ }),
 
@@ -1207,86 +1188,6 @@ EventAggregator = __decorate([
 
 /***/ }),
 
-/***/ "../../../../../src/app/services/hardwareService.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__("../../../../rxjs/add/operator/do.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/add/operator/catch.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__ = __webpack_require__("../../../../angular2-jwt/angular2-jwt.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_jwt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_angular2_jwt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_device__ = __webpack_require__("../../../../../src/app/models/device.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config__ = __webpack_require__("../../../../../src/config.ts");
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HardwareService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-var HardwareService = (function () {
-    function HardwareService(authHttp, config) {
-        this.authHttp = authHttp;
-        this.config = config;
-    }
-    HardwareService.prototype.getAll = function () {
-        return this.authHttp.get("/api/hardware")
-            .map(function (res) { return (res.json()); })
-            .map(function (data) { return data.map(function (element) { return new __WEBPACK_IMPORTED_MODULE_5__models_device__["a" /* Device */](element); }); });
-    };
-    HardwareService.prototype.getById = function (id) {
-        return this.authHttp.get("/api/hardware/" + id)
-            .map(function (res) { return (res.json()); })
-            .map(function (data) { return new __WEBPACK_IMPORTED_MODULE_5__models_device__["a" /* Device */](data); });
-    };
-    HardwareService.prototype.save = function (device) {
-        if (device.isNew()) {
-            return this.create(device);
-        }
-        else {
-            return this.update(device.DeviceId, device);
-        }
-    };
-    HardwareService.prototype.update = function (id, device) {
-        return this.authHttp.put("/api/hardware/" + id, device)
-            .map(function (res) { return (res.json()); })
-            .map(function (data) { return new __WEBPACK_IMPORTED_MODULE_5__models_device__["a" /* Device */](data); });
-    };
-    HardwareService.prototype.delete = function (name) {
-        return this.authHttp.delete("/api/hardware/" + name);
-    };
-    HardwareService.prototype.create = function (device) {
-        return this.authHttp.post("/api/hardware", device)
-            .map(function (res) { return (res.json()); })
-            .map(function (data) { return new __WEBPACK_IMPORTED_MODULE_5__models_device__["a" /* Device */](data); });
-    };
-    return HardwareService;
-}());
-HardwareService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__["AuthHttp"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__["AuthHttp"]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_6__config__["a" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__config__["a" /* Config */]) === "function" && _b || Object])
-], HardwareService);
-
-var _a, _b;
-//# sourceMappingURL=hardwareService.js.map
-
-/***/ }),
-
 /***/ "../../../../../src/app/services/lazyBoneService.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1588,6 +1489,63 @@ var _a, _b;
 
 /***/ }),
 
+/***/ "../../../../../src/app/services/zwaveService.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__("../../../../rxjs/add/operator/do.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/add/operator/catch.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__ = __webpack_require__("../../../../angular2-jwt/angular2-jwt.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_jwt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_angular2_jwt__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_node__ = __webpack_require__("../../../../../src/app/models/node.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__config__ = __webpack_require__("../../../../../src/config.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ZwaveService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var ZwaveService = (function () {
+    function ZwaveService(authHttp, config) {
+        this.authHttp = authHttp;
+        this.config = config;
+    }
+    ZwaveService.prototype.getAll = function () {
+        return this.authHttp.get("/api/zwave/nodes")
+            .map(function (res) { return (res.json()); })
+            .map(function (data) { return data.map(function (element) { return new __WEBPACK_IMPORTED_MODULE_5__models_node__["a" /* Node */](element); }); });
+    };
+    ZwaveService.prototype.initialize = function () {
+        return this.authHttp.put("/api/zwave/initialize", undefined);
+    };
+    return ZwaveService;
+}());
+ZwaveService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__["AuthHttp"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_angular2_jwt__["AuthHttp"]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_6__config__["a" /* Config */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__config__["a" /* Config */]) === "function" && _b || Object])
+], ZwaveService);
+
+var _a, _b;
+//# sourceMappingURL=zwaveService.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/views/camera/cameraView.component.html":
 /***/ (function(module, exports) {
 
@@ -1855,114 +1813,6 @@ DanaLocksViewComponent = __decorate([
 
 var _a, _b, _c, _d, _e;
 //# sourceMappingURL=danalocksView.component.js.map
-
-/***/ }),
-
-/***/ "../../../../../src/app/views/hardware/hardwareView.component.html":
-/***/ (function(module, exports) {
-
-module.exports = "<h2>HARDWARE</h2>\r\n\r\n<table class=\"table table-striped table-bordered\">\r\n  <thead>\r\n    <tr>\r\n      <th>Name</th>\r\n      <th>Type</th>\r\n      <th>Guid</th>\r\n      <th> </th>\r\n    </tr>\r\n  </thead>\r\n  <tbody>\r\n    <tr *ngFor=\"let device of devices\">\r\n      <td>{{device.Name}}</td>\r\n      <td>{{device.Type}}</td>\r\n      <td>{{device.DeviceId}}</td>\r\n      <td>\r\n        <button type=\"button\" class=\"btn btn-danger\" (click)=\"deleteDevice(device)\">Delete</button>\r\n      </td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<!--<h3>Add hardware</h3>\r\n\r\n<form (ngSubmit)=\"onSubmit(form)\" novalidate>\r\n  <div class=\"form-group\">\r\n    <label for=\"name\">Name</label>\r\n    <input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" [(ngModel)]=\"device.name\" placeholder=\"\">\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"type\">Type</label>\r\n    <select required [(ngModel)]=\"device.type\" name=\"deviceType\" id=\"deviceType\" class=\"form-control\">\r\n      <option value=\"\">--</option>\r\n      <option *ngFor=\"let deviceType of deviceTypes\" value=\"{{deviceType.id}}\">{{deviceType.name}}</option>\r\n    </select>\r\n  </div>\r\n  <button type=\"submit\" class=\"btn btn-primary\">Save</button>\r\n</form>-->\r\n"
-
-/***/ }),
-
-/***/ "../../../../../src/app/views/hardware/hardwareView.component.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__ = __webpack_require__("../../../../ng2-toastr/ng2-toastr.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common__ = __webpack_require__("../../../common/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_device__ = __webpack_require__("../../../../../src/app/models/device.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_deviceType__ = __webpack_require__("../../../../../src/app/models/deviceType.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__services_hardwareService__ = __webpack_require__("../../../../../src/app/services/hardwareService.ts");
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HardwareViewComponent; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-var HardwareViewComponent = (function () {
-    function HardwareViewComponent(route, router, location, 
-        // private formBuilder: FormBuilder,
-        hardwareService, toastr) {
-        this.route = route;
-        this.router = router;
-        this.location = location;
-        this.hardwareService = hardwareService;
-        this.toastr = toastr;
-        this.device = new __WEBPACK_IMPORTED_MODULE_4__models_device__["a" /* Device */]({});
-        this.formSubmitted = false;
-        this.refresh();
-    }
-    HardwareViewComponent.prototype.onSubmit = function () {
-        var _this = this;
-        this.hardwareService.create(this.device)
-            .subscribe(function (data) {
-            _this.toastr.info('device created successfully');
-            _this.refresh();
-        });
-    };
-    HardwareViewComponent.prototype.ngOnInit = function () {
-        this.device = new __WEBPACK_IMPORTED_MODULE_4__models_device__["a" /* Device */]({});
-        this.deviceTypes = [
-            new __WEBPACK_IMPORTED_MODULE_5__models_deviceType__["a" /* DeviceType */]({
-                id: 'camera',
-                name: 'Raspberry Pi Camera',
-            }),
-            new __WEBPACK_IMPORTED_MODULE_5__models_deviceType__["a" /* DeviceType */]({
-                id: 'danalock',
-                name: 'DanaLock',
-            }),
-            new __WEBPACK_IMPORTED_MODULE_5__models_deviceType__["a" /* DeviceType */]({
-                id: 'lazybone',
-                name: 'LazyBone Switch',
-            }),
-        ];
-    };
-    HardwareViewComponent.prototype.deleteDevice = function (device) {
-        var _this = this;
-        this.hardwareService.delete(device.Name)
-            .subscribe(function (data) {
-            _this.toastr.info('device deleted successfully');
-            _this.refresh();
-        });
-    };
-    HardwareViewComponent.prototype.refresh = function () {
-        var _this = this;
-        this.hardwareService.getAll()
-            .subscribe(function (data) {
-            _this.devices = data;
-        }, function (err) {
-            _this.toastr.error('error occurred' + err);
-        });
-    };
-    HardwareViewComponent.prototype.onClickCancel = function () {
-        this.location.back();
-    };
-    return HardwareViewComponent;
-}());
-HardwareViewComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
-        template: __webpack_require__("../../../../../src/app/views/hardware/hardwareView.component.html"),
-    }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_common__["Location"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_common__["Location"]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_6__services_hardwareService__["a" /* HardwareService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6__services_hardwareService__["a" /* HardwareService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"]) === "function" && _e || Object])
-], HardwareViewComponent);
-
-var _a, _b, _c, _d, _e;
-//# sourceMappingURL=hardwareView.component.js.map
 
 /***/ }),
 
@@ -2708,6 +2558,81 @@ WallMountViewComponent = __decorate([
 
 var _a, _b, _c, _d, _e;
 //# sourceMappingURL=wallmountView.component.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/views/zwave/zwaveView.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<h2>ZWAVE</h2>\r\n\r\n<table class=\"table table-striped table-bordered\">\r\n  <thead>\r\n    <tr>\r\n      <th>Icon</th>\r\n      <th>Id</th>\r\n      <th>Label</th>\r\n      <th>Product</th>\r\n      <th>Manufacturer</th>\r\n    </tr>\r\n  </thead>\r\n  <tbody>\r\n    <tr *ngFor=\"let node of nodes\">\r\n      <td><img ng-src=\"/assets/{{node.DeviceIcon}}\" /></td>\r\n      <td>{{node.Id}}</td>\r\n      <td>{{node.Label}}</td>\r\n      <td>{{node.Product}}</td>\r\n      <td>{{node.Manufacturer}}</td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<!--<h3>Add hardware</h3>\r\n\r\n<form (ngSubmit)=\"onSubmit(form)\" novalidate>\r\n  <div class=\"form-group\">\r\n    <label for=\"name\">Name</label>\r\n    <input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" [(ngModel)]=\"device.name\" placeholder=\"\">\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"type\">Type</label>\r\n    <select required [(ngModel)]=\"device.type\" name=\"deviceType\" id=\"deviceType\" class=\"form-control\">\r\n      <option value=\"\">--</option>\r\n      <option *ngFor=\"let deviceType of deviceTypes\" value=\"{{deviceType.id}}\">{{deviceType.name}}</option>\r\n    </select>\r\n  </div>\r\n  <button type=\"submit\" class=\"btn btn-primary\">Save</button>\r\n</form>-->\r\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/views/zwave/zwaveView.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__ = __webpack_require__("../../../../ng2-toastr/ng2-toastr.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_common__ = __webpack_require__("../../../common/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_node__ = __webpack_require__("../../../../../src/app/models/node.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__services_zwaveService__ = __webpack_require__("../../../../../src/app/services/zwaveService.ts");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ZwaveViewComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+var ZwaveViewComponent = (function () {
+    function ZwaveViewComponent(route, router, location, 
+        // private formBuilder: FormBuilder,
+        zwaveService, toastr) {
+        this.route = route;
+        this.router = router;
+        this.location = location;
+        this.zwaveService = zwaveService;
+        this.toastr = toastr;
+        this.node = new __WEBPACK_IMPORTED_MODULE_4__models_node__["a" /* Node */]({});
+        this.formSubmitted = false;
+        this.refresh();
+    }
+    ZwaveViewComponent.prototype.ngOnInit = function () {
+    };
+    ZwaveViewComponent.prototype.refresh = function () {
+        var _this = this;
+        this.zwaveService.getAll()
+            .subscribe(function (data) {
+            _this.nodes = data;
+        }, function (err) {
+            _this.toastr.error('error occurred' + err);
+        });
+    };
+    ZwaveViewComponent.prototype.onClickCancel = function () {
+        this.location.back();
+    };
+    return ZwaveViewComponent;
+}());
+ZwaveViewComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        template: __webpack_require__("../../../../../src/app/views/zwave/zwaveView.component.html"),
+    }),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["c" /* ActivatedRoute */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_common__["Location"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_common__["Location"]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5__services_zwaveService__["a" /* ZwaveService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__services_zwaveService__["a" /* ZwaveService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"]) === "function" && _e || Object])
+], ZwaveViewComponent);
+
+var _a, _b, _c, _d, _e;
+//# sourceMappingURL=zwaveView.component.js.map
 
 /***/ }),
 

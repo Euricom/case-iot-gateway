@@ -11,7 +11,9 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Models;
+using Euricom.IoT.ZWave.Interfaces;
 
 namespace Euricom.IoT.Api
 {
@@ -40,9 +42,16 @@ namespace Euricom.IoT.Api
             Logger.Configure(preserveHistoryLogDays, logLevel);
             var instLogger = Logger.Instance;
 
+            // Init admin user
+            var userRepository = _container.Resolve<IUserRepository>();
+            userRepository.Seed();
+
+            var settingsRepository = _container.Resolve<ISettingsRepository>();
+            settingsRepository.Seed();
+
             // Init DanaLock
             var zWaveManager = _container.Resolve<IZWaveManager>();
-            await zWaveManager.Initialize();
+            zWaveManager.Initialize();
 
             // Set up monitoring of devices / regular tasks that cleanup files
             //StartMonitors();
@@ -64,6 +73,7 @@ namespace Euricom.IoT.Api
                 cfg.AddProfile<LazyBoneMappingProfile>();
                 cfg.AddProfile<DanaLockMappingProfile>();
                 cfg.AddProfile<WallMountMappingProfile>();
+                cfg.AddProfile<NodeMappingProfile>();
                 cfg.AddProfile<CameraMappingProfile>();
                 cfg.AddProfile<LogMappingProfile>();
             });

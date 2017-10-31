@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "AutoMapper": "6.0.2",
     "Dropbox.Api": "4.2.5",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
     "Newtonsoft.Json": "10.0.2",

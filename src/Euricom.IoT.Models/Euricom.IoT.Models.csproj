@@ -112,7 +112,7 @@
     <Compile Include="Messages\LazyBoneMessage.cs" />
     <Compile Include="Messages\CameraMotionMessage.cs" />
     <Compile Include="Messages\WallmountSwitchMessage.cs" />
-    <Compile Include="WallMountSwitch.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="DropboxFile.cs" />
     <Compile Include="LazyBoneDimmerState.cs" />
     <Compile Include="Logging\LogLevel.cs" />

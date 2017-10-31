@@ -1,17 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Euricom.IoT.Models
 {
     public class Device
     {
-        public string DeviceId { get; set; }
-        public string Name { get; set; }
-        public HardwareType Type { get; set; } 
-        public bool Enabled { get; set; }
+        public Device(HardwareType type)
+        {
+            DeviceId = Guid.NewGuid().ToString("N");
+            Type = type;
+        }
+
+        public string DeviceId { get; private set; }
+        public HardwareType Type { get; private set; }
+        public string Name { get; protected set; }
+        public bool Enabled { get; protected set; }
     }
 }

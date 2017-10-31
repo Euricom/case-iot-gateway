@@ -1,46 +1,40 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Common;
-using Euricom.IoT.Mailing;
 using Euricom.IoT.Security;
 using System;
-using Euricom.IoT.DataLayer;
+using Euricom.IoT.DataLayer.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class SecurityManager : ISecurityManager
     {
-        private readonly IDatabase _database;
-        private IMailer _mailer;
+        private readonly IUserRepository _userRepository;
         private static int _loginExpires = 60;
         private static int _wifiExpires = 1;
 
-        public SecurityManager(IDatabase database, Mailer mailer)
+        public SecurityManager(IUserRepository userRepository)
         {
-            _database = database;
-            _mailer = mailer;
-
-            if (!_database.ExistsUser("admin"))
-            {
-                _database.AddUser("admin", "secret_password");
-            }
+            _userRepository = userRepository;
         }
 
         public string Login(string username, string password)
         {
-            var valid = _database.CheckUser(username, password);
-            if (!valid)
+            var user = _userRepository.Get(username);
+            if (user == null || user.Check(password) == false)
+            {
                 throw new Exception("Invalid login");
+            }
 
             var jwt = JwtSecurity.GenerateJwt(username, _loginExpires);
             return jwt;
         }
 
-        public string LoginWithPUK(string PUK)
+        public string LoginWithPUK(string puk)
         {
-            if (PUK != Constants.PUK)
+            if (puk != Constants.PUK)
                 throw new Exception("PUK code invalid!");
 
-            var jwt = JwtSecurity.GenerateJwt(PUK, _loginExpires);
+            var jwt = JwtSecurity.GenerateJwt(puk, _loginExpires);
             return jwt;
         }
 

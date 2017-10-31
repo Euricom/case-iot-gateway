@@ -8,7 +8,7 @@ namespace Euricom.IoT.DataLayer.Interfaces
         void Add(TDevice device);
         void Remove(string id);
         TDevice Get(string id);
-        List<TDevice> Get();
+        IEnumerable<TDevice> Get();
         void Update(TDevice device);
     }
 }

@@ -12,16 +12,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Euricom.IoT.DataLayer.Interfaces;
 
 namespace Euricom.IoT.Api.Manager
 {
     public class CameraManager : ICameraManager
     {
+        private readonly ISettingsRepository _settingsRepository;
         private readonly Database _database;
         private readonly IAzureBlobStorageManager _azureBlobStorageManager;
 
-        public CameraManager(Database database, IAzureBlobStorageManager azureBlobStorageManager)
+        public CameraManager(ISettingsRepository settingsRepository, Database database, IAzureBlobStorageManager azureBlobStorageManager)
         {
+            _settingsRepository = settingsRepository;
             _database = database;
             _azureBlobStorageManager = azureBlobStorageManager;
         }
@@ -57,9 +60,6 @@ namespace Euricom.IoT.Api.Manager
 
         public async Task<Camera> Add(Camera camera)
         {
-            // Generate Device Id
-            camera.DeviceId = Guid.NewGuid().ToString();
-
             //Convert to json
             var json = JsonConvert.SerializeObject(camera);
 
@@ -98,7 +98,7 @@ namespace Euricom.IoT.Api.Manager
 
         public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
         {
-            var settings = _database.GetConfigSettings();
+            var settings = _settingsRepository.Get();
             var config = _database.GetCameraConfig(deviceId);
             if (config.Enabled)
             {

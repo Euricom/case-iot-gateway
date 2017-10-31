@@ -43,6 +43,7 @@ export class WallMountViewComponent implements OnInit {
     this.wallmountService.save(this.wallmount)
       .subscribe(
       (data) => {
+        this.selectedRowIndex = undefined
         this.isAddMode = false
         this.toastr.info('Wallmount updated successfully')
         this.refresh()
@@ -52,7 +53,7 @@ export class WallMountViewComponent implements OnInit {
 
   delete(wallmount: Wallmount, event: Event): void {
     event.stopPropagation()
-    this.wallmountService.delete(wallmount.Name)
+    this.wallmountService.delete(wallmount.DeviceId)
       .subscribe(
       (data) => {
         this.selectedRowIndex = undefined
@@ -81,7 +82,7 @@ export class WallMountViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.wallmountService.testConnection(wallmount.Name)
+    this.wallmountService.testConnection(wallmount.DeviceId)
       .subscribe(
       (data) => {
         this.toastr.info(data)
@@ -95,7 +96,7 @@ export class WallMountViewComponent implements OnInit {
       this.toastr.error('Cannot get wallmount state without valid Node ID')
       return
     }
-    this.wallmountService.getState(wallmount.Name)
+    this.wallmountService.getState(wallmount.DeviceId)
       .subscribe(
       (data) => {
         if (data === 'True') {
@@ -113,7 +114,7 @@ export class WallMountViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.wallmountService.switch(wallmount.Name, state)
+    this.wallmountService.switch(wallmount.DeviceId, state)
       .subscribe(
       (data) => {
         this.toastr.info(data)

@@ -114,6 +114,11 @@
     <Content Include="Web\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Web\assets\1.png" />
+    <Content Include="Web\assets\16.png" />
+    <Content Include="Web\assets\2.png" />
+    <Content Include="Web\assets\33.png" />
+    <Content Include="Web\assets\7.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

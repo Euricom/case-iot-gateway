@@ -89,7 +89,7 @@
 //                        }
 //                        break;
 
-//                    case HardwareType.WallmountSwitch:
+//                    case HardwareType.WallMountSwitch:
 //                        var configWallmount = ((Euricom.IoT.Models.WallMountSwitch)config);
 //                        if (configWallmount.Enabled && configWallmount.PollingTime >= MIN_POLLING_TIME)
 //                        {
@@ -173,7 +173,7 @@
 //                        new DanaLockMonitor().StartMonitor((Euricom.IoT.Models.DanaLock)config, pollingTime);
 //                        break;
 
-//                    case HardwareType.WallmountSwitch:
+//                    case HardwareType.WallMountSwitch:
 //                        new WallmountMonitor(_database).StartMonitor((Euricom.IoT.Models.WallMountSwitch)config, pollingTime);
 //                        break;
 //                }

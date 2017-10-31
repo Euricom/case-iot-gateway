@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Models;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.Devices.WallMountSwitch;
 
 namespace Euricom.IoT.Api.Mappings
 {
@@ -8,9 +9,9 @@ namespace Euricom.IoT.Api.Mappings
     {
         public WallMountMappingProfile()
         {
-            CreateMap<Models.WallMountSwitch, WallMountSwitchDto>();
+            CreateMap<WallMountSwitch, WallMountSwitchDto>();
 
-            CreateMap<WallMountSwitchDto, Models.WallMountSwitch>();
+            CreateMap<WallMountSwitchDto, WallMountSwitch>();
         }
     }
 }

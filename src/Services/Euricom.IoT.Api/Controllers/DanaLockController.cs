@@ -60,7 +60,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var danaLock = Mapper.Map<Models.DanaLock>(danaLockDto);
+                var danaLock = Mapper.Map<IoT.Models.DanaLock>(danaLockDto);
                 var newLazyBone = await _danaLockManager.Add(danaLock);
                 return ResponseUtilities.PostResponseOk(newLazyBone);
             }
@@ -76,7 +76,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var danaLock = Mapper.Map<Models.DanaLock>(danaLockDto);
+                var danaLock = Mapper.Map<IoT.Models.DanaLock>(danaLockDto);
                 var danaLockEdited = await _danaLockManager.Edit(danaLock);
                 return ResponseUtilities.PutResponseOk(danaLockEdited);
             }

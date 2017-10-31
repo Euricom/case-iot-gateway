@@ -58,16 +58,28 @@ namespace Euricom.IoT.DataLayer
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
 
+            // TODO: remove from settings
             if (string.IsNullOrEmpty(settings.Password) == false)
             {
+                var user = _database.GetValue<User>(Constants.DBREEZE_TABLE_USERS, "admin");
+                user.UpdatePassword(settings.Password);
+                _database.SetValue(Constants.DBREEZE_TABLE_USERS, "admin", user);
                 Logger.Instance.LogWarningWithContext(GetType(), "Password changed");
-                _database.SetValue(Constants.DBREEZE_TABLE_USERS, "admin", settings.Password);
             }
         }
 
         public void Seed()
         {
-            
+            Update(new Settings
+            {
+                AzureAccountName = "euricomiot",
+                AzureStorageAccessKey = "HXi3yoXCgM5HAjpD2q6MNFX3n0v4AtquhDero/c0l1qdi92awRwMDHwBAtIZmRrPWDvkUd1w2+j9H+jNhZvwEQ==",
+                AzureIotHubUri = "EuricomIoT.azure-devices.net",
+                AzureIotHubUriConnectionString = "HostName=EuricomIoT.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1sBuf9qLaN/p5zI4XFJPrlSpk8Wfw7/K1Bd5/9yIJBA=",
+                HistoryLog = 1,
+                LogLevel = LogLevel.Debug,
+                GatewayDeviceKey = "q5H3XA0s+XFhh+qNdfUmeJdCM9/88Hs5w59XGevZNkE=",
+            });
         }
     }
 }

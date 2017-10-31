@@ -4,6 +4,7 @@ using Euricom.IoT.Common;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
+using Newtonsoft.Json;
 
 namespace Euricom.IoT.DataLayer
 {
@@ -25,11 +26,7 @@ namespace Euricom.IoT.DataLayer
 
             try
             {
-                using (var tran = _database.GetTransaction())
-                {
-                    tran.Insert(Constants.DBREEZE_TABLE_USERS, user.Username, user);
-                    tran.Commit();
-                }
+                _database.SetValue(Constants.DBREEZE_TABLE_USERS, user.Username, user);
             }
             catch (Exception ex)
             {
@@ -75,9 +72,9 @@ namespace Euricom.IoT.DataLayer
                 var users = new List<User>();
                 using (var tran = _database.GetTransaction())
                 {
-                    foreach (var row in tran.SelectForward<string, User>(Constants.DBREEZE_TABLE_USERS))
+                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_USERS))
                     {
-                        users.Add(row.Value);
+                        users.Add(JsonConvert.DeserializeObject<User>(row.Value));
                     }
                 }
                 return users;
@@ -98,11 +95,7 @@ namespace Euricom.IoT.DataLayer
 
             try
             {
-                using (var tran = _database.GetTransaction())
-                {
-                    tran.Insert(Constants.DBREEZE_TABLE_USERS, user.Username, user);
-                    tran.Commit();
-                }
+                _database.SetValue(Constants.DBREEZE_TABLE_USERS, user.Username, user);
             }
             catch (Exception ex)
             {
@@ -117,7 +110,7 @@ namespace Euricom.IoT.DataLayer
             {
                 using (var tran = _database.GetTransaction())
                 {
-                    var result = tran.Select<string, User>(Constants.DBREEZE_TABLE_USERS, username);
+                    var result = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
                     return result.Exists;
                 }
             }
@@ -130,10 +123,10 @@ namespace Euricom.IoT.DataLayer
 
         public void Seed()
         {
-            if (!Exists("admin"))
-            {
-                Add(new User("admin", "secret_password"));
-            }
+            //if (!Exists("admin"))
+            //{
+            Add(new User("admin", "secret_password"));
+            //}
         }
     }
 }

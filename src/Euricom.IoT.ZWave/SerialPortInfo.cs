@@ -14,26 +14,29 @@ namespace Euricom.IoT.ZWave
             Name = info.Name;
         }
 #else
-            internal SerialPortInfo(string id)
-            {
-                PortID = id;
-                Name = id;
-            }
+        internal SerialPortInfo(string id)
+        {
+            PortID = id;
+            Name = id;
+        }
 #endif
         public string PortID { get; }
         public string Name { get; }
-        private bool _isActive;
+        public bool IsActive { get; private set; }
 
-        public bool IsActive
+        public void Activate(ZWManager manager)
         {
-            get { return _isActive; }
-            set
+            if (IsActive == false)
             {
-                _isActive = value;
-                if (value)
-                    ZWManager.Instance.AddDriver(PortID);
-                else
-                    ZWManager.Instance.RemoveDriver(PortID);
+                IsActive = ZWManager.Instance.AddDriver(PortID);
+            }
+        }
+
+        public void Deactivate(ZWManager manager)
+        {
+            if (IsActive)
+            {
+                IsActive = !ZWManager.Instance.RemoveDriver(PortID);
             }
         }
     }

@@ -1,16 +1,11 @@
-﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Models;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -26,131 +21,125 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/wallmount")]
-        public async Task<IGetResponse> GetAll()
+        public IGetResponse GetAll()
         {
             try
             {
-                var wallmounts = await _wallmountSwitchManager.GetAll();
-                var danaLocksDto = Mapper.Map<IEnumerable<WallMountSwitchDto>>(wallmounts);
-                return ResponseUtilities.GetResponseOk(danaLocksDto);
+                var wallmounts = _wallmountSwitchManager.Get();
+                return ResponseUtilities.GetResponseOk(wallmounts);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not get wallmounts: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/wallmount/{devicename}")]
-        public async Task<IGetResponse> GetByDeviceName(string devicename)
+        [UriFormat("/wallmount/{deviceId}")]
+        public IGetResponse GetById(string deviceId)
         {
             try
             {
-                var wallmount = await _wallmountSwitchManager.GetByDeviceName(devicename);
-                var wallmountSwitchDto = Mapper.Map<WallMountSwitchDto>(wallmount);
-                return ResponseUtilities.GetResponseOk(wallmountSwitchDto);
+                var wallmount = _wallmountSwitchManager.Get(deviceId);
+                return ResponseUtilities.GetResponseOk(wallmount);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw new Exception($"Could not get wallmount with devicename: {devicename} , exception: {ex.Message}");
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw new Exception($"Could not get wallmount with deviceid: {deviceId} , exception: {ex.Message}");
             }
         }
 
         [UriFormat("/wallmount")]
-        public async Task<IPostResponse> Add([FromContent] WallMountSwitchDto wallmountSwitchDto)
+        public IPostResponse Add([FromContent] WallMountSwitchDto wallmountSwitchDto)
         {
             try
             {
-                var wallmount = Mapper.Map<Models.WallMountSwitch>(wallmountSwitchDto);
-                var newWallMount = await _wallmountSwitchManager.Add(wallmount);
+                var newWallMount = _wallmountSwitchManager.Add(wallmountSwitchDto);
                 return ResponseUtilities.PostResponseOk(newWallMount);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not add wallmount, exception: {ex.Message}");
             }
         }
 
         [UriFormat("/wallmount")]
-        public async Task<IPutResponse> Edit([FromContent] WallMountSwitchDto wallmountSwitchDto)
+        public IPutResponse Update([FromContent] WallMountSwitchDto wallmountSwitchDto)
         {
             try
             {
-                var wallmountSwitch = Mapper.Map<Models.WallMountSwitch>(wallmountSwitchDto);
-                var wallmountSwitchEdited = await _wallmountSwitchManager.Edit(wallmountSwitch);
+                var wallmountSwitchEdited = _wallmountSwitchManager.Update(wallmountSwitchDto);
                 return ResponseUtilities.PutResponseOk(wallmountSwitchEdited);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not edit wallmount switch: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/wallmount/{devicename}")]
-        public async Task<IDeleteResponse> Delete(string devicename)
+        [UriFormat("/wallmount/{deviceId}")]
+        public IDeleteResponse Delete(string deviceId)
         {
             try
             {
-                await _wallmountSwitchManager.Remove(devicename);
+                _wallmountSwitchManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not remove wallmount: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/wallmount/testconnection/{devicename}")]
-        public async Task<IGetResponse> TestConnection(string devicename)
+        [UriFormat("/wallmount/{deviceId}/testconnection")]
+        public IGetResponse TestConnection(string deviceId)
         {
             try
             {
-                var deviceId = _wallmountSwitchManager.GetDeviceId(devicename);
                 bool succeeded = _wallmountSwitchManager.TestConnection(deviceId);
+
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception(ex.Message);
             }
         }
 
-        [UriFormat("/wallmount/getState/{devicename}")]
-        public async Task<IGetResponse> GetState(string devicename)
+        [UriFormat("/wallmount/{deviceId}/state")]
+        public IGetResponse GetState(string deviceId)
         {
             try
             {
-                var deviceId = _wallmountSwitchManager.GetDeviceId(devicename);
-                var isOn = await _wallmountSwitchManager.IsOn(deviceId);
+                var isOn = _wallmountSwitchManager.IsOn(deviceId);
                 return ResponseUtilities.GetResponseOk(isOn.ToString());
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not determine wallmount state: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/wallmount/switch?devicename={devicename}&state={state}")]
-        public async Task<IPutResponse> Switch(string devicename, string state)
+        [UriFormat("/wallmount/{deviceId}/switch/{state}")]
+        public IPutResponse Switch(string deviceId, string state)
         {
             try
             {
                 //Send switch command to the manager
-                var deviceId = _wallmountSwitchManager.GetDeviceId(devicename);
-                await _wallmountSwitchManager.Switch(deviceId, state);
+                _wallmountSwitchManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"ZWave command was sent");
+                return ResponseUtilities.PutResponseOk("ZWave command was sent");
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Wallmount switch failed, exception: {ex.Message}");
             }
         }

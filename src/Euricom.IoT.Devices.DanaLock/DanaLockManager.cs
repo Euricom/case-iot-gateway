@@ -1,24 +1,24 @@
 ﻿using Euricom.IoT.ZWave;
 using OpenZWave;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Euricom.IoT.ZWave.Interfaces;
 
 namespace Euricom.IoT.DanaLock
 {
     public class DanaLockManager : IDanaLockManager
     {
-        public DanaLockManager()
+        private readonly IZWaveManager _zWaveManager;
+
+        public DanaLockManager(IZWaveManager zWaveManager)
         {
+            _zWaveManager = zWaveManager;
         }
 
         public bool IsLocked(byte nodeId)
         {
             uint homeId = GetHomeId();
             bool currentVal = false;
-            ZWaveManager.Instance.ZWManager.GetValueAsBool(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), out currentVal);
+            ZWaveManager.ZWManager.GetValueAsBool(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), out currentVal);
             return currentVal;
         }
 
@@ -36,9 +36,9 @@ namespace Euricom.IoT.DanaLock
             ZWManager.Instance.SetValue(new ZWValueID(homeId, nodeId, ZWValueGenre.User, 0x62, 1, 0, ZWValueType.Bool, 0), true);
         }
 
-        private static uint GetHomeId()
+        private uint GetHomeId()
         {
-            uint homeId = ZWaveManager.Instance.HomeId;
+            uint homeId = _zWaveManager.HomeId;
             if (homeId == 0)
                 throw new InvalidOperationException("OpenZWave was not initialized correct. HomeId was 0");
             return homeId;
@@ -46,7 +46,7 @@ namespace Euricom.IoT.DanaLock
 
         public bool TestConnection(byte nodeId)
         {
-            return ZWaveManager.Instance.TestConnection(nodeId);
+            return _zWaveManager.TestConnection(nodeId);
         }
     }
 }

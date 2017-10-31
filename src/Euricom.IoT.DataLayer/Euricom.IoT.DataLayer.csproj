@@ -109,7 +109,15 @@
   <ItemGroup>
     <Compile Include="Database.cs" />
     <Compile Include="IDatabase.cs" />
+    <Compile Include="DbBreezeDatabase.cs" />
+    <Compile Include="DeviceRepository.cs" />
+    <Compile Include="Interfaces\IDbBreezeDatabase.cs" />
+    <Compile Include="Interfaces\IDeviceRepository.cs" />
+    <Compile Include="Interfaces\ISettingsRepository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsRepository.cs" />
+    <Compile Include="UserRepository.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.DataLayer.rd.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -138,72 +138,7 @@ namespace Euricom.IoT.DataLayer
                 throw;
             }
         }
-
-        public WallMountSwitch GetWallMountConfig(string deviceId)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId).Value;
-                    return JsonConvert.DeserializeObject<WallMountSwitch>(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
-        }
-
-        public Settings GetConfigSettings()
-        {
-            var settings = new Settings();
-            settings.HistoryLog = GetValueAsInt(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog");
-
-            if (String.IsNullOrEmpty(GetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel")))
-                settings.LogLevel = LogLevel.Information;
-            else
-                settings.LogLevel = (LogLevel)Enum.Parse(typeof(LogLevel), GetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel"));
-
-            settings.GatewayDeviceKey = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey");
-            settings.AzureIotHubUri = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri");
-            settings.AzureIotHubUriConnectionString = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString");
-            settings.AzureAccountName = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName");
-            settings.AzureStorageAccessKey = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey");
-            settings.DropboxAccessToken = GetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken");
-            return settings;
-        }
-
-        private int GetValueAsInt(string table, string key)
-        {
-            string v = GetValue(table, key);
-            if (String.IsNullOrEmpty(v))
-                return 31;
-            return Int32.Parse(v);
-        }
-
-        public void SaveConfigSettings(Settings settings)
-        {
-            if (settings != null)
-            {
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "HistoryLog", settings.HistoryLog.ToString());
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel", settings.LogLevel.ToString());
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "GatewayDeviceKey", settings.GatewayDeviceKey);
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUri", settings.AzureIotHubUri);
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString", settings.AzureIotHubUriConnectionString);
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
-                SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
-            }
-
-            if (settings != null && !String.IsNullOrEmpty(settings.Password))
-            {
-                Logger.Instance.LogWarningWithContext(this.GetType(), "Password changed");
-                SetValue(Constants.DBREEZE_TABLE_USERS, "admin", settings.Password);
-            }
-        }
-
+        
         public LazyBone GetLazyBoneConfig(string deviceId)
         {
             try
@@ -345,7 +280,6 @@ namespace Euricom.IoT.DataLayer
                 hardware.Cameras = GetCameras();
                 hardware.LazyBones = GetLazyBones();
                 hardware.DanaLocks = GetDanaLocks();
-                hardware.WallMountSwitches = GetWallMountSwitches();
                 return hardware;
             }
             catch (Exception ex)
@@ -424,30 +358,7 @@ namespace Euricom.IoT.DataLayer
                 throw;
             }
         }
-
-        public List<WallMountSwitch> GetWallMountSwitches()
-        {
-            try
-            {
-                List<WallMountSwitch> wallmounts = new List<WallMountSwitch>();
-                using (var tran = _engine.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_WALLMOUNTS))
-                    {
-                        var deviceGuid = row.Key;
-                        var deviceConfig = JsonConvert.DeserializeObject<WallMountSwitch>(row.Value);
-                        wallmounts.Add(deviceConfig);
-                    }
-                }
-                return wallmounts;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
+        
         public string GetValue(string table, string key)
         {
             try

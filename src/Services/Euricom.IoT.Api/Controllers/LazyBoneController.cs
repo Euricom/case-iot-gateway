@@ -66,7 +66,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var lazyBone = Mapper.Map<Models.LazyBone>(lazyBoneDto);
+                var lazyBone = Mapper.Map<IoT.Models.LazyBone>(lazyBoneDto);
                 var newLazyBone = await _lazyBoneManager.Add(lazyBone);
                 return ResponseUtilities.PostResponseOk(newLazyBone);
             }
@@ -82,7 +82,7 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var lazyBone = Mapper.Map<Models.LazyBone>(lazyBoneDto);
+                var lazyBone = Mapper.Map<IoT.Models.LazyBone>(lazyBoneDto);
                 var lazyBoneEdited = await _lazyBoneManager.Edit(lazyBone);
                 return ResponseUtilities.PutResponseOk(lazyBoneEdited);
             }

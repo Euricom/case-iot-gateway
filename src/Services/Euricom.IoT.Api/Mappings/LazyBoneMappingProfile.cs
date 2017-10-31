@@ -8,10 +8,10 @@ namespace Euricom.IoT.Api.Mappings
     {
         public LazyBoneMappingProfile()
         {
-            CreateMap<Models.LazyBone, LazyBoneDto>()
+            CreateMap<IoT.Models.LazyBone, LazyBoneDto>()
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Host));
 
-            CreateMap<LazyBoneDto, Models.LazyBone>()
+            CreateMap<LazyBoneDto, IoT.Models.LazyBone>()
                 .ForMember(dest => dest.Host, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.Type, opt => opt.UseValue<HardwareType>(HardwareType.LazyBoneSwitch));
         }

@@ -68,21 +68,12 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public List<TDevice> Get()
+        public IEnumerable<TDevice> Get()
         {
-            var devices = new List<TDevice>();
-
             var table = GetTableName();
             try
             {
-                using (var tran = _database.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, TDevice>(table))
-                    {
-                        devices.Add(row.Value);
-                    }
-                }
-                return devices;
+                return _database.GetValues<TDevice>(table);
             }
             catch (Exception ex)
             {
@@ -121,7 +112,7 @@ namespace Euricom.IoT.DataLayer
                 case HardwareType.LazyBoneSwitch:
                 case HardwareType.LazyBoneDimmer:
                     return Constants.DBREEZE_TABLE_LAZYBONES;
-                case HardwareType.WallmountSwitch:
+                case HardwareType.WallMountSwitch:
                     return Constants.DBREEZE_TABLE_WALLMOUNTS;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(TDevice), typeof(TDevice).Name, null);

@@ -1,124 +1,86 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
-using Euricom.IoT.Common;
-using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Devices.WallMountSwitch;
+using Euricom.IoT.ZWave.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class WallMountSwitchManager : IWallMountSwitchManager
     {
-        private readonly Database _database;
-        private readonly WallMountSwitch.IWallMountSwitchManager _manager;
+        private readonly IDeviceRepository<WallMountSwitch> _repository;
+        private readonly IZWaveManager _manager;
 
-        public WallMountSwitchManager(Database database, WallMountSwitch.IWallMountSwitchManager switchManager)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveManager manager)
         {
-            _database = database;
-            _manager = switchManager;
+            _repository = repository;
+            _manager = manager;
+        }
+        
+        public IEnumerable<WallMountSwitchDto> Get()
+        {
+            var devices = _repository.Get();
+
+            return Mapper.Map<IEnumerable<WallMountSwitchDto>>(devices);
         }
 
-        public Task<IEnumerable<Euricom.IoT.Models.WallMountSwitch>> GetAll()
+        public WallMountSwitchDto Get(string deviceId)
         {
-            var wallmounts = _database.GetWallMountSwitches();
-            return Task.FromResult(wallmounts.AsEnumerable());
+            var wallmount = _repository.Get(deviceId);
+            
+            return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
-        public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceId(string deviceId)
+        public WallMountSwitchDto Add(WallMountSwitchDto dto)
         {
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
+            var wallmount = new WallMountSwitch(dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+
+            _repository.Add(wallmount);
+
+            return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
-        public string GetDeviceId(string deviceName)
+        public WallMountSwitchDto Update(WallMountSwitchDto dto)
         {
-            var device = _database.GetWallMountSwitches().FirstOrDefault(x => x.Name == deviceName);
-            if (device == null)
+            if (dto == null)
             {
-                throw new Exception($"Could not find deviceName: {deviceName}");
+                throw new ArgumentNullException(nameof(dto));
             }
-            return device.DeviceId;
-        }
 
-        public Task<Euricom.IoT.Models.WallMountSwitch> GetByDeviceName(string deviceName)
-        {
-            var deviceId = GetDeviceId(deviceName);
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.WallMountSwitch>(json));
-        }
-
-        public async Task<Euricom.IoT.Models.WallMountSwitch> Add(Euricom.IoT.Models.WallMountSwitch wallmount)
-        {
-            // Generate Device Id
-            wallmount.DeviceId = Guid.NewGuid().ToString();
-
-            //Convert to json
-            var json = JsonConvert.SerializeObject(wallmount);
-
-            //Save to database
-            _database.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
-
-            return await GetByDeviceId(wallmount.DeviceId);
-        }
-
-        public async Task<Euricom.IoT.Models.WallMountSwitch> Edit(Euricom.IoT.Models.WallMountSwitch wallmount)
-        {
-            if (wallmount == null)
-            {
-                throw new ArgumentNullException("wallmount");
-            }
-            else if (String.IsNullOrEmpty(wallmount.DeviceId))
+            if (String.IsNullOrEmpty(dto.DeviceId))
             {
                 throw new ArgumentException("wallmount.DeviceId");
             }
 
-            var json = JsonConvert.SerializeObject(wallmount);
+            var wallmount = _repository.Get(dto.DeviceId);
+            wallmount.Update(dto.NodeId, dto.Name, dto.PollingTime, dto.Enabled);
+            
+            _repository.Update(wallmount);
 
-            _database.SetValue(Constants.DBREEZE_TABLE_WALLMOUNTS, wallmount.DeviceId, json);
-
-            return await GetByDeviceId(wallmount.DeviceId);
+            return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
-        public async Task Remove(string deviceName)
+        public void Remove(string deviceId)
         {
-            // Remove device from  database
-            var deviceId = GetDeviceId(deviceName);
-            _database.RemoveDevice(deviceId);
+            _repository.Remove(deviceId);
         }
 
-        public bool TestConnection(string deviceId)
-        {
-            var config = _database.GetWallMountConfig(deviceId);
-            var nodeId = config.NodeId;
-            return _manager.TestConnection(nodeId);
-        }
-
-        public async Task<bool> IsOn(byte nodeId)
-        {
-            var wallmount = _database.GetWallMountSwitches().SingleOrDefault(x => x.NodeId == nodeId);
-            if (wallmount == null)
-            {
-                throw new InvalidOperationException($"Could not find a wallmount by nodeId: {nodeId}");
-            }
-            return await IsOn(wallmount.DeviceId);
-        }
-
-        public async Task<bool> IsOn(string deviceId)
+        public bool IsOn(string deviceId)
         {
             try
             {
-                var config = _database.GetWallMountConfig(deviceId);
-                if (!config.Enabled)
+                var device = _repository.Get(deviceId);
+                if (!device.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                    throw new InvalidOperationException($"Device: {device.Name} {deviceId} is not enabled");
                 }
-                var nodeId = config.NodeId;
-                return _manager.IsOn(nodeId);
+
+                return device.IsOn(_manager);
             }
             catch (Exception ex)
             {
@@ -127,40 +89,36 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public async Task Switch(string deviceId, string state)
+        public void Switch(string deviceId, string state)
         {
             if (string.IsNullOrEmpty(state))
             {
                 throw new Exception("param state was null or empty");
             }
-            else if (state != "on" && state != "off")
+
+            if (state != "on" && state != "off")
             {
-                throw new Exception($"UNKNOWN parameter: { state}. Please use 'on' or 'off'");
+                throw new Exception($"UNKNOWN parameter: {state}. Please use 'on' or 'off'");
             }
 
             try
             {
-                var settings = _database.GetConfigSettings();
-                var config = _database.GetWallMountConfig(deviceId);
+                var device = _repository.Get(deviceId);
 
-                if (!config.Enabled)
+                if (!device.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                    throw new InvalidOperationException($"Device: {device.Name} {deviceId} is not enabled");
                 }
-
-                var nodeId = config.NodeId;
 
                 switch (state)
                 {
                     case "on":
-                        _manager.SetOn(nodeId);
+                        device.TurnOn(_manager);
                         break;
                     case "off":
-                        _manager.SetOff(nodeId);
+                        device.TurnOff(_manager);
                         break;
-                    default:
-                        throw new InvalidOperationException($"unknown operation for Wallmount Switch node: {nodeId}, state: {state}");
                 }
 
                 // Log command
@@ -171,6 +129,13 @@ namespace Euricom.IoT.Api.Managers
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
+        }
+
+        public bool TestConnection(string deviceId)
+        {
+            var device = _repository.Get(deviceId);
+
+            return device.TestConnection(_manager);
         }
     }
 }

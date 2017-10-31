@@ -9,18 +9,21 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Euricom.IoT.DataLayer;
+using Euricom.IoT.DataLayer.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class GatewayManager : IGatewayManager
     {
+        private readonly ISettingsRepository _settingsRepository;
         private readonly Database _database;
         private readonly IWallMountSwitchManager _wallMountSwitchManager;
         private readonly IDanaLockManager _danaLockManager;
         private readonly ILazyBoneManager _lazyBoneManager;
 
-        public GatewayManager(Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
+        public GatewayManager(ISettingsRepository settingsRepository, Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
         {
+            _settingsRepository = settingsRepository;
             _database = database;
             _danaLockManager = danaLockManager;
             _lazyBoneManager = lazyBoneManager;
@@ -30,7 +33,7 @@ namespace Euricom.IoT.Api.Managers
         public async Task Initialize()
         {
             Logger.Instance.LogInformationWithContext(this.GetType(), "Forwarding IoT hub messages from IoTGateway device to hardware");
-            var settings = _database.GetConfigSettings();
+            var settings = _settingsRepository.Get();
             if (settings == null || String.IsNullOrEmpty(settings.GatewayDeviceKey))
             {
                 Logger.Instance.LogWarningWithContext(this.GetType(), "Setting: 'Gateway Device key' was not provided.. Cannot proccess device messages");
@@ -102,7 +105,7 @@ namespace Euricom.IoT.Api.Managers
                 case "lazybone_dimmer":
                     return await HandleLazyBoneMessage(message.Device, (LazyBoneDimmerMessage)message);
                 case "wallmount_switch":
-                    return await HandleWallMountSwitchMessage(message.Device, (WallmountSwitchMessage)message);
+                    return HandleWallMountSwitchMessage(message.Device, (WallmountSwitchMessage)message);
                 default:
                     throw new InvalidOperationException("unknown message type");
             }
@@ -121,11 +124,11 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        private async Task<bool> HandleWallMountSwitchMessage(string deviceId, WallmountSwitchMessage message)
+        private bool HandleWallMountSwitchMessage(string deviceId, WallmountSwitchMessage message)
         {
             try
             {
-                await _wallMountSwitchManager.Switch(deviceId, message.State == true ? "close" : "open");
+                _wallMountSwitchManager.Switch(deviceId, message.State == true ? "close" : "open");
                 return true;
             }
             catch (Exception ex)
@@ -182,7 +185,7 @@ namespace Euricom.IoT.Api.Managers
                 case "lazybone_dimmer":
                     return HardwareType.LazyBoneDimmer;
                 case "wallmount_switch":
-                    return HardwareType.WallmountSwitch;
+                    return HardwareType.WallMountSwitch;
                 default:
                     throw new NotSupportedException($"deviceType {deviceType} not supported or unknown");
             }

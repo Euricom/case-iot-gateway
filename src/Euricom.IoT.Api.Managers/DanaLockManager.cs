@@ -48,7 +48,7 @@ namespace Euricom.IoT.Api.Managers
             return device.DeviceId;
         }
 
-        public Task<Models.DanaLock> GetByDeviceName(string deviceName)
+        public Task<IoT.Models.DanaLock> GetByDeviceName(string deviceName)
         {
             var deviceId = GetDeviceId(deviceName);
             var json = _database.GetValue(Constants.DBREEZE_TABLE_DANALOCKS, deviceId);
@@ -57,9 +57,6 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<Euricom.IoT.Models.DanaLock> Add(Euricom.IoT.Models.DanaLock danaLock)
         {
-            // Generate Device Id
-            danaLock.DeviceId = Guid.NewGuid().ToString();
-
             //Convert to json
             var json = JsonConvert.SerializeObject(danaLock);
 
@@ -144,7 +141,6 @@ namespace Euricom.IoT.Api.Managers
 
             try
             {
-                var settings = _database.GetConfigSettings();
                 var config = _database.GetDanaLockConfig(deviceId);
 
                 if (!config.Enabled)

@@ -15,7 +15,7 @@ import { routes } from './app.routes'
 import { Config } from '../config'
 
 import { AuthService } from './services/authService'
-import { HardwareService } from './services/hardwareService'
+import { ZwaveService } from './services/zwaveService'
 import { SettingsService } from './services/settingsService'
 import { CameraService } from './services/cameraService'
 import { LazyBoneService } from './services/lazyBoneService'
@@ -30,7 +30,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 
 import { LoginViewComponent } from './views/login/loginView.component'
 import { SettingsViewComponent } from './views/settings/settingsView.component'
-import { HardwareViewComponent } from './views/hardware/hardwareView.component'
+import { ZwaveViewComponent } from './views/zwave/zwaveView.component'
 import { CameraViewComponent } from './views/camera/cameraView.component'
 import { LazyBonesViewComponent } from './views/lazybone/lazyBoneView.component'
 import { DanaLocksViewComponent } from './views/danalocks/danalocksView.component'
@@ -57,7 +57,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
     NavigationComponent,
     LoginViewComponent,
     SettingsViewComponent,
-    HardwareViewComponent,
+    ZwaveViewComponent,
     CameraViewComponent,
     LazyBonesViewComponent,
     DanaLocksViewComponent,
@@ -82,7 +82,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
     Config,
     AuthService,
     AuthGuardService,
-    HardwareService,
+    ZwaveService,
     SettingsService,
     CameraService,
     LazyBoneService,

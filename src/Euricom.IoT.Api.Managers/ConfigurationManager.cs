@@ -1,28 +1,28 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.DataLayer;
+using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class ConfigurationManager : IConfigurationManager
     {
-        private readonly Database _database;
+        private readonly ISettingsRepository _settingsRepository;
 
-        public ConfigurationManager(Database database)
+        public ConfigurationManager(ISettingsRepository settingsRepository)
         {
-            _database = database;
+            _settingsRepository = settingsRepository;
         }
 
         public Settings GetConfigSettings()
         {
-            var settings = _database.GetConfigSettings();
+            var settings = _settingsRepository.Get();
             settings.Password = string.Empty;
             return settings;
         }
 
         public void SaveConfigSettings(Settings settings)
         {
-            _database.SaveConfigSettings(settings);
+            _settingsRepository.Update(settings);
         }
     }
 }
