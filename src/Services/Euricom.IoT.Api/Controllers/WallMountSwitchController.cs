@@ -11,7 +11,7 @@ namespace Euricom.IoT.Api.Controllers
 {
     [Authorize]
     [RestController(InstanceCreationType.Singleton)]
-    public class WallMountSwitchController
+    public class WallMountSwitchController: ControllerBase
     {
         private readonly IWallMountSwitchManager _wallmountSwitchManager;
 

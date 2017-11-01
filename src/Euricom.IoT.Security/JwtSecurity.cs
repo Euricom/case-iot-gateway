@@ -40,6 +40,8 @@ namespace Euricom.IoT.Security
             {
                 var payload = DecodeJwt(jwt);
 
+                
+
                 // Check if token is not yet expired
                 var expirationDate = DateTimeOffset.FromUnixTimeSeconds(payload.exp).DateTime;
                 if (expirationDate <= DateTime.UtcNow)

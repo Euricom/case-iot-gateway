@@ -7,17 +7,17 @@ namespace Euricom.IoT.Api.Managers
     public class ConfigurationManager : IConfigurationManager
     {
         private readonly ISettingsRepository _settingsRepository;
+        private readonly IUserRepository _userRepository;
 
-        public ConfigurationManager(ISettingsRepository settingsRepository)
+        public ConfigurationManager(ISettingsRepository settingsRepository, IUserRepository userRepository)
         {
             _settingsRepository = settingsRepository;
+            _userRepository = userRepository;
         }
 
         public Settings GetConfigSettings()
         {
-            var settings = _settingsRepository.Get();
-            settings.Password = string.Empty;
-            return settings;
+            return _settingsRepository.Get();
         }
 
         public void SaveConfigSettings(Settings settings)

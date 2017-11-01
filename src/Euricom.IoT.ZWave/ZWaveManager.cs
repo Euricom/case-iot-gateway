@@ -12,14 +12,16 @@ namespace Euricom.IoT.ZWave
 {
     public class ZWaveManager : IZWaveManager
     {
+        private readonly string _networkKey;
         private readonly ObservableCollection<Node> _nodeList = new ObservableCollection<Node>();
         private readonly List<ZWaveRequest> _pendingRequests = new List<ZWaveRequest>();
         private readonly ObservableCollection<SerialPortInfo> _serialPorts = new ObservableCollection<SerialPortInfo>();
 
         private bool _initialized;
 
-        public ZWaveManager()
+        public ZWaveManager(string networkKey)
         {
+            _networkKey = networkKey;
             QueryStatus = NodeQueryStatus.Querying;
         }
 
@@ -36,7 +38,7 @@ namespace Euricom.IoT.ZWave
 
             // Add any app specific options here...
 
-            ZWOptions.Instance.AddOptionString("NetworkKey", "0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10", false);
+            ZWOptions.Instance.AddOptionString("NetworkKey", _networkKey, false);
             // ordinarily, just write "Detail" level messages to the log
             //m_options.AddOptionInt("SaveLogLevel", (int)ZWLogLevel.Detail);
 

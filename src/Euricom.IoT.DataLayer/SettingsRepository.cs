@@ -57,15 +57,6 @@ namespace Euricom.IoT.DataLayer
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
-
-            // TODO: remove from settings
-            if (string.IsNullOrEmpty(settings.Password) == false)
-            {
-                var user = _database.GetValue<User>(Constants.DBREEZE_TABLE_USERS, "admin");
-                user.UpdatePassword(settings.Password);
-                _database.SetValue(Constants.DBREEZE_TABLE_USERS, "admin", user);
-                Logger.Instance.LogWarningWithContext(GetType(), "Password changed");
-            }
         }
 
         public void Seed()

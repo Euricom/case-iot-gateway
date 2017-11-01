@@ -123,10 +123,10 @@ namespace Euricom.IoT.DataLayer
 
         public void Seed()
         {
-            //if (!Exists("admin"))
-            //{
-            Add(new User("admin", "secret_password"));
-            //}
+            if (!Exists("admin"))
+            {
+                Add(new User("admin", "secret_password"));
+            }
         }
     }
 }

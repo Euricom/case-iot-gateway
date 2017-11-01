@@ -20,7 +20,7 @@ export class SettingsService {
       .map((res: Response) => (res.json()))
   }
 
-  saveSettings(settings: Settings): Observable<Settings> {
+  saveSettings(settings: Settings) {
     return this.authHttp.put(`/api/settings`, settings)
   }
 }

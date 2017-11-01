@@ -9,6 +9,7 @@ import { tokenNotExpired } from 'angular2-jwt'
 import { Config } from '../../config'
 import { User } from '../models/user'
 import { Credentials } from '../models/credentials'
+import { ChangePassword } from '../models/changepassword'
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
     }
   }
 
-  getLoggedIn(): Observable<string> {
+  getLoggedIn(): Observable<String> {
     return this.subject.asObservable()
   }
 
@@ -61,6 +62,10 @@ export class AuthService {
           .map(res => res.json())
       }
     }
+  }
+
+  changePassword(change: ChangePassword) {
+    return this.http.put(`/api/security/password`, change)
   }
 
   logout() {

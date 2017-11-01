@@ -54,6 +54,5 @@ namespace Euricom.IoT.Api.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
     }
 }

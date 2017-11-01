@@ -1,19 +1,26 @@
-<form class="form-horizontal" (ngSubmit)="onSubmit(form)">
+<form class="form-horizontal" (ngSubmit)="onSubmitPassword(form)">
 
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Password</h3>
     </div>
     <div class="panel-body">
+        <div class="form-group">
+            <label for="inputCurrentPassword" class="col-sm-2 control-label">Current Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" [(ngModel)]="password" id="inputCurrentPassword" name="inputCurrentPassword" minlength="5"
+                maxlength="25">
+            </div>
+          </div>
       <div class="form-group">
-        <label for="inputPassword1" class="col-sm-2 control-label">Change gateway administration password</label>
+        <label for="inputPassword1" class="col-sm-2 control-label">New Password</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" [(ngModel)]="password" id="inputPassword1" name="inputPassword1" minlength="5"
             maxlength="25" #inputPassword1="ngModel" placeholder="">
         </div>
       </div>
       <div class="form-group">
-        <label for="inputPassword2" class="col-sm-2 control-label">Repeat password</label>
+        <label for="inputPassword2" class="col-sm-2 control-label">Repeat Password</label>
         <div class="col-sm-10">
           <input type="password" class="form-control" [(ngModel)]="password2" id="inputPassword2" name="inputPassword2" minlength="5"
             maxlength="25" #inputPassword2="ngModel" placeholder="">
@@ -37,98 +44,155 @@
       </div>
     </div>
   </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Logging</h3>
-    </div>
-    <div class="panel-body">
-      <div class="form-group">
-        <label for="inputHistoryLog" class="col-sm-2 control-label">History log (days)</label>
-        <div class="col-sm-10">
-          <input type="number" class="form-control" [(ngModel)]="settings.HistoryLog" id="inputHistoryLog" name="inputHistoryLog" placeholder="">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputLogLevel" class="col-sm-2 control-label">Log level (logging selected level and higher)</label>
-        <div class="col-sm-10">
-          <select required [(ngModel)]="settings.LogLevel" name="logLevel" id="inputLogLevel" class="form-control">
-          <option value="">--</option>
-          <option *ngFor="let logLevelOption of logLevelOptions" value="{{logLevelOption}}">{{logLevelOption}}</option>
-        </select>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Azure</h3>
-    </div>
-    <div class="panel-body">
-      <div class="">
-        <h4>IoT Gateway Device Key</h4>
-        <div class="form-group">
-          <label for="inputGatewayDeviceKey" class="col-sm-2 control-label">Azure Gateway Device Key</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" [(ngModel)]="settings.GatewayDeviceKey" id="inputGatewayDeviceKey" name="inputGatewayDeviceKey"
-              placeholder="">
-          </div>
-        </div>
-      </div>
-
-      <div class="">
-        <h4>IoT Hub settings</h4>
-        <div class="form-group">
-          <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Azure IoT Hub URI</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" [(ngModel)]="settings.AzureIotHubUri" id="inputAzureIotHubUri" name="inputAzureIotHubUri"
-              placeholder="">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="inputAzureIotHubConnectionString" class="col-sm-2 control-label">Azure IoT Hub Connectionstring</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputAzureIotHubConnectionString" name="inputAzureIotHubConnectionString" [(ngModel)]="settings.AzureIotHubUriConnectionString"
-              placeholder="">
-          </div>
-        </div>
-      </div>
-
-      <div class="">
-        <h4>Blob storage settings</h4>
-        <div class="form-group">
-          <label for="inputAzureIotHub" class="col-sm-2 control-label">Azure account name</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputAzureAccountName" name="inputAzureAccountName" [(ngModel)]="settings.AzureAccountName"
-              placeholder="">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="inputUsername" class="col-sm-2 control-label">Azure storage access key</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputAzureStorageAccessKey" name="inputAzureStorageAccessKey" [(ngModel)]="settings.AzureStorageAccessKey"
-              placeholder="">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Dropbox</h3>
-    </div>
-    <div class="panel-body">
-      <div class="form-group">
-        <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Dropbox Access token</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="inputDropboxAccessToken" name="inputDropboxAccessToken" [(ngModel)]="settings.DropboxAccessToken"
-            placeholder="">
-        </div>
-      </div>
-    </div>
-  </div>
-
   <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
+<form class="form-horizontal" (ngSubmit)="onSubmitSettings(form)">
+    
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Password</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="inputPassword1" class="col-sm-2 control-label">Change gateway administration password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" [(ngModel)]="password" id="inputPassword1" name="inputPassword1" minlength="5"
+                maxlength="25" #inputPassword1="ngModel" placeholder="">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword2" class="col-sm-2 control-label">Repeat password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" [(ngModel)]="password2" id="inputPassword2" name="inputPassword2" minlength="5"
+                maxlength="25" #inputPassword2="ngModel" placeholder="">
+            </div>
+          </div>
+          <div *ngIf="inputPassword1.errors && (inputPassword1.dirty || inputPassword1.touched)" class="alert alert-danger">
+            <div [hidden]="!inputPassword1.errors.minlength">
+              Password must be at least 5 characters long.
+            </div>
+            <div [hidden]="!inputPassword1.errors.maxlength">
+              Password cannot be more than 25 characters long.
+            </div>
+          </div>
+          <div *ngIf="inputPassword2.errors && (inputPassword1.dirty || inputPassword2.touched)" class="alert alert-danger">
+            <div [hidden]="!inputPassword2.errors.minlength">
+              Password must be at least 5 characters long.
+            </div>
+            <div [hidden]="!inputPassword2.errors.maxlength">
+              Password cannot be more than 25 characters long.
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Logging</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="inputHistoryLog" class="col-sm-2 control-label">History log (days)</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control" [(ngModel)]="settings.HistoryLog" id="inputHistoryLog" name="inputHistoryLog" placeholder="">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputLogLevel" class="col-sm-2 control-label">Log level (logging selected level and higher)</label>
+            <div class="col-sm-10">
+              <select required [(ngModel)]="settings.LogLevel" name="logLevel" id="inputLogLevel" class="form-control">
+              <option value="">--</option>
+              <option *ngFor="let logLevelOption of logLevelOptions" value="{{logLevelOption}}">{{logLevelOption}}</option>
+            </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Azure</h3>
+        </div>
+        <div class="panel-body">
+          <div class="">
+            <h4>IoT Gateway Device Key</h4>
+            <div class="form-group">
+              <label for="inputGatewayDeviceKey" class="col-sm-2 control-label">Azure Gateway Device Key</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" [(ngModel)]="settings.GatewayDeviceKey" id="inputGatewayDeviceKey" name="inputGatewayDeviceKey"
+                  placeholder="">
+              </div>
+            </div>
+          </div>
+    
+          <div class="">
+            <h4>IoT Hub settings</h4>
+            <div class="form-group">
+              <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Azure IoT Hub URI</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" [(ngModel)]="settings.AzureIotHubUri" id="inputAzureIotHubUri" name="inputAzureIotHubUri"
+                  placeholder="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputAzureIotHubConnectionString" class="col-sm-2 control-label">Azure IoT Hub Connectionstring</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputAzureIotHubConnectionString" name="inputAzureIotHubConnectionString" [(ngModel)]="settings.AzureIotHubUriConnectionString"
+                  placeholder="">
+              </div>
+            </div>
+          </div>
+    
+          <div class="">
+            <h4>Blob storage settings</h4>
+            <div class="form-group">
+              <label for="inputAzureIotHub" class="col-sm-2 control-label">Azure account name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputAzureAccountName" name="inputAzureAccountName" [(ngModel)]="settings.AzureAccountName"
+                  placeholder="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputUsername" class="col-sm-2 control-label">Azure storage access key</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputAzureStorageAccessKey" name="inputAzureStorageAccessKey" [(ngModel)]="settings.AzureStorageAccessKey"
+                  placeholder="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Dropbox</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="inputAzureIotHubUri" class="col-sm-2 control-label">Dropbox Access token</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputDropboxAccessToken" name="inputDropboxAccessToken" [(ngModel)]="settings.DropboxAccessToken"
+                placeholder="">
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Zwave</h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="inputZWaveNetworkKey" class="col-sm-2 control-label">Network Key</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputZWaveNetworkKey" name="inputZWaveNetworkKey" [(ngModel)]="settings.ZWaveNetworkKey"
+                  placeholder="">
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>

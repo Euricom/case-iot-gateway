@@ -104,6 +104,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
+    <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
@@ -211,6 +212,10 @@
     <ProjectReference Include="..\..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
       <Name>Euricom.IoT.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Security\Euricom.IoT.Security.csproj">
+      <Project>{4CC1DA31-1F5A-42CC-835E-C233C1633CEB}</Project>
+      <Name>Euricom.IoT.Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.ZWave\Euricom.IoT.ZWave.csproj">
       <Project>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</Project>

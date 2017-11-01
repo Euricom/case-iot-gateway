@@ -26,7 +26,7 @@ export class SettingsViewComponent implements OnInit {
 
   }
 
-  onSubmit(): void {
+  onSubmitPassword(): void {
 
     // validate
     if (this.password && this.password2) {
@@ -34,10 +34,20 @@ export class SettingsViewComponent implements OnInit {
         this.toastr.error('passwords do not match')
         return
       } else {
-        this.settings.Password = this.password
+        this.settingsService.savePassword(this.password)
+        .subscribe(
+          (data) => {
+            this.toastr.info('Password saved successfully')
+            this.refresh()
+          },
+          (err) => {
+            this.toastr.error('error occurred' + err)
+          })
       }
     }
+  }
 
+  onSubmitSettings(): void {
     this.settingsService.saveSettings(this.settings)
       .subscribe(
       (data) => {

@@ -29,7 +29,7 @@ namespace Euricom.IoT.Api.Managers
             return jwt;
         }
 
-        public string LoginWithPUK(string puk)
+        public string LoginWithPuk(string puk)
         {
             if (puk != Constants.PUK)
                 throw new Exception("PUK code invalid!");
@@ -57,35 +57,18 @@ namespace Euricom.IoT.Api.Managers
             return JwtSecurity.VerifyJwt(jwt);
         }
 
-        public void LostPassword()
+        public void ChangePassword(string username, string old, string @new)
         {
-            // Generate a GUID
-            var resetGuid = Guid.NewGuid();
+            var user = _userRepository.Get(username);
 
-            // Create a body template and include a link
+            if (user.Check(old) == false)
+            {
+                throw new InvalidOperationException("Wrong password!");
+            }
 
+            user.UpdatePassword(@new);
 
-            // Include GUID in mail link
-
-
-            // Send mail
-            //_mailer.SendLostPasswordMail("wim.vandenrul@euri.com", )
-        }
-
-        public void ResetPassword(string resetGuid)
-        {
-            // 
-            // Add to d
-            // _database.VerifyResetPasswordGuid(resetGuid);
-
-            // Generate a new password
-            // var password = RandomPasswordGenerator.CreateRandomPassword(10);
-
-            // Generate a verification id
-
-
-            // Send mail
-
+            _userRepository.Update(user);
         }
     }
 }

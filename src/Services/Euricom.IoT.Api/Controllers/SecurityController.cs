@@ -1,18 +1,18 @@
-﻿using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Mailing;
 using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
+using Euricom.IoT.Api.Models;
+using Restup.WebServer.Attributes;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [RestController(InstanceCreationType.Singleton)]
-    public class SecurityController
+    [RestController(InstanceCreationType.PerCall)]
+    public class SecurityController: ControllerBase
     {
         private readonly ISecurityManager _securityManager;
 
@@ -27,12 +27,12 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var jwt = _securityManager.Login(credentials.Username, credentials.Password);
-                Logger.Instance.LogInformationWithContext(this.GetType(), $"{credentials.Username} logged in");
+                Logger.Instance.LogInformationWithContext(GetType(), $"{credentials.Username} logged in");
                 return ResponseUtilities.PostResponseOk(jwt);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
@@ -42,13 +42,13 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var jwt = _securityManager.LoginWithPUK(credentials.PUK);
-                Logger.Instance.LogInformationWithContext(this.GetType(), "admin logged in with PUK code!");
+                var jwt = _securityManager.LoginWithPuk(credentials.PUK);
+                Logger.Instance.LogInformationWithContext(GetType(), "admin logged in with PUK code!");
                 return ResponseUtilities.PostResponseOk(jwt);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not login: exception: {ex.Message}");
             }
         }
@@ -63,8 +63,28 @@ namespace Euricom.IoT.Api.Controllers
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not get log: exception: {ex.Message}");
+            }
+        }
+
+        [Authorize]
+        [UriFormat("/security/password")]
+        public IPutResponse ChangePassword([FromContent] ChangePasswordDto dto)
+        {
+            try
+            {
+                var username = GetUsername();
+                _securityManager.ChangePassword(username, dto.Old, dto.New);
+
+                Logger.Instance.LogInformationWithContext(GetType(), $"{username} changed password!");
+
+                return new PutResponse(PutResponse.ResponseStatus.OK);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw new Exception($"Could not change password: exception: {ex.Message}");
             }
         }
     }
