@@ -51,12 +51,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/wallmount")]
-        public IPostResponse Add([FromContent] WallMountSwitchDto wallmountSwitchDto)
+        public IPostResponse Add([FromContent] WallMountSwitchDto dto)
         {
             try
             {
-                var newWallMount = _wallmountSwitchManager.Add(wallmountSwitchDto);
-                return ResponseUtilities.PostResponseOk(newWallMount);
+                var wallmount = _wallmountSwitchManager.Add(dto);
+                return ResponseUtilities.PostResponseOk(wallmount);
             }
             catch (Exception ex)
             {
@@ -66,12 +66,12 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/wallmount")]
-        public IPutResponse Update([FromContent] WallMountSwitchDto wallmountSwitchDto)
+        public IPutResponse Update([FromContent] WallMountSwitchDto dto)
         {
             try
             {
-                var wallmountSwitchEdited = _wallmountSwitchManager.Update(wallmountSwitchDto);
-                return ResponseUtilities.PutResponseOk(wallmountSwitchEdited);
+                var wallmount = _wallmountSwitchManager.Update(dto);
+                return ResponseUtilities.PutResponseOk(wallmount);
             }
             catch (Exception ex)
             {

@@ -45,6 +45,24 @@ export class ZwaveViewComponent implements OnInit {
       })
   }
 
+  softReset() {
+    this.zwaveService.softReset().subscribe((data) => { 
+      this.toastr.info('Soft reset finished')
+    },)
+  }  
+
+  addNode(secure) {
+    this.zwaveService.addNode(secure).subscribe((data) => { 
+      this.toastr.info('Awaiting manual action, please click the button on the device to include.')
+    },)
+  }
+
+  removeNode() {
+    this.zwaveService.removeNode().subscribe((data) => { 
+      this.toastr.info('Awaiting manual action, please click the button on the device to exclude.')
+    },)
+  }
+
   onClickCancel() {
     this.location.back()
   }

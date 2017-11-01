@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Mappings
@@ -8,9 +9,9 @@ namespace Euricom.IoT.Api.Mappings
     {
         public DanaLockMappingProfile()
         {
-            CreateMap<IoT.Models.DanaLock, DanaLockDto>();
+            CreateMap<DanaLock, DanaLockDto>();
 
-            CreateMap<DanaLockDto, IoT.Models.DanaLock>()
+            CreateMap<DanaLockDto, DanaLock>()
                 .ForMember(dest => dest.Type, opt => opt.UseValue<HardwareType>(HardwareType.DanaLock));
         }
     }

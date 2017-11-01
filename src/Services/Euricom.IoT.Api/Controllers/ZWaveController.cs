@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Managers;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
@@ -18,12 +19,12 @@ namespace Euricom.IoT.Api.Controllers
             _zWaveManager = zWaveManager;
         }
 
-        [UriFormat("/zwave/initialize")]
-        public IPutResponse Initialize()
+        [UriFormat("/zwave/reset/soft")]
+        public async Task<IPutResponse> Initialize()
         {
             try
             {
-                _zWaveManager.Initialize();
+                await _zWaveManager.SoftReset();
 
                 return new PutResponse(PutResponse.ResponseStatus.NoContent);
             }
@@ -34,7 +35,7 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/zwave/nodes")]
+        [UriFormat("/zwave/node")]
         public IGetResponse GetNodes()
         {
             try
@@ -46,6 +47,36 @@ namespace Euricom.IoT.Api.Controllers
             {
                 Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not initialize ZWave: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/zwave/node/{secure}")]
+        public IPostResponse AddNode(bool secure)
+        {
+            try
+            {
+                _zWaveManager.AddNode(secure);
+                return new PostResponse(PostResponse.ResponseStatus.Created);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw new Exception($"Could not add node: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/zwave/node")]
+        public IDeleteResponse RemoveNode()
+        {
+            try
+            {
+                _zWaveManager.RemoveNode();
+                return new DeleteResponse(DeleteResponse.ResponseStatus.NoContent);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw new Exception($"Could not add node: exception: {ex.Message}");
             }
         }
     }

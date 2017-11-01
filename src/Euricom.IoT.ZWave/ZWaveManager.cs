@@ -16,6 +16,8 @@ namespace Euricom.IoT.ZWave
         private readonly List<ZWaveRequest> _pendingRequests = new List<ZWaveRequest>();
         private readonly ObservableCollection<SerialPortInfo> _serialPorts = new ObservableCollection<SerialPortInfo>();
 
+        private bool _initialized;
+
         public ZWaveManager()
         {
             QueryStatus = NodeQueryStatus.Querying;
@@ -25,19 +27,16 @@ namespace Euricom.IoT.ZWave
 
         public uint HomeId { get; private set; }
         public string CurrentStatus { get; private set; }
-        public static ZWManager ZWManager => ZWManager.Instance;
+        public static ZWManager ZwManager => ZWManager.Instance;
 
         public async Task Initialize()
         {
-            ZWManager.Instance.OnNotification -= OnNodeNotification;
-
-            _nodeList.Clear();
-            _pendingRequests.Clear();
-            
             ZWOptions.Instance.Initialize();
+            _initialized = true;
 
             // Add any app specific options here...
 
+            ZWOptions.Instance.AddOptionString("NetworkKey", "0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10", false);
             // ordinarily, just write "Detail" level messages to the log
             //m_options.AddOptionInt("SaveLogLevel", (int)ZWLogLevel.Detail);
 
@@ -51,8 +50,8 @@ namespace Euricom.IoT.ZWave
             ZWOptions.Instance.Lock();
 
             // Create the OpenZWave Manager
-            ZWManager.Instance.Initialize();
-            ZWManager.Instance.OnNotification += OnNodeNotification;
+            ZwManager.Initialize();
+            ZwManager.OnNotification += OnNodeNotification;
 
 #if NETFX_CORE
             var serialPortSelector = Windows.Devices.SerialCommunication.SerialDevice.GetDeviceSelector();
@@ -90,7 +89,7 @@ namespace Euricom.IoT.ZWave
         {
             if (HomeId > 0 && _nodeList != null && _nodeList.Any(x => x.ID == nodeId))
             {
-                return ZWManager.Instance.IsNodeAwake(HomeId, nodeId);
+                return ZwManager.IsNodeAwake(HomeId, nodeId);
             }
 
             return false;
@@ -98,12 +97,12 @@ namespace Euricom.IoT.ZWave
 
         public bool GetValue(byte nodeId, byte commandId)
         {
-            ZWManager.Instance.GetValueAsBool(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), out var currentVal);
+            ZwManager.GetValueAsBool(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), out var currentVal);
             return currentVal;
         }
         public void SetValue(byte nodeId, byte commandId, bool value)
         {
-            ZWManager.Instance.SetValue(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), value);
+            ZwManager.SetValue(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), value);
         }
 
         public List<Node> GetNodes()
@@ -114,6 +113,42 @@ namespace Euricom.IoT.ZWave
             return nodes;
         }
 
+        public void RemoveNode()
+        {
+            ZwManager.RemoveNode(HomeId);
+        }
+
+        public void AddNode(bool secure)
+        {
+            ZwManager.AddNode(HomeId, secure);
+        }
+
+        public async Task SoftReset()
+        {
+            if (_initialized && ZWOptions.Instance.AreLocked)
+            {
+                ZwManager.SoftReset(HomeId);
+
+                await Task.Delay(10000);
+
+                var port = _serialPorts.FirstOrDefault(p => p.IsActive);
+                port?.Deactivate(ZwManager);
+
+                _serialPorts.Clear();
+                _nodeList.Clear();
+                _pendingRequests.Clear();
+
+                ZwManager.OnNotification -= OnNodeNotification;
+
+                ZwManager.Destroy();
+                ZWOptions.Instance.Destroy();
+
+                await Task.Delay(10000);
+            }
+
+            await Initialize();
+        }
+        
         #region Notifications
         private void OnNodeNotification(ZWNotification notification)
         {

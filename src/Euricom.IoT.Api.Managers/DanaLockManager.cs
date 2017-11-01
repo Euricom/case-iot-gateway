@@ -1,125 +1,81 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
-using Euricom.IoT.Common;
-using Euricom.IoT.Common.Utilities;
-using Euricom.IoT.DataLayer;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Messaging;
-using Euricom.IoT.Models;
-using Euricom.IoT.Models.Messages;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Devices.DanaLock;
+using IZWaveManager = Euricom.IoT.ZWave.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class DanaLockManager : IDanaLockManager
     {
-        private readonly Database _database;
-        private readonly DanaLock.IDanaLockManager _manager;
+        private readonly IDeviceRepository<DanaLock> _repository;
+        private readonly IZWaveManager _manager;
 
-        public DanaLockManager(Database database, DanaLock.IDanaLockManager danaLockManager)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveManager manager)
         {
-            _database = database;
-            _manager = danaLockManager;
+            _repository = repository;
+            _manager = manager;
         }
 
-        public Task<IEnumerable<Euricom.IoT.Models.DanaLock>> GetAll()
+        public IEnumerable<DanaLockDto> Get()
         {
-            var danalocks = _database.GetDanaLocks();
-            return Task.FromResult(danalocks.AsEnumerable());
+            var devices = _repository.Get();
+
+            return Mapper.Map<IEnumerable<DanaLockDto>>(devices);
         }
 
-        public Task<Euricom.IoT.Models.DanaLock> GetByDeviceId(string deviceId)
+        public DanaLockDto Get(string deviceId)
         {
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_DANALOCKS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.DanaLock>(json));
+            var wallmount = _repository.Get(deviceId);
+
+            return Mapper.Map<DanaLockDto>(wallmount);
         }
 
-        public string GetDeviceId(string deviceName)
+        public DanaLockDto Add(DanaLockDto dto)
         {
-            var device = _database.GetDanaLocks().FirstOrDefault(x => x.Name == deviceName);
-            if (device == null)
+            var danalock = new DanaLock(dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+
+            _repository.Add(danalock);
+
+            return Mapper.Map<DanaLockDto>(danalock);
+        }
+
+        public DanaLockDto Update(DanaLockDto dto)
+        {
+            if (dto == null)
             {
-                throw new Exception($"Could not find deviceName: {deviceName}");
-            }
-            return device.DeviceId;
-        }
-
-        public Task<IoT.Models.DanaLock> GetByDeviceName(string deviceName)
-        {
-            var deviceId = GetDeviceId(deviceName);
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_DANALOCKS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Euricom.IoT.Models.DanaLock>(json));
-        }
-
-        public async Task<Euricom.IoT.Models.DanaLock> Add(Euricom.IoT.Models.DanaLock danaLock)
-        {
-            //Convert to json
-            var json = JsonConvert.SerializeObject(danaLock);
-
-            //Save to database
-            _database.SetValue(Constants.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
-
-            return await GetByDeviceId(danaLock.DeviceId);
-        }
-
-        public async Task<Euricom.IoT.Models.DanaLock> Edit(Euricom.IoT.Models.DanaLock danaLock)
-        {
-            if (danaLock == null)
-            {
-                throw new ArgumentNullException("danaLock");
-            }
-            else if (String.IsNullOrEmpty(danaLock.DeviceId))
-            {
-                throw new ArgumentException("danaLock.DeviceId");
+                throw new ArgumentNullException(nameof(dto));
             }
 
-            var json = JsonConvert.SerializeObject(danaLock);
+            if (String.IsNullOrEmpty(dto.DeviceId))
+            {
+                throw new ArgumentException("wallmount.DeviceId");
+            }
 
-            _database.SetValue(Constants.DBREEZE_TABLE_DANALOCKS, danaLock.DeviceId, json);
+            var wallmount = _repository.Get(dto.DeviceId);
+            wallmount.Update(dto.NodeId, dto.Name, dto.PollingTime, dto.Enabled);
 
-            return await GetByDeviceId(danaLock.DeviceId);
+            _repository.Update(wallmount);
+
+            return Mapper.Map<DanaLockDto>(wallmount);
         }
 
-        public async Task Remove(string deviceName)
-        { 
-            // Remove device from  database
-            var deviceId = GetDeviceId(deviceName);
-            _database.RemoveDevice(deviceId);       
+        public void Remove(string deviceId)
+        {
+            _repository.Remove(deviceId);
         }
 
         public bool TestConnection(string deviceId)
         {
-            var config = _database.GetDanaLockConfig(deviceId);
-            var nodeId = config.NodeId;
-            return _manager.TestConnection(nodeId);
-        }
-
-        public async Task<bool> IsLocked(byte nodeId)
-        {
-            var danalock = _database.GetDanaLocks().SingleOrDefault(x => x.NodeId == nodeId);
-            if (danalock == null)
-            {
-                throw new InvalidOperationException($"Could not find a danalock by nodeId: {nodeId}");
-            }
-            return await IsLocked(danalock.DeviceId);
-        }
-
-        public async Task<bool> IsLocked(string deviceId)
-        {
             try
             {
-                var config = _database.GetDanaLockConfig(deviceId);
-                if (!config.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
-                }
-                var nodeId = config.NodeId;
-                return _manager.IsLocked(nodeId);
+                var device = _repository.Get(deviceId);
+
+                return device.TestConnection(_manager);
             }
             catch (Exception ex)
             {
@@ -128,39 +84,57 @@ namespace Euricom.IoT.Api.Managers
             }
         }
 
-        public async Task Switch(string deviceId, string state)
+        public bool IsLocked(string deviceId)
+        {
+            try
+            {
+                var danalock = _repository.Get(deviceId);
+                if (!danalock.Enabled)
+                {
+                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
+                    throw new InvalidOperationException($"Device: {danalock.Name} {deviceId} is not enabled");
+                }
+
+                return danalock.IsLocked(_manager);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
+                throw;
+            }
+        }
+
+        public void Switch(string deviceId, string state)
         {
             if (string.IsNullOrEmpty(state))
             {
                 throw new Exception("param state was null or empty");
             }
-            else if (state != "open" && state != "close")
+
+            if (state != "open" && state != "close")
             {
                 throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
             }
 
             try
             {
-                var config = _database.GetDanaLockConfig(deviceId);
-
-                if (!config.Enabled)
+                var danalock = _repository.Get(deviceId);
+                if (!danalock.Enabled)
                 {
                     Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {config.Name} {deviceId} is not enabled");
+                    throw new InvalidOperationException($"Device: {danalock.Name} {deviceId} is not enabled");
                 }
-
-                var nodeId = config.NodeId;
 
                 switch (state)
                 {
                     case "open":
-                        _manager.OpenLock(nodeId);
+                        danalock.OpenLock(_manager);
                         break;
                     case "close":
-                        _manager.CloseLock(nodeId);
+                        danalock.CloseLock(_manager);
                         break;
                     default:
-                        throw new InvalidOperationException($"unknown operation for DanaLock node: {nodeId}, state: {state}");
+                        throw new InvalidOperationException($"unknown operation for DanaLock node: {deviceId}, state: {state}");
                 }
 
                 // Log command
@@ -171,12 +145,6 @@ namespace Euricom.IoT.Api.Managers
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw;
             }
-        }
-
-        private void PublishDanaLockEvent(Settings settings, string deviceName, string deviceId, DanaLockMessage notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(settings, deviceName, deviceId).Publish(json);
         }
     }
 }

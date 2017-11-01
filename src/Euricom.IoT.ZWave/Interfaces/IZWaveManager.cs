@@ -8,11 +8,14 @@ namespace Euricom.IoT.ZWave.Interfaces
         uint HomeId { get; }
         string CurrentStatus { get; }
 
+        Task SoftReset();
         Task Initialize();
 
         bool TestConnection(byte nodeId);
         bool GetValue(byte nodeId, byte commandId);
         void SetValue(byte nodeId, byte commandId, bool value);
         List<Node> GetNodes();
+        void RemoveNode();
+        void AddNode(bool secure);
     }
 }

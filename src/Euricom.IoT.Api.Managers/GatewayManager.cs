@@ -114,7 +114,7 @@ namespace Euricom.IoT.Api.Managers
         {
             try
             {
-                await _danaLockManager.Switch(deviceId, message.Locked == true ? "close" : "open");
+                _danaLockManager.Switch(deviceId, message.Locked == true ? "close" : "open");
                 return true;
             }
             catch (Exception ex)

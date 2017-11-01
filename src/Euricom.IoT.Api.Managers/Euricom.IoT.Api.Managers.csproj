@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
     <Compile Include="Interfaces\IWallMountSwitchManager.cs" />
+    <Compile Include="Interfaces\IZWaveManager.cs" />
     <Compile Include="WallMountSwitchManager.cs" />
     <Compile Include="Interfaces\IGatewayManager.cs" />
     <Compile Include="GatewayManager.cs" />

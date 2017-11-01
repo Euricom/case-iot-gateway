@@ -1,14 +1,11 @@
-﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -24,131 +21,109 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/danalock")]
-        public async Task<IGetResponse> GetAll()
+        public IGetResponse GetAll()
         {
             try
             {
-                var danaLocks = await _danaLockManager.GetAll();
-                var danaLocksDto = Mapper.Map<IEnumerable<DanaLockDto>>(danaLocks);
-                return ResponseUtilities.GetResponseOk(danaLocksDto);
+                var locks = _danaLockManager.Get();
+                return ResponseUtilities.GetResponseOk(locks);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not get danaLocks: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/danalock/{devicename}")]
-        public async Task<IGetResponse> GetByDeviceName(string devicename)
-        {
-            try
-            {
-                var danaLock = await _danaLockManager.GetByDeviceName(devicename);
-                var danaLockDto = Mapper.Map<DanaLockDto>(danaLock);
-                return ResponseUtilities.GetResponseOk(danaLockDto);
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw new Exception($"Could not get danaLock with devicename: {devicename} , exception: {ex.Message}");
-            }
-        }
-
         [UriFormat("/danalock")]
-        public async Task<IPostResponse> Add([FromContent] DanaLockDto danaLockDto)
+        public IPostResponse Add([FromContent] DanaLockDto dto)
         {
             try
             {
-                var danaLock = Mapper.Map<IoT.Models.DanaLock>(danaLockDto);
-                var newLazyBone = await _danaLockManager.Add(danaLock);
-                return ResponseUtilities.PostResponseOk(newLazyBone);
+                var danalock = _danaLockManager.Add(dto);
+                return ResponseUtilities.PostResponseOk(danalock);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not add danalock: exception: {ex.Message}");
             }
         }
 
         [UriFormat("/danalock")]
-        public async Task<IPutResponse> Edit([FromContent] DanaLockDto danaLockDto)
+        public IPutResponse Edit([FromContent] DanaLockDto dto)
         {
             try
             {
-                var danaLock = Mapper.Map<IoT.Models.DanaLock>(danaLockDto);
-                var danaLockEdited = await _danaLockManager.Edit(danaLock);
-                return ResponseUtilities.PutResponseOk(danaLockEdited);
+                var danalock = _danaLockManager.Update(dto);
+                return ResponseUtilities.PutResponseOk(danalock);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not edit danaLock: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/danalock/{devicename}")]
-        public async Task<IDeleteResponse> Delete(string devicename)
+        [UriFormat("/danalock/{deviceId}")]
+        public IDeleteResponse Delete(string deviceId)
         {
             try
             {
-                await _danaLockManager.Remove(devicename);
+                _danaLockManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not remove danaLock: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/danalock/testconnection/{devicename}")]
-        public async Task<IGetResponse> TestConnection(string devicename)
+        [UriFormat("/danalock/{deviceId}/testconnection")]
+        public IGetResponse TestConnection(string deviceId)
         {
             try
             {
-                var deviceId = _danaLockManager.GetDeviceId(devicename);
                 bool succeeded = _danaLockManager.TestConnection(deviceId);
                 return ResponseUtilities.GetResponseOk(succeeded);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception(ex.Message);
             }
         }
 
-        [UriFormat("/danalock/islocked/{devicename}")]
-        public async Task<IGetResponse> IsLocked(string devicename)
+        [UriFormat("/danalock/{deviceId}/islocked")]
+        public IGetResponse IsLocked(string deviceId)
         {
             try
             {
-                var deviceId = _danaLockManager.GetDeviceId(devicename);
-                var isLocked = await _danaLockManager.IsLocked(deviceId);
+                var isLocked = _danaLockManager.IsLocked(deviceId);
                 return ResponseUtilities.GetResponseOk(isLocked.ToString());
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not determine danalock status: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/danalock/switch?devicename={devicename}&state={state}")]
-        public async Task<IPutResponse> Switch(string devicename, string state)
+        [UriFormat("/danalock/{deviceId}/switch/{state}")]
+        public IPutResponse Switch(string deviceId, string state)
         {
             try
             {
                 //Send switch command to the manager
-                var deviceId = _danaLockManager.GetDeviceId(devicename);
-                await _danaLockManager.Switch(deviceId, state);
+                _danaLockManager.Switch(deviceId, state);
 
                 //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"ZWave command was sent");
+                return ResponseUtilities.PutResponseOk("ZWave command was sent");
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"DanaLock switch failed, exception: {ex.Message}");
             }
         }

@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DanaLockDto.cs" />
     <Compile Include="NodeDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WallMountSwitchDto.cs" />

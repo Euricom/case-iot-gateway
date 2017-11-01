@@ -52,17 +52,17 @@ export class DanaLockService {
   }
 
   testConnection(id: String) {
-    return this.authHttp.get(`/api/danalock/testconnection/${id}`)
+    return this.authHttp.get(`/api/danalock/${id}/testconnection`)
       .map((res: Response) => (res.json()))
   }
 
   isLocked(id: String) {
-    return this.authHttp.get(`/api/danalock/isLocked/${id}`)
+    return this.authHttp.get(`/api/danalock/${id}/isLocked`)
       .map((res: Response) => (res.json()))
   }
 
   switch(id: String, state: String) {
-    return this.authHttp.put(`/api/danalock/switch?devicename=${id}&state=${state}`, null)
+    return this.authHttp.put(`/api/danalock/${id}/switch/${state}`, null)
       .map((res: Response) => (res.json()))
   }
 }

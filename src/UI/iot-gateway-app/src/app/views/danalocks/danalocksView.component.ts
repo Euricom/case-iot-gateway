@@ -52,7 +52,7 @@ export class DanaLocksViewComponent implements OnInit {
 
   delete(danaLock: DanaLock, event: Event): void {
     event.stopPropagation()
-    this.danaLockService.delete(danaLock.Name)
+    this.danaLockService.delete(danaLock.DeviceId)
       .subscribe(
       (data) => {
         this.selectedRowIndex = undefined
@@ -81,7 +81,7 @@ export class DanaLocksViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.danaLockService.testConnection(danaLock.Name)
+    this.danaLockService.testConnection(danaLock.DeviceId)
       .subscribe(
       (data) => {
         this.toastr.info(data)
@@ -95,12 +95,12 @@ export class DanaLocksViewComponent implements OnInit {
       this.toastr.error('Cannot get danalock state without valid Node ID')
       return
     }
-    this.danaLockService.isLocked(danaLock.Name)
+    this.danaLockService.isLocked(danaLock.DeviceId)
       .subscribe(
       (data) => {
-        if (data === 'True') {
+        if (data == 'True') {
           this.toastr.info('DanaLock door is locked')
-        } else if (data === 'False') {
+        } else if (data == 'False') {
           this.toastr.info('DanaLock door is unlocked')
         }
       },
@@ -113,7 +113,7 @@ export class DanaLocksViewComponent implements OnInit {
       this.toastr.error('Cannot test connection without valid Node ID')
       return
     }
-    this.danaLockService.switch(danaLock.Name, state)
+    this.danaLockService.switch(danaLock.DeviceId, state)
       .subscribe(
       (data) => {
         this.toastr.info(data)

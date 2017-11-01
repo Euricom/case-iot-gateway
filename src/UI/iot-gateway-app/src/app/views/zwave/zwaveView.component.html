@@ -1,25 +1,54 @@
 <h2>ZWAVE</h2>
 
-<table class="table table-striped table-bordered">
-  <thead>
-    <tr>
-      <th>Icon</th>
-      <th>Id</th>
-      <th>Label</th>
-      <th>Product</th>
-      <th>Manufacturer</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let node of nodes" class="node-row">
-      <td class="node-image"><img [attr.src]="node.DeviceIcon" /></td>
-      <td>{{node.Id}}</td>
-      <td>{{node.Label}}</td>
-      <td>{{node.Product}}</td>
-      <td>{{node.Manufacturer}}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="row form-group">
+  <div class="col-md-8">
+    <button type="button" class="btn btn-primary" (click)="addNode(false)">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Node
+    </button>
+    <button type="button" class="btn btn-primary" (click)="addNode(true)">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Secure Node
+      </button>
+    <button type="button" class="btn btn-primary" (click)="removeNode()">
+      <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Remove Node
+    </button>
+    <!-- <button type="button" class="btn btn-primary" (click)="softReset()">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Soft Reset
+    </button>
+    <button type="button" class="btn btn-primary" (click)="hardReset()">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Hard Reset
+    </button> -->
+    <button type="button" class="btn btn-primary" (click)="initialize()">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Initialize
+    </button>
+  </div>
+</div>
+
+<div class="row form-group">
+  <div class="col-md-12">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Id</th>
+          <th>Label</th>
+          <th>Product</th>
+          <th>Manufacturer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let node of nodes" class="node-row">
+          <td class="node-image">
+            <img [attr.src]="node.DeviceIcon" />
+          </td>
+          <td>{{node.Id}}</td>
+          <td>{{node.Label}}</td>
+          <td>{{node.Product}}</td>
+          <td>{{node.Manufacturer}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <!--<h3>Add hardware</h3>
 

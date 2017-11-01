@@ -1,29 +1,45 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
-using Euricom.IoT.ZWave.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
-    public class ZWaveManager
+    public class ZWaveManager: IZWaveManager
     {
-        private readonly IZWaveManager _zWaveManager;
+        private readonly ZWave.Interfaces.IZWaveManager _zWaveManager;
 
-        public ZWaveManager(IZWaveManager zWaveManager)
+        public ZWaveManager(ZWave.Interfaces.IZWaveManager zWaveManager)
         {
             _zWaveManager = zWaveManager;
         }
 
-        public void Initialize()
+        public async Task Initialize()
         {
-            _zWaveManager.Initialize();
+            await _zWaveManager.Initialize();
         }
 
+        public async Task SoftReset()
+        {
+            await _zWaveManager.SoftReset();
+        }
+        
         public List<NodeDto> GetNodes()
         {
             var nodes = _zWaveManager.GetNodes();
 
             return Mapper.Map<List<NodeDto>>(nodes);
+        }
+
+        public void AddNode(bool secure)
+        {
+            _zWaveManager.AddNode(secure);
+        }
+
+        public void RemoveNode()
+        {
+            _zWaveManager.RemoveNode();
         }
     }
 }

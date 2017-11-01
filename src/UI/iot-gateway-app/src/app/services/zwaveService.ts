@@ -16,12 +16,20 @@ export class ZwaveService {
   }
 
   getAll(): Observable<Node[]> {
-    return this.authHttp.get(`/api/zwave/nodes`)
+    return this.authHttp.get(`/api/zwave/node`)
       .map((res: Response) => (res.json()))
       .map((data: Array<any>) => data.map((element) => new Node(element)))
   }
 
-  initialize() {
-    return this.authHttp.put(`/api/zwave/initialize`, undefined);
+  softReset() {
+    return this.authHttp.put(`/api/zwave/reset/soft`, undefined);
+  }
+
+  addNode(secure) {
+    return this.authHttp.post(`/api/zwave/node/` + secure, undefined);
+  }
+
+  removeNode() {
+    return this.authHttp.delete(`/api/zwave/node`, undefined);
   }
 }

@@ -6,7 +6,7 @@ using AutoMapper;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.WallMountSwitch;
-using Euricom.IoT.ZWave.Interfaces;
+using IZWaveManager = Euricom.IoT.ZWave.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api.Managers
 {

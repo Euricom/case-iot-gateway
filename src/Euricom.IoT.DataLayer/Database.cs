@@ -18,127 +18,6 @@ namespace Euricom.IoT.DataLayer
             _engine = engine;
         }
         
-        public bool ExistsUser(string username)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    return row.Exists;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-        public void AddUser(string username, string password)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    if (row.Exists)
-                        throw new InvalidOperationException($"username {username} already exists in the database");
-
-                    tran.Insert<string, string>(Constants.DBREEZE_TABLE_USERS, username, password);
-                    tran.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-        public bool CheckUser(string username, string password)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    if (row.Exists && row.Value == password)
-                        return true;
-
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-        public bool EditPassword(string username, string password)
-        {
-            try
-            {
-                bool wasUpdated = false;
-                byte[] refToInsertedValue = new List<byte>().ToArray();
-
-                using (var tran = _engine.GetTransaction())
-                {
-                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    if (row.Exists && row.Value == password)
-                    {
-                        tran.Insert<string, string>(Constants.DBREEZE_TABLE_USERS, username, password, out refToInsertedValue, out wasUpdated);
-                    }
-                    return wasUpdated;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-        public void RemoveUser(string username)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var row = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    if (!row.Exists)
-                        throw new InvalidOperationException($"cannot remove username {username}, because it doesn't exist in the database");
-
-                    if (row.Exists)
-                        tran.RemoveKey(Constants.DBREEZE_TABLE_USERS, username);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-
-        public DanaLock GetDanaLockConfig(string deviceId)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_DANALOCKS, deviceId).Value;
-                    return JsonConvert.DeserializeObject<DanaLock>(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
-        }
-        
         public LazyBone GetLazyBoneConfig(string deviceId)
         {
             try
@@ -148,46 +27,6 @@ namespace Euricom.IoT.DataLayer
                     var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_LAZYBONES, deviceId).Value;
                     return JsonConvert.DeserializeObject<LazyBone>(json);
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
-        }
-
-        public Device FindDevice(string deviceId)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_CAMERAS))
-                    {
-                        if (row.Key == deviceId)
-                        {
-                            var camera = JsonConvert.DeserializeObject<Camera>(row.Value);
-                            return camera;
-                        }
-                    }
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_DANALOCKS))
-                    {
-                        if (row.Key == deviceId)
-                        {
-                            var danalock = JsonConvert.DeserializeObject<DanaLock>(row.Value);
-                            return danalock;
-                        }
-                    }
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_LAZYBONES))
-                    {
-                        if (row.Key == deviceId)
-                        {
-                            var lazybone = JsonConvert.DeserializeObject<LazyBone>(row.Value);
-                            return lazybone;
-                        }
-                    }
-                }
-                return null;
             }
             catch (Exception ex)
             {
@@ -272,23 +111,6 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public Hardware GetHardware()
-        {
-            try
-            {
-                var hardware = new Hardware();
-                hardware.Cameras = GetCameras();
-                hardware.LazyBones = GetLazyBones();
-                hardware.DanaLocks = GetDanaLocks();
-                return hardware;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
         public List<Camera> GetCameras()
         {
             try
@@ -304,29 +126,6 @@ namespace Euricom.IoT.DataLayer
                     }
                 }
                 return cameras;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
-        public List<DanaLock> GetDanaLocks()
-        {
-            try
-            {
-                List<DanaLock> danaLocks = new List<DanaLock>();
-                using (var tran = _engine.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_DANALOCKS))
-                    {
-                        var deviceGuid = row.Key;
-                        var deviceConfig = JsonConvert.DeserializeObject<DanaLock>(row.Value);
-                        danaLocks.Add(deviceConfig);
-                    }
-                }
-                return danaLocks;
             }
             catch (Exception ex)
             {

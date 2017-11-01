@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
-using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Mappings;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Models.Messages;
-using Euricom.IoT.ZWave;
-using Microsoft.Azure.Devices.Client;
-using Newtonsoft.Json;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Euricom.IoT.DataLayer.Interfaces;
@@ -51,7 +44,7 @@ namespace Euricom.IoT.Api
 
             // Init DanaLock
             var zWaveManager = _container.Resolve<IZWaveManager>();
-            zWaveManager.Initialize();
+            await zWaveManager.Initialize();
 
             // Set up monitoring of devices / regular tasks that cleanup files
             //StartMonitors();
