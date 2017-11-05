@@ -111,6 +111,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMqttMessagePublisher.cs" />
     <Compile Include="MqttMessagePublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Messaging.rd.xml" />

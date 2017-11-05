@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Models;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.Devices.Camera;
 
 namespace Euricom.IoT.Api.Mappings
 {
@@ -9,9 +9,7 @@ namespace Euricom.IoT.Api.Mappings
         public CameraMappingProfile()
         {
             CreateMap<Camera, CameraDto>();
-
-            CreateMap<CameraDto, Camera>()
-                .ForMember(dest => dest.Type, opt => opt.UseValue<HardwareType>(HardwareType.Camera));
+            CreateMap<CameraDto, Camera>();
         }
     }
 }

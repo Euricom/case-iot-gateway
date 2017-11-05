@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dropbox.cs" />
+    <Compile Include="DropboxCleanup.cs" />
     <Compile Include="IDropbox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Dropbox.rd.xml" />

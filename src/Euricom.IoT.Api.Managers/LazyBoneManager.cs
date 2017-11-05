@@ -37,7 +37,7 @@ namespace Euricom.IoT.Api.Managers
 
         public string GetDeviceId(string deviceName)
         {
-            var device = _database.GetCameras().FirstOrDefault(x => x.Name == deviceName);
+            var device = _database.GetLazyBones().FirstOrDefault(x => x.Name == deviceName);
             if (device == null)
             {
                 throw new Exception($"Could not find deviceName: {deviceName}");

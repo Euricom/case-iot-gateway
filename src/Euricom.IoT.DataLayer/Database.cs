@@ -93,47 +93,6 @@ namespace Euricom.IoT.DataLayer
             }
         }
 
-        public Camera GetCameraConfig(string deviceId)
-        {
-            try
-            {
-                using (var tran = _engine.GetTransaction())
-                {
-                    var json = tran.Select<string, string>(Constants.DBREEZE_TABLE_CAMERAS, deviceId).Value;
-                    var cameraConfig = JsonConvert.DeserializeObject<Camera>(json);
-                    return cameraConfig;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
-        }
-
-        public List<Camera> GetCameras()
-        {
-            try
-            {
-                List<Camera> cameras = new List<Camera>();
-                using (var tran = _engine.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_CAMERAS))
-                    {
-                        var deviceGuid = row.Key;
-                        var deviceConfig = JsonConvert.DeserializeObject<Camera>(row.Value);
-                        cameras.Add(deviceConfig);
-                    }
-                }
-                return cameras;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw;
-            }
-        }
-
         public List<LazyBone> GetLazyBones()
         {
             try

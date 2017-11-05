@@ -107,8 +107,19 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Camera.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
+      <Project>{0525E383-D416-4465-8B1D-A06E9D48CF9B}</Project>
+      <Name>Euricom.IoT.Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
+      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
+      <Name>Euricom.IoT.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

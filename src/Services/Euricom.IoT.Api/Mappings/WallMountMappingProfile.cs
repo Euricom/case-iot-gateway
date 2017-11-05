@@ -10,7 +10,6 @@ namespace Euricom.IoT.Api.Mappings
         public WallMountMappingProfile()
         {
             CreateMap<WallMountSwitch, WallMountSwitchDto>();
-
             CreateMap<WallMountSwitchDto, WallMountSwitch>();
         }
     }

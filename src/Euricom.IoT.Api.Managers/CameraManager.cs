@@ -1,186 +1,119 @@
-﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureBlobStorage;
-using Euricom.IoT.Common;
-using Euricom.IoT.DataLayer;
-using Euricom.IoT.Messaging;
-using Euricom.IoT.Models;
-using Euricom.IoT.Models.Messages;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
+using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Api.Models;
 using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Devices.Camera;
+using Euricom.IoT.Http.Interfaces;
 
-namespace Euricom.IoT.Api.Manager
+namespace Euricom.IoT.Api.Managers
 {
     public class CameraManager : ICameraManager
     {
-        private readonly ISettingsRepository _settingsRepository;
-        private readonly Database _database;
-        private readonly IAzureBlobStorageManager _azureBlobStorageManager;
+        private readonly IDeviceRepository<Camera> _repository;
+        private readonly IHttpService _httpService;
 
-        public CameraManager(ISettingsRepository settingsRepository, Database database, IAzureBlobStorageManager azureBlobStorageManager)
+        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService)
         {
-            _settingsRepository = settingsRepository;
-            _database = database;
-            _azureBlobStorageManager = azureBlobStorageManager;
+            _repository = repository;
+            _httpService = httpService;
         }
 
-        public Task<IEnumerable<Camera>> GetAll()
+        public IEnumerable<CameraDto> Get()
         {
-            var cameras = _database.GetCameras();
-            return Task.FromResult(cameras.AsEnumerable());
+            var cameras = _repository.Get();
+            return Mapper.Map<IEnumerable<CameraDto>>(cameras);
         }
 
-        public Task<Camera> GetByDeviceId(string deviceId)
+        public CameraDto Get(string deviceId)
         {
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
+            var camera = _repository.Get(deviceId);
+            return Mapper.Map<CameraDto>(camera);
+        }
+        
+        public CameraDto Add(CameraDto dto)
+        {
+            var camera = new Camera(dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
+                dto.MaximumDaysDropbox, dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
+
+            _repository.Add(camera);
+
+            return Mapper.Map<CameraDto>(camera);
         }
 
-        public string GetDeviceId(string deviceName)
+        public CameraDto Update(CameraDto dto)
         {
-            var device = _database.GetCameras().FirstOrDefault(x => x.Name == deviceName);
-            if (device == null)
+            if (dto == null)
             {
-                throw new Exception($"Could not find deviceName: {deviceName}");
-            }
-            return device.DeviceId;
-        }
-
-        public Task<Camera> GetByDeviceName(string deviceName)
-        {
-            var deviceId = GetDeviceId(deviceName);
-            var json = _database.GetValue(Constants.DBREEZE_TABLE_CAMERAS, deviceId);
-            return Task.FromResult(JsonConvert.DeserializeObject<Camera>(json));
-        }
-
-        public async Task<Camera> Add(Camera camera)
-        {
-            //Convert to json
-            var json = JsonConvert.SerializeObject(camera);
-
-            //Save to database
-            _database.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
-
-            return await GetByDeviceId(camera.DeviceId);
-        }
-
-        public async Task<Camera> Edit(Camera camera)
-        {
-            if (camera == null)
-            {
-                throw new ArgumentNullException("camera");
-            }
-            else if (String.IsNullOrEmpty(camera.DeviceId))
-            {
-                throw new ArgumentException("camera.DeviceId");
+                throw new ArgumentNullException(nameof(dto));
             }
 
-            var json = JsonConvert.SerializeObject(camera);
-
-            _database.SetValue(Constants.DBREEZE_TABLE_CAMERAS, camera.DeviceId, json);
-
-            return await GetByDeviceId(camera.DeviceId);
-        }
-
-        public Task Remove(string deviceName)
-        {
-            // Remove device from  database
-            var deviceId = GetDeviceId(deviceName);
-            _database.RemoveDevice(deviceId);
-
-            return Task.FromResult(0);
-        }
-
-        public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
-        {
-            var settings = _settingsRepository.Get();
-            var config = _database.GetCameraConfig(deviceId);
-            if (config.Enabled)
+            if (String.IsNullOrEmpty(dto.DeviceId))
             {
-                var notification = new CameraMotionMessage
-                {
-                    Gateway = "IoTGateway",
-                    Device = config.Name,
-                    CommandToken = null,
-                    MessageType = MessageTypes.Camera,
-                    FilePath = url,
-                    EventNumber = eventNumber,
-                    FrameNumber = frameNumber,
-                };
-
-                // Publish to IoT Hub
-                PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
+                throw new ArgumentException("dto.DeviceId");
             }
+
+            var camera = _repository.Get(dto.DeviceId);
+
+            camera.Update(dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime, dto.MaximumDaysDropbox,
+                dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
+
+            _repository.Update(camera);
+
+            return Mapper.Map<CameraDto>(camera);
         }
 
-        public async void UploadFilesToBlobStorage(string path, Dictionary<string, byte[]> files)
+        public void Remove(string deviceId)
         {
-            foreach (var file in files)
-            {
-                using (MemoryStream ms = new MemoryStream(file.Value))
-                {
-                    await _azureBlobStorageManager.PostImage(path, file.Key, ms);
-                }
-            }
+            _repository.Remove(deviceId);
         }
 
-        public async Task<bool> TestConnection(string deviceId)
+        //public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
+        //{
+        //    var settings = _settingsRepository.Get();
+        //    var config = _database.GetCameraConfig(deviceId);
+        //    if (config.Enabled)
+        //    {
+        //        var notification = new CameraMotionMessage
+        //        {
+        //            Gateway = "IoTGateway",
+        //            Device = config.Name,
+        //            CommandToken = null,
+        //            MessageType = MessageTypes.Camera,
+        //            FilePath = url,
+        //            EventNumber = eventNumber,
+        //            FrameNumber = frameNumber,
+        //        };
+
+        //        // Publish to IoT Hub
+        //        PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
+        //    }
+        //}
+
+        //public async void UploadFilesToBlobStorage(string path, Dictionary<string, byte[]> files)
+        //{
+        //    foreach (var file in files)
+        //    {
+        //        using (MemoryStream ms = new MemoryStream(file.Value))
+        //        {
+        //            await _azureBlobStorageManager.PostImage(path, file.Key, ms);
+        //        }
+        //    }
+        //}
+
+        public Task<bool> TestConnection(string deviceId)
         {
-            try
-            {
-                var config = _database.GetCameraConfig(deviceId);
+            var device = _repository.Get(deviceId);
 
-                HttpWebRequest request = (HttpWebRequest)GetAddress(config);
-                request.Credentials = CredentialCache.DefaultCredentials;
-                HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    if (response.Headers["server"].Contains("motionEye"))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        throw new Exception("A request to the server succeeded, but couldn't determine if server is motionEye");
-                    }
-                }
-                else
-                {
-                    throw new Exception($"Could not get a valid response from {request.RequestUri}");
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return device.TestConnection(_httpService);
         }
 
-        private static WebRequest GetAddress(Camera config)
-        {
-            if (String.IsNullOrEmpty(config.Address))
-            {
-                throw new ArgumentNullException("config.Address");
-            }
-            else
-            {
-                if (config.Address.Contains("http://"))
-                {
-                    return WebRequest.Create(config.Address);
-                }
-                return WebRequest.Create("http://" + config.Address);
-            }
-        }
-
-        private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraMotionMessage notification)
-        {
-            var json = JsonConvert.SerializeObject(notification);
-            new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
-        }
+        //private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraMotionMessage notification)
+        //{
+        //    var json = JsonConvert.SerializeObject(notification);
+        //    new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
+        //}
     }
 }
