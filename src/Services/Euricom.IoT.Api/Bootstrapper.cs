@@ -12,6 +12,7 @@ using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Devices.WallMountSwitch;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Mailing;
+using Euricom.IoT.Models;
 using Restup.WebServer.Http;
 
 namespace Euricom.IoT.Api
@@ -27,7 +28,7 @@ namespace Euricom.IoT.Api
 
 
             builder.RegisterType<ZWaveManager>();
-            builder.RegisterType<ZWaveManager>().As<Managers.Interfaces.IZWaveManager>().SingleInstance();
+            builder.RegisterType<ZWaveManager>().As<IZWaveManager>().SingleInstance();
             builder.RegisterType<CameraManager>().As<ICameraManager>();
             builder.RegisterType<ConfigurationManager>().As<IConfigurationManager>();
             builder.RegisterType<DanaLockManager>().As<IDanaLockManager>();
@@ -38,7 +39,12 @@ namespace Euricom.IoT.Api
             builder.RegisterType<WallMountSwitchManager>().As<IWallMountSwitchManager>();
 
             builder.RegisterType<LazyBone.LazyBoneConnectionManager>();
-            builder.RegisterType<ZWave.ZWaveManager>().As<ZWave.Interfaces.IZWaveManager>().SingleInstance();
+            builder.Register(context =>
+            {
+                var settings = context.Resolve<Settings>();
+
+                return new ZWave.ZWaveManager(settings.ZWaveNetworkKey);
+            }).As<ZWave.Interfaces.IZWaveManager>().SingleInstance();
 
             builder.RegisterType<AzureBlobStorageManager>().As<IAzureBlobStorageManager>();
             builder.RegisterType<Mailer>();

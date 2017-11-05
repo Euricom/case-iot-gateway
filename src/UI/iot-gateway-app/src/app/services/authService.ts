@@ -10,6 +10,7 @@ import { Config } from '../../config'
 import { User } from '../models/user'
 import { Credentials } from '../models/credentials'
 import { ChangePassword } from '../models/changepassword'
+import { AuthHttp } from 'angular2-jwt'
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
   private subject: Subject<String> = new Subject<String>()
   private loginByPukOk: boolean
 
-  constructor(private http: Http, private config: Config) {
+  constructor(private http: Http, private authHttp: AuthHttp, private config: Config) {
     if (tokenNotExpired()) {
       this.setLoggedIn('admin')
     } else {
@@ -65,7 +66,7 @@ export class AuthService {
   }
 
   changePassword(change: ChangePassword) {
-    return this.http.put(`/api/security/password`, change)
+    return this.authHttp.put(`/api/security/password`, change)
   }
 
   logout() {

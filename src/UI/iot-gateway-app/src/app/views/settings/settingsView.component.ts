@@ -4,7 +4,9 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { Location } from '@angular/common'
 import { Settings } from '../../models/settings'
 import { SettingsService } from '../../services/settingsService'
+import { AuthService } from '../../services/authService'
 import { LogLevel } from '../../models/logLevel'
+import { ChangePassword } from '../../models/changePassword'
 
 @Component({
   selector: 'overview',
@@ -15,6 +17,7 @@ export class SettingsViewComponent implements OnInit {
   settings: Settings
   logLevelOptions: string[]
   logLevelsEnum: typeof LogLevel = LogLevel
+  currentPassword: string
   password: string
   password2: string
 
@@ -22,7 +25,8 @@ export class SettingsViewComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private settingsService: SettingsService,
-    private toastr: ToastsManager) {
+    private toastr: ToastsManager,
+    private authService: AuthService) {
 
   }
 
@@ -34,8 +38,8 @@ export class SettingsViewComponent implements OnInit {
         this.toastr.error('passwords do not match')
         return
       } else {
-        this.settingsService.savePassword(this.password)
-        .subscribe(
+        this.authService.changePassword({ Old: this.currentPassword, New: this.password })    
+          .subscribe(
           (data) => {
             this.toastr.info('Password saved successfully')
             this.refresh()
@@ -73,7 +77,7 @@ export class SettingsViewComponent implements OnInit {
         this.settings = <Settings>data
         this.settings.LogLevel = this.logLevelsEnum[data.LogLevel]
       },
-      )
+    )
   }
 
 }

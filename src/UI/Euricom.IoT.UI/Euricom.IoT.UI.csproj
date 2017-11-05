@@ -140,6 +140,18 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\restup\src\WebServer.Logging\WebServer.Logging.csproj">
+      <Project>{06a3d120-5923-4ad1-8411-7395a1ec6e94}</Project>
+      <Name>WebServer.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\restup\src\Webserver.Models\Webserver.Models.csproj">
+      <Project>{0b20d095-2896-41a6-865d-172dfd5ecc99}</Project>
+      <Name>Webserver.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\restup\src\WebServer\WebServer.csproj">
+      <Project>{837b8ff3-ded6-4dc7-ad58-dbb0b3e44dd4}</Project>
+      <Name>WebServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
       <Name>Euricom.IoT.Logging</Name>
