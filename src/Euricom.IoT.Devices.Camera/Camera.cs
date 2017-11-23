@@ -6,9 +6,9 @@ namespace Euricom.IoT.Devices.Camera
 {
     public class Camera : Device
     {
-        public Camera(string name, bool enabled, string address, string dropboxPath, int pollingTime, 
+        public Camera(string deviceId, string name, bool enabled, string address, string dropboxPath, int pollingTime, 
             int maximumDaysDropbox, double maximumStorageDropbox, int maximumDaysAzureBlobStorage)
-            : base(HardwareType.Camera)
+            : base(deviceId, HardwareType.Camera)
         {
             Name = name;
             Enabled = enabled;

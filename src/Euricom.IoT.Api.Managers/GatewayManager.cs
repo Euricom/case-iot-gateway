@@ -8,23 +8,21 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Devices.LazyBone;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class GatewayManager : IGatewayManager
     {
         private readonly ISettingsRepository _settingsRepository;
-        private readonly Database _database;
         private readonly IWallMountSwitchManager _wallMountSwitchManager;
         private readonly IDanaLockManager _danaLockManager;
         private readonly ILazyBoneManager _lazyBoneManager;
 
-        public GatewayManager(ISettingsRepository settingsRepository, Database database, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
+        public GatewayManager(ISettingsRepository settingsRepository, IDanaLockManager danaLockManager, ILazyBoneManager lazyBoneManager, IWallMountSwitchManager wallMountSwitchManager)
         {
             _settingsRepository = settingsRepository;
-            _database = database;
             _danaLockManager = danaLockManager;
             _lazyBoneManager = lazyBoneManager;
             _wallMountSwitchManager = wallMountSwitchManager;
@@ -145,31 +143,31 @@ namespace Euricom.IoT.Api.Managers
                 var isLazyBoneSwitch = message.MessageType == "lazybone_switch";
                 var isLazyBoneDimmer = message.MessageType == "lazybone_dimmer";
 
+                var state = new LazyBoneState();
                 if (isLazyBoneSwitch)
                 {
+
                     var lazyBoneMsg = (LazyBoneSwitchMessage)message;
-                    await _lazyBoneManager.Switch(deviceId, lazyBoneMsg.State == true ? "on" : "off");
-                    return true;
+
+                    state.On = lazyBoneMsg.State;
                 }
                 else if (isLazyBoneDimmer)
                 {
-                    var lazyBoneMsg = (LazyBoneDimmerMessage)message;
-                    await _lazyBoneManager.Switch(deviceId, lazyBoneMsg.State == true ? "on" : "off");
+                    var lazyBoneMsg = (LazyBoneDimmerMessage) message;
 
-                    if (lazyBoneMsg.LightIntensity.HasValue)
-                        await _lazyBoneManager.SetLightValue(deviceId, lazyBoneMsg.LightIntensity);
-
-                    return true;
+                    state.On = lazyBoneMsg.State;
+                    state.Intensity = lazyBoneMsg.LightIntensity;
                 }
 
-                return false;
+                _lazyBoneManager.SetState(deviceId, state);
+
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(this.GetType(), ex);
                 return false;
             }
-
         }
 
         private HardwareType GetDeviceType(string deviceType)

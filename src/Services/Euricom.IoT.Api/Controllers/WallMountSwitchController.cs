@@ -55,6 +55,11 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
+                if (Common.Validation.ValidateDeviceId(dto.DeviceId))
+                {
+                    throw new ArgumentException(nameof(dto.DeviceId));
+                }
+
                 var wallmount = _wallmountSwitchManager.Add(dto);
                 return ResponseUtilities.PostResponseOk(wallmount);
             }

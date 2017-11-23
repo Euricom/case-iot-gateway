@@ -1,18 +1,13 @@
-﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
-using Euricom.IoT.Api.Managers;
-using Euricom.IoT.Api.Managers.Interfaces;
+﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.Logging;
-using Euricom.IoT.Models;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Euricom.IoT.DataLayer;
+using Euricom.IoT.Api.Models;
+using Euricom.IoT.Devices.LazyBone;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -20,194 +15,115 @@ namespace Euricom.IoT.Api.Controllers
     [RestController(InstanceCreationType.Singleton)]
     public class LazyBoneController
     {
-        private readonly Database _database;
         private readonly ILazyBoneManager _lazyBoneManager;
 
-        public LazyBoneController(Database database, ILazyBoneManager lazyBoneManager)
+        public LazyBoneController(ILazyBoneManager lazyBoneManager)
         {
-            _database = database;
             _lazyBoneManager = lazyBoneManager;
         }
 
         [UriFormat("/lazybone")]
-        public async Task<IGetResponse> GetAll()
+        public IGetResponse GetAll()
         {
             try
             {
-                var lazyBones = await _lazyBoneManager.GetAll();
-                var lazyBonesDto = Mapper.Map<IEnumerable<LazyBoneDto>>(lazyBones);
-                return ResponseUtilities.GetResponseOk(lazyBonesDto);
+                var lazyBones = _lazyBoneManager.Get();
+                return ResponseUtilities.GetResponseOk(lazyBones);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not get lazyBones: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/lazybone/{devicename}")]
-        public async Task<IGetResponse> GetByDeviceName(string devicename)
-        {
-            try
-            {
-                var lazyBone = await _lazyBoneManager.GetByDeviceName(devicename);
-                var lazyBoneDto = Mapper.Map<LazyBoneDto>(lazyBone);
-                return ResponseUtilities.GetResponseOk(lazyBoneDto);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw new Exception($"Could not get lazybone with devicename {devicename} , exception: {ex.Message}");
-            }
-        }
-
         [UriFormat("/lazybone")]
-        public async Task<PostResponse> Add([FromContent] LazyBoneDto lazyBoneDto)
+        public PostResponse Add([FromContent] LazyBoneDto lazyBoneDto)
         {
             try
             {
-                var lazyBone = Mapper.Map<IoT.Models.LazyBone>(lazyBoneDto);
-                var newLazyBone = await _lazyBoneManager.Add(lazyBone);
+                var newLazyBone = _lazyBoneManager.Add(lazyBoneDto);
                 return ResponseUtilities.PostResponseOk(newLazyBone);
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not add lazyBone: exception: {ex.Message}");
             }
         }
 
         [UriFormat("/lazybone")]
-        public async Task<IPutResponse> Edit([FromContent] LazyBoneDto lazyBoneDto)
+        public IPutResponse Edit([FromContent] LazyBoneDto lazyBoneDto)
         {
             try
             {
-                var lazyBone = Mapper.Map<IoT.Models.LazyBone>(lazyBoneDto);
-                var lazyBoneEdited = await _lazyBoneManager.Edit(lazyBone);
+                var lazyBoneEdited = _lazyBoneManager.Update(lazyBoneDto);
                 return ResponseUtilities.PutResponseOk(lazyBoneEdited);
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not edit lazyBone: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/lazybone/{devicename}")]
-        public async Task<IDeleteResponse> Delete(string devicename)
+        [UriFormat("/lazybone/{deviceId}")]
+        public IDeleteResponse Delete(string deviceId)
         {
             try
             {
-                await _lazyBoneManager.Remove(devicename);
+                _lazyBoneManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not remove lazyBone: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/lazybone/testconnection/{devicename}")]
-        public async Task<IGetResponse> TestConnection(string devicename)
+        [UriFormat("/lazybone/{deviceId}/testconnection")]
+        public IGetResponse TestConnection(string deviceId)
         {
             try
             {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                bool connectionSuccessfull = await _lazyBoneManager.TestConnection(deviceId);
-                return ResponseUtilities.GetResponseOk(connectionSuccessfull);
+                var result = _lazyBoneManager.TestConnection(deviceId);
+                return ResponseUtilities.GetResponseOk(result);
             }
             catch (Exception ex)
             {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception(ex.Message);
             }
         }
 
-        [UriFormat("/lazybone/getstate/{devicename}")]
-        public async Task<IGetResponse> GetState(string devicename)
+        [UriFormat("/lazybone/{deviceId}/state")]
+        public IGetResponse GetState(string deviceId)
         {
             try
             {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                var config = _database.GetLazyBoneConfig(deviceId);
-                if (!config.IsDimmer)
-                {
-                    var isRelayOn = await _lazyBoneManager.GetCurrentStateSwitch(deviceId);
-                    return ResponseUtilities.GetResponseOk(isRelayOn.ToString());
-                }
-                else
-                {
-                    var dimmerState = await _lazyBoneManager.GetCurrentStateDimmer(deviceId);
-                    return ResponseUtilities.GetResponseOk(dimmerState.ToString());
-                }
+                var state = _lazyBoneManager.GetState(deviceId);
+                return ResponseUtilities.GetResponseOk(state);
             }
             catch (Exception ex)
             {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
                 throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
             }
         }
 
-        [UriFormat("/lazybone/switch?devicename={devicename}&state={state}")]
-        public async Task<IPutResponse> Switch(string devicename, string state)
+        [UriFormat("/lazybone/{deviceId}/state")]
+        public IPutResponse SetState(string deviceId, LazyBoneState state)
         {
             try
             {
-                //Send switch command to the manager
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                await _lazyBoneManager.Switch(deviceId, state);
-
-                //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"LazyBone switched state to : {state}");
+                _lazyBoneManager.SetState(deviceId, state);
+                return new PutResponse(PutResponse.ResponseStatus.NoContent);
             }
             catch (Exception ex)
             {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
                 Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception($"LazyBone switch failed, exception: {ex.Message}");
-            }
-        }
-
-        [UriFormat("/lazybone/setlightvalue?devicename={devicename}&value={value}")]
-        public async Task<IPutResponse> SetLightValue(string devicename, short value)
-        {
-            try
-            {
-                //Send switch command to the manager
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                await _lazyBoneManager.SetLightValue(deviceId, value);
-
-                //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"LazyBone dimmer changed light value to : {value}");
-            }
-            catch (Exception ex)
-            {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
-            }
-        }
-
-        [UriFormat("/lazybone/testchangelightintensity?devicename={devicename}")]
-        public async Task<IPutResponse> TestChangeLightIntensity(string devicename)
-        {
-            try
-            {
-                //Send switch command to the manager
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                await _lazyBoneManager.TestChangeLightIntensity(deviceId);
-
-                //If it works, send response back to client
-                return ResponseUtilities.PutResponseOk($"LazyBone dimmer changed light values 3 times");
-            }
-            catch (Exception ex)
-            {
-                var deviceId = _lazyBoneManager.GetDeviceId(devicename);
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception($"LazyBone dimmer failed, exception: {ex.Message}");
+                throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
             }
         }
     }

@@ -39,8 +39,7 @@ namespace Euricom.IoT.Api
             builder.RegisterType<SecurityManager>().As<ISecurityManager>();
             builder.RegisterType<WallMountSwitchManager>().As<IWallMountSwitchManager>();
             builder.RegisterType<HttpService>().As<IHttpService>();
-
-            builder.RegisterType<LazyBone.LazyBoneConnectionManager>();
+            
             builder.Register(context =>
             {
                 var settings = context.Resolve<Settings>();
@@ -84,7 +83,6 @@ namespace Euricom.IoT.Api
                 }
             }).SingleInstance();
             builder.RegisterType<DbBreezeDatabase>().As<IDbBreezeDatabase>();
-            builder.RegisterType<Database>().AsSelf().As<IDatabase>().SingleInstance();
             builder.Register(context =>
             {
                 var repository = context.Resolve<ISettingsRepository>();

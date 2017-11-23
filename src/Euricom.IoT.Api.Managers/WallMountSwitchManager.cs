@@ -37,7 +37,7 @@ namespace Euricom.IoT.Api.Managers
 
         public WallMountSwitchDto Add(WallMountSwitchDto dto)
         {
-            var wallmount = new WallMountSwitch(dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+            var wallmount = new WallMountSwitch(dto.DeviceId, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(wallmount);
 

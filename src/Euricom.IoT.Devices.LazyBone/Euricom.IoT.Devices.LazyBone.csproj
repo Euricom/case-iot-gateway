@@ -108,11 +108,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LazyBone.cs" />
-    <Compile Include="LazyBoneSwitch.cs" />
-    <Compile Include="LazyBoneDimmer.cs" />
+    <Compile Include="LazyBoneState.cs" />
+    <Compile Include="LazyBoneStates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketClient.cs" />
-    <Compile Include="LazyBoneConnectionManager.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.LazyBone.rd.xml" />
   </ItemGroup>
   <ItemGroup>

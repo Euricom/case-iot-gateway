@@ -37,7 +37,7 @@ namespace Euricom.IoT.Api.Managers
 
         public DanaLockDto Add(DanaLockDto dto)
         {
-            var danalock = new DanaLock(dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+            var danalock = new DanaLock(dto.DeviceId, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(danalock);
 
@@ -53,7 +53,7 @@ namespace Euricom.IoT.Api.Managers
 
             if (String.IsNullOrEmpty(dto.DeviceId))
             {
-                throw new ArgumentException("wallmount.DeviceId");
+                throw new ArgumentException(nameof(dto.DeviceId));
             }
 
             var wallmount = _repository.Get(dto.DeviceId);

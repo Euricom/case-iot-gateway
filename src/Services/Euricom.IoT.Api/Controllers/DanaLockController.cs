@@ -40,6 +40,11 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
+                if (Common.Validation.ValidateDeviceId(dto.DeviceId))
+                {
+                    throw new ArgumentException(nameof(dto.DeviceId));
+                }
+
                 var danalock = _danaLockManager.Add(dto);
                 return ResponseUtilities.PostResponseOk(danalock);
             }

@@ -111,11 +111,8 @@
     <Compile Include="Controllers\DanaLockController.cs" />
     <Compile Include="Controllers\WallMountSwitchController.cs" />
     <Compile Include="Controllers\ZWaveController.cs" />
-    <Compile Include="Dtos\DeviceDto.cs" />
-    <Compile Include="Dtos\LazyBoneDto.cs" />
     <Compile Include="Dtos\LogDto.cs" />
     <Compile Include="Dtos\LogLineDto.cs" />
-    <Compile Include="Dtos\SettingsDto.cs" />
     <Compile Include="Mappings\DanaLockMappingProfile.cs" />
     <Compile Include="Mappings\CameraMappingProfile.cs" />
     <Compile Include="Mappings\NodeMappingProfile.cs" />
@@ -187,6 +184,10 @@
     <ProjectReference Include="..\..\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
       <Project>{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}</Project>
       <Name>Euricom.IoT.AzureBlobStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
+      <Name>Euricom.IoT.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Devices.Camera\Euricom.IoT.Devices.Camera.csproj">
       <Project>{9DA8728A-EE56-48C5-92EC-087DBFC9BF18}</Project>

@@ -1,12 +1,18 @@
 ﻿using System;
+using Euricom.IoT.Common;
 
 namespace Euricom.IoT.Models
 {
     public class Device
     {
-        public Device(HardwareType type)
+        public Device(string deviceId, HardwareType type)
         {
-            DeviceId = Guid.NewGuid().ToString("N");
+            if (Validation.ValidateDeviceId(deviceId))
+            {
+                throw new ArgumentException(nameof(deviceId));
+            }
+
+            DeviceId = deviceId;
             Type = type;
         }
 

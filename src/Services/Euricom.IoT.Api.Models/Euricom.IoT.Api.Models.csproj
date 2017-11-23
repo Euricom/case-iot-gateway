@@ -110,8 +110,10 @@
     <Compile Include="CameraDto.cs" />
     <Compile Include="ChangePasswordDto.cs" />
     <Compile Include="DanaLockDto.cs" />
+    <Compile Include="LazyBoneDto.cs" />
     <Compile Include="NodeDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsDto.cs" />
     <Compile Include="WallMountSwitchDto.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Api.Models.rd.xml" />
   </ItemGroup>

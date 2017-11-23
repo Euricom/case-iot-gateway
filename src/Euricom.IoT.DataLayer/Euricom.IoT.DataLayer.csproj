@@ -107,8 +107,6 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.cs" />
-    <Compile Include="IDatabase.cs" />
     <Compile Include="DbBreezeDatabase.cs" />
     <Compile Include="DeviceRepository.cs" />
     <Compile Include="Interfaces\IDbBreezeDatabase.cs" />

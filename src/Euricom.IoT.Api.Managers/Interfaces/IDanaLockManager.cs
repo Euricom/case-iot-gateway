@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Managers.Interfaces

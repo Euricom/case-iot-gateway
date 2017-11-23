@@ -4,8 +4,8 @@
     {
         public byte NodeId { get; protected set; }
         
-        protected ZWaveDevice(HardwareType type, byte nodeId)
-             : base(type)
+        protected ZWaveDevice(string deviceId, HardwareType type, byte nodeId)
+             : base(deviceId, type)
         {
             NodeId = nodeId;
         }

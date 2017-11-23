@@ -35,7 +35,7 @@ namespace Euricom.IoT.Api.Managers
         
         public CameraDto Add(CameraDto dto)
         {
-            var camera = new Camera(dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
+            var camera = new Camera(dto.DeviceId, dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
                 dto.MaximumDaysDropbox, dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
 
             _repository.Add(camera);

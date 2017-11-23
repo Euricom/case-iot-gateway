@@ -24,6 +24,13 @@ namespace Euricom.IoT.Api
             // Add AutoMapper mappings
             AddAutoMapperMappings();
 
+            // Init admin user
+            var userRepository = _container.Resolve<IUserRepository>();
+            userRepository.Seed();
+
+            var settingsRepository = _container.Resolve<ISettingsRepository>();
+            settingsRepository.Seed();
+
             var settings = _container.Resolve<Settings>();
             
             // Get setting for preserving history log (days)
@@ -34,13 +41,6 @@ namespace Euricom.IoT.Api
             // Init logger
             Logger.Configure(preserveHistoryLogDays, logLevel);
             var instLogger = Logger.Instance;
-
-            // Init admin user
-            var userRepository = _container.Resolve<IUserRepository>();
-            userRepository.Seed();
-
-            var settingsRepository = _container.Resolve<ISettingsRepository>();
-            settingsRepository.Seed();
 
             // Init DanaLock
             var zWaveManager = _container.Resolve<IZWaveManager>();
