@@ -53,7 +53,7 @@ namespace Euricom.IoT.ZWave
 
             // Create the OpenZWave Manager
             ZwManager.Initialize();
-            ZwManager.OnNotification += OnNodeNotification;
+            ZwManager.NotificationReceived  += OnNodeNotification;
 
 #if NETFX_CORE
             var serialPortSelector = Windows.Devices.SerialCommunication.SerialDevice.GetDeviceSelector();
@@ -99,12 +99,12 @@ namespace Euricom.IoT.ZWave
 
         public bool GetValue(byte nodeId, byte commandId)
         {
-            ZwManager.GetValueAsBool(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), out var currentVal);
+            ZwManager.GetValueAsBool(new ZWValueId(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), out var currentVal);
             return currentVal;
         }
         public void SetValue(byte nodeId, byte commandId, bool value)
         {
-            ZwManager.SetValue(new ZWValueID(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), value);
+            ZwManager.SetValue(new ZWValueId(HomeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0), value);
         }
 
         public List<Node> GetNodes()
@@ -140,7 +140,7 @@ namespace Euricom.IoT.ZWave
                 _nodeList.Clear();
                 _pendingRequests.Clear();
 
-                ZwManager.OnNotification -= OnNodeNotification;
+                ZwManager.NotificationReceived -= OnNodeNotification;
 
                 ZwManager.Destroy();
                 ZWOptions.Instance.Destroy();
@@ -152,8 +152,10 @@ namespace Euricom.IoT.ZWave
         }
         
         #region Notifications
-        private void OnNodeNotification(ZWNotification notification)
+        private void OnNodeNotification(ZWManager sender, NotificationReceivedEventArgs args)
         {
+            var notification = args.Notification;
+
             var homeID = notification.HomeId;
             var nodeId = notification.NodeId;
             var type = notification.Type;
@@ -180,7 +182,7 @@ namespace Euricom.IoT.ZWave
             switch (notification.Type)
             {
                 // NodeAdded : Node now exists in the system. Very little useful info
-                case NotificationType.NodeAdded:
+                case ZWNotificationType.NodeAdded:
                     {
                         //if this node was in zwcfg*.xml, this is the first node notification
                         //if not, the NodeNew notification should already have been received
@@ -189,14 +191,14 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.NodeNew:
+                case ZWNotificationType.NodeNew:
                     {
                         //Add the new node to our list(and flag as uninitialized)
                         _nodeList.Add(new Node(nodeId, homeID));
                         break;
                     }
 
-                case NotificationType.NodeRemoved:
+                case ZWNotificationType.NodeRemoved:
                     {
                         foreach (var node in _nodeList)
                         {
@@ -210,14 +212,14 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.NodeProtocolInfo:
-                case NotificationType.NodeEvent:
-                case NotificationType.NodeNaming:
-                case NotificationType.EssentialNodeQueriesComplete:
-                case NotificationType.NodeQueriesComplete:
-                case NotificationType.ValueRemoved:
-                case NotificationType.ValueChanged:
-                case NotificationType.Group:
+                case ZWNotificationType.NodeProtocolInfo:
+                case ZWNotificationType.NodeEvent:
+                case ZWNotificationType.NodeNaming:
+                case ZWNotificationType.EssentialNodeQueriesComplete:
+                case ZWNotificationType.NodeQueriesComplete:
+                case ZWNotificationType.ValueRemoved:
+                case ZWNotificationType.ValueChanged:
+                case ZWNotificationType.Group:
                     {
                         var node = GetNode(homeID, nodeId);
                         node?.HandleNodeEvent(notification);
@@ -225,31 +227,31 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.PollingDisabled:
+                case ZWNotificationType.PollingDisabled:
                     {
                         Debug.WriteLine("Polling disabled notification");
                         break;
                     }
 
-                case NotificationType.PollingEnabled:
+                case ZWNotificationType.PollingEnabled:
                     {
                         Debug.WriteLine("Polling enabled notification");
                         break;
                     }
 
-                case NotificationType.DriverReady:
+                case ZWNotificationType.DriverReady:
                     {
                         //CurrentStatus = $"Initializing...driver with Home ID 0x{notification.HomeId.ToString("X8")} is ready.";
                         break;
                     }
 
-                case NotificationType.DriverFailed:
+                case ZWNotificationType.DriverFailed:
                     {
                         Debug.WriteLine("Driver failed for HomeID " + homeID);
                         break;
                     }
 
-                case NotificationType.DriverRemoved:
+                case ZWNotificationType.DriverRemoved:
                     {
                         var nodes = GetNodes(homeID).ToArray();
                         foreach (var node in nodes)
@@ -257,7 +259,7 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.AllNodesQueried:
+                case ZWNotificationType.AllNodesQueried:
                     {
                         QueryStatus = NodeQueryStatus.AllNodesQueried;
                         Debug.WriteLine("All nodes queried");
@@ -266,7 +268,7 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.AllNodesQueriedSomeDead:
+                case ZWNotificationType.AllNodesQueriedSomeDead:
                     {
                         QueryStatus = NodeQueryStatus.AllNodesQueriedSomeDead;
                         Debug.WriteLine("All nodes queried (some dead)");
@@ -275,7 +277,7 @@ namespace Euricom.IoT.ZWave
                         break;
                     }
 
-                case NotificationType.AwakeNodesQueried:
+                case ZWNotificationType.AwakeNodesQueried:
                     {
                         QueryStatus = NodeQueryStatus.AwakeNodesQueried;
                         CurrentStatus = "Ready:  Awake nodes queried (but not some sleeping nodes).";

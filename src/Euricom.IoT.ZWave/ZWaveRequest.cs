@@ -15,7 +15,7 @@ namespace Euricom.IoT.ZWave
             creationTime = DateTimeOffset.Now;
         }
         public TimeSpan Age { get { return DateTimeOffset.Now - creationTime; } }
-        public NotificationType Type { get; set; }
+        public ZWNotificationType Type { get; set; }
         public byte HomeID { get; set; }
         public byte NodeID { get; set; }
         public TaskCompletionSource<ZWNotification> TCS { get; set; }

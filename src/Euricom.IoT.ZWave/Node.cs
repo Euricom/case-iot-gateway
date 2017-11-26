@@ -133,24 +133,24 @@ namespace Euricom.IoT.ZWave
         }
 
         /// <summary>Gets the basic set of device values.</summary>
-        public IList<ZWValueID> BasicValues { get; } = new ObservableCollection<ZWValueID>();
+        public IList<ZWValueId> BasicValues { get; } = new ObservableCollection<ZWValueId>();
 
         /// <summary>Gets the basic set of user values.</summary>
-        public IList<ZWValueID> UserValues { get; } = new ObservableCollection<ZWValueID>();
+        public IList<ZWValueId> UserValues { get; } = new ObservableCollection<ZWValueId>();
 
         /// <summary>Gets the basic set of system values.</summary>
-        public IList<ZWValueID> SystemValues { get; } = new ObservableCollection<ZWValueID>();
+        public IList<ZWValueId> SystemValues { get; } = new ObservableCollection<ZWValueId>();
 
         /// <summary>Gets the basic set of configuration values.</summary>
-        public IList<ZWValueID> ConfigValues { get; } = new ObservableCollection<ZWValueID>();
+        public IList<ZWValueId> ConfigValues { get; } = new ObservableCollection<ZWValueId>();
 
         /// <summary>
         /// Adds the value.
         /// </summary>
         /// <param name="valueID">The value identifier.</param>
-        private void AddValue(ZWValueID valueID)
+        private void AddValue(ZWValueId valueID)
         {
-            IList<ZWValueID> list = GetValues(valueID.Genre);
+            IList<ZWValueId> list = GetValues(valueID.Genre);
 
             var id = list.Where(v => v.CommandClassId == valueID.CommandClassId && v.Id == valueID.Id).FirstOrDefault();
             if (id != null)
@@ -167,13 +167,13 @@ namespace Euricom.IoT.ZWave
         /// Removes the value.
         /// </summary>
         /// <param name="valueID">The value identifier.</param>
-        private void RemoveValue(ZWValueID valueID)
+        private void RemoveValue(ZWValueId valueID)
         {
             var values = GetValues(valueID.Genre);
             values.Remove(valueID);
         }
 
-        private IList<ZWValueID> GetValues(ZWValueGenre genre)
+        private IList<ZWValueId> GetValues(ZWValueGenre genre)
         {
             if (genre == ZWValueGenre.Basic)
                 return BasicValues;
@@ -195,33 +195,33 @@ namespace Euricom.IoT.ZWave
             switch (notification.Type)
             {
                 // NodeProtocolInfo: We now know what type of node it is
-                case NotificationType.NodeProtocolInfo:
+                case ZWNotificationType.NodeProtocolInfo:
                     {
                         // Basic node information has been received, such as whether the node is a listening
                         // device, a routing device and its baud rate and basic, generic and specific types.
                         // It is after this notification that you can call get the Label containing the device description.
                         break;
                     }
-                case NotificationType.NodeNaming:
+                case ZWNotificationType.NodeNaming:
                     {
                         // One of the node names has changed (name, manufacturer, product)
                         break;
                     }
-                case NotificationType.EssentialNodeQueriesComplete:
+                case ZWNotificationType.EssentialNodeQueriesComplete:
                     {
                         // The queries on a node that are essential to its operation have been completed. 
                         // The node can now handle incoming messages.
                         EssentialNodeQueriesComplete = true;
                         break;
                     }
-                case NotificationType.NodeQueriesComplete:
+                case ZWNotificationType.NodeQueriesComplete:
                     {
                         // All the initialization queries on a node have been completed.
                         NodeQueriesComplete = true;
                         break;
                     }
-                case NotificationType.ValueAdded:
-                case NotificationType.ValueChanged:
+                case ZWNotificationType.ValueAdded:
+                case ZWNotificationType.ValueChanged:
                     {
                         // Added: A new node value has been added to OpenZWave's list. These notifications occur
                         // after a node has been discovered, and details of its command classes have been
@@ -229,37 +229,37 @@ namespace Euricom.IoT.ZWave
                         // complexity of the item being represented.
                         // Changed: A node value has been updated from the Z-Wave network and it is different from
                         // the previous value.
-                        var value = notification.ValueID;
+                        var value = notification.ValueId;
                         AddValue(value);
                         Debug.WriteLine($"{notification.Type}. Node {ID}: {ZWManager.Instance.GetValueLabel(value)} = {GetValue(value)} {ZWManager.Instance.GetValueUnits(value)}");
                         break;
                     }
-                case NotificationType.ValueRemoved:
+                case ZWNotificationType.ValueRemoved:
                     {
                         // A node value has been removed from OpenZWave's list. This only occurs when a
                         // node is removed.
                         // Note to self: We probably don't need to handle this, since the node would have been
                         // removed at this point
-                        RemoveValue(notification.ValueID);
+                        RemoveValue(notification.ValueId);
                         break;
                     }
-                case NotificationType.Group:
+                case ZWNotificationType.Group:
                     {
                         // The associations for the node have changed.The application should rebuild any
                         // group information it holds about the node.
                         break;
                     }
 
-                case NotificationType.Notification: //An error has occurred that we need to report.
+                case ZWNotificationType.Notification: //An error has occurred that we need to report.
                     {
                         Debug.WriteLine($"******Node error '{notification.Code}' @ ID: {ID}");
                         // var code = notification.Code;
                         // var v = GetValue(notification.ValueID);
                         break;
                     }
-                case NotificationType.NodeEvent: // A node has triggered an event. This is commonly caused when a node sends a Basic_Set command to the controller. The event value is stored in the notification.
+                case ZWNotificationType.NodeEvent: // A node has triggered an event. This is commonly caused when a node sends a Basic_Set command to the controller. The event value is stored in the notification.
                     {
-                        var value = GetValue(notification.ValueID);
+                        var value = GetValue(notification.ValueId);
                         Debug.WriteLine($"******Node Event @ ID: Value = {value}");
                         break;
                     }
@@ -277,7 +277,7 @@ namespace Euricom.IoT.ZWave
         /// </summary>
         /// <param name="v">The value</param>
         /// <returns></returns>
-        private static string GetValue(ZWValueID v)
+        private static string GetValue(ZWValueId v)
         {
             switch (v.Type)
             {

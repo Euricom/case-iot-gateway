@@ -120,10 +120,6 @@
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
       <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UWP\OpenZWaveUWP.vcxproj">
-      <Project>{46641b66-9271-4234-8e8b-1547def4bebb}</Project>
-      <Name>OpenZWaveUWP</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
