@@ -5,6 +5,7 @@ using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
@@ -51,7 +52,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/wallmount")]
-        public IPostResponse Add([FromContent] WallMountSwitchDto dto)
+        public async Task<IPostResponse> Add([FromContent] WallMountSwitchDto dto)
         {
             try
             {
@@ -60,7 +61,7 @@ namespace Euricom.IoT.Api.Controllers
                     throw new ArgumentException(nameof(dto.DeviceId));
                 }
 
-                var wallmount = _wallmountSwitchManager.Add(dto);
+                var wallmount = await _wallmountSwitchManager.Add(dto);
                 return ResponseUtilities.PostResponseOk(wallmount);
             }
             catch (Exception ex)
@@ -86,11 +87,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/wallmount/{deviceId}")]
-        public IDeleteResponse Delete(string deviceId)
+        public async Task<IDeleteResponse> Delete(string deviceId)
         {
             try
             {
-                _wallmountSwitchManager.Remove(deviceId);
+                await _wallmountSwitchManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)

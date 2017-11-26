@@ -40,14 +40,20 @@ export class CameraViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.cameraService.save(this.camera)
-      .subscribe(
+    var save;
+    if(this.isAddMode) {
+      save = this.cameraService.create(this.camera);
+    } else {
+      save = this.cameraService.update(this.camera);
+    }
+
+    save.subscribe(
       (data) => {
         this.isAddMode = false
-        this.toastr.info('camera updated successfully')
+        this.toastr.info('Camera updated successfully')
         this.refresh()
       },
-      )
+    )
   }
 
   delete(camera: Camera, event: Event): void {

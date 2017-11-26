@@ -2,13 +2,14 @@
 using System.Diagnostics;
 using Euricom.IoT.Common.Utilities;
 using Euricom.IoT.Models;
+using Euricom.IoT.Tcp.Interfaces;
 
 namespace Euricom.IoT.Devices.LazyBone
 {
     public class LazyBone: Device
     {
-        public LazyBone(string deviceId, bool isDimmer, string name, bool enabled, int pollingTime, string host, short port)
-            : base(deviceId, isDimmer == false
+        public LazyBone(string deviceId, string primaryKey, bool isDimmer, string name, bool enabled, int pollingTime, string host, short port)
+            : base(deviceId, primaryKey, isDimmer == false
                 ? HardwareType.LazyBoneSwitch
                 : HardwareType.LazyBoneDimmer)
         {
@@ -34,24 +35,24 @@ namespace Euricom.IoT.Devices.LazyBone
             Port = port;
         }
 
-        public bool TestConnection(SocketClient client)
+        public bool TestConnection(ISocketClient client)
         {
-            return client.TestConnection();
+            return client.TestConnection(Host, Port);
         }
 
-        public LazyBoneState GetState(SocketClient client)
+        public LazyBoneState GetState(ISocketClient client)
         {
-            var response = client.Send(HexUtilities.ToHexString(LazyBoneStates.CommandGetLampStates), true);
+            var response = client.Send(Host, Port, HexUtilities.ToHexString(LazyBoneStates.CommandGetLampStates), true);
 
             return GetCurrentState(response);
         }
 
-        public void SetState(SocketClient client, LazyBoneState state)
+        public void SetState(ISocketClient client, LazyBoneState state)
         {
             if (state.On)
             {
                 string message = HexUtilities.ToHexString(LazyBoneStates.CommandTurnOnLamp);
-                var response = client.Send(message, false);
+                var response = client.Send(Host, Port, message, false);
 
                 Debug.WriteLine(response);
 
@@ -65,7 +66,7 @@ namespace Euricom.IoT.Devices.LazyBone
 
                     var cmdStr = HexUtilities.ToHexString(0x67) + HexUtilities.ToHexString(state.Intensity.Value) +
                                  HexUtilities.ToHexString(0x0D);
-                    response = client.Send(cmdStr, false);
+                    response = client.Send(Host, Port, cmdStr, false);
 
                     Debug.WriteLine(response);
                 }
@@ -73,7 +74,7 @@ namespace Euricom.IoT.Devices.LazyBone
             else
             {
                 string message = HexUtilities.ToHexString(LazyBoneStates.CommandTurnOffLamp);
-                var response = client.Send(message, false);
+                var response = client.Send(Host, Port, message, false);
 
                 Debug.WriteLine(response);
             }

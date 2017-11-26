@@ -4,32 +4,24 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Euricom.IoT.Tcp.Interfaces;
 
-namespace Euricom.IoT.Devices.LazyBone
+namespace Euricom.IoT.Tcp
 {
     //http://donatas.xyz/streamsocket-tcpip-client.html
-    public class SocketClient
+    public class SocketClient: ISocketClient
     {
-        private readonly string _hostname;
-        private readonly short _port;
+        private static readonly object SyncRoot = new Object();
 
-        private readonly object _syncRoot = new Object();
-
-        public SocketClient(string hostname, short port)
+        public bool TestConnection(string host, short port)
         {
-            _hostname = hostname;
-            _port = port;
-        }
-
-        public bool TestConnection()
-        {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 try
                 {
                     using (var tcpClient = new TcpClient { NoDelay = true })
                     {
-                        tcpClient.ConnectAsync(_hostname, _port).Wait(10000);
+                        tcpClient.ConnectAsync(host, port).Wait(2000);
                     }
                     return true;
                 }
@@ -40,16 +32,16 @@ namespace Euricom.IoT.Devices.LazyBone
             }
         }
 
-        public byte[] Send(string message, bool readResponse)
+        public byte[] Send(string host, short port, string message, bool read)
         {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 using (var tcpClient = new TcpClient())
                 {
                     tcpClient.NoDelay = true;
                     tcpClient.SendTimeout = 2000;
                     tcpClient.ReceiveTimeout = 2000;
-                    tcpClient.ConnectAsync(_hostname, _port).Wait(2000);
+                    tcpClient.ConnectAsync(host, port).Wait(2000);
 
                     Task.Delay(100).Wait();
 
@@ -60,18 +52,18 @@ namespace Euricom.IoT.Devices.LazyBone
                         stream.Write(ba, 0, ba.Length);
                         stream.Flush();
 
-                        if (readResponse)
+                        if (read)
                         {
                             Task.Delay(2000).Wait();
                             stream.AsInputStream().AsStreamForRead();
 
-                            long read = 0;
+                            long position = 0;
                             byte[] buffer = new byte[10];
-                            read += stream.Read(buffer, (int)read, (int)(buffer.Length - read));
+                            position += stream.Read(buffer, (int)position, (int)(buffer.Length - position));
 
                             // Buffer is now too big. Shrink it.
-                            byte[] ret = new byte[read];
-                            Array.Copy(buffer, ret, (int)read);
+                            byte[] ret = new byte[position];
+                            Array.Copy(buffer, ret, (int)position);
                             var response = ret;
 
                             Debug.WriteLine(response.Length);

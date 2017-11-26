@@ -113,10 +113,6 @@
     <EmbeddedResource Include="Properties\AzureDeviceManager.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
-      <Name>Euricom.IoT.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
       <Name>Euricom.IoT.Logging</Name>

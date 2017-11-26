@@ -27,14 +27,6 @@ export class DanaLockService {
       .map((data) => new DanaLock(data))
   }
 
-  save(danaLock: DanaLock): Observable<DanaLock> {
-    if (danaLock.isNew()) {
-      return this.create(danaLock)
-    } else {
-      return this.update(danaLock)
-    }
-  }
-
   update(danaLock: DanaLock): Observable<DanaLock> {
     return this.authHttp.put(`/api/danalock`, danaLock)
       .map((res: Response) => (res.json()))

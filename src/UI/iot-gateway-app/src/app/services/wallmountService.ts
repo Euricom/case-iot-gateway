@@ -27,14 +27,6 @@ export class WallmountService {
       .map((data) => new Wallmount(data))
   }
 
-  save(wallmount: Wallmount): Observable<Wallmount> {
-    if (wallmount.isNew()) {
-      return this.create(wallmount)
-    } else {
-      return this.update(wallmount)
-    }
-  }
-
   update(wallmount: Wallmount): Observable<Wallmount> {
     return this.authHttp.put(`/api/wallmount`, wallmount)
       .map((res: Response) => (res.json()))

@@ -5,6 +5,7 @@ using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
@@ -36,7 +37,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/danalock")]
-        public IPostResponse Add([FromContent] DanaLockDto dto)
+        public async Task<IPostResponse> Add([FromContent] DanaLockDto dto)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace Euricom.IoT.Api.Controllers
                     throw new ArgumentException(nameof(dto.DeviceId));
                 }
 
-                var danalock = _danaLockManager.Add(dto);
+                var danalock = await _danaLockManager.Add(dto);
                 return ResponseUtilities.PostResponseOk(danalock);
             }
             catch (Exception ex)
@@ -71,11 +72,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/danalock/{deviceId}")]
-        public IDeleteResponse Delete(string deviceId)
+        public async Task<IDeleteResponse> Delete(string deviceId)
         {
             try
             {
-                _danaLockManager.Remove(deviceId);
+                await _danaLockManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)

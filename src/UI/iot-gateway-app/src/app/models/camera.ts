@@ -14,8 +14,4 @@ export class Camera {
   constructor(resource) {
     Object.assign(this, resource)
   }
-
-  isNew(): boolean {
-    return !(this.DeviceId)
-  }
 }

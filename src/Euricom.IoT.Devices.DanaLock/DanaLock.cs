@@ -5,7 +5,8 @@ namespace Euricom.IoT.Devices.DanaLock
 {
     public class DanaLock : ZWaveDevice
     {
-        public DanaLock(string deviceId, byte nodeId, string name, bool enabled, int pollingTime) : base(deviceId, HardwareType.DanaLock, nodeId)
+        public DanaLock(string deviceId, string primaryKey, byte nodeId, string name, bool enabled, int pollingTime) 
+            : base(deviceId, primaryKey, HardwareType.DanaLock, nodeId)
         {
             Name = name;
             Enabled = enabled;

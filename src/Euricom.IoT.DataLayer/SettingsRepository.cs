@@ -26,7 +26,8 @@ namespace Euricom.IoT.DataLayer
                 AzureIotHubUriConnectionString = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "AzureIotHubUriConnectionString"),
                 AzureAccountName = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName"),
                 AzureStorageAccessKey = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey"),
-                DropboxAccessToken = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken")
+                DropboxAccessToken = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken"),
+                ZWaveNetworkKey = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "ZWaveNetworkKey")
             };
 
             var level = _database.GetValue<string>(Constants.DBREEZE_TABLE_SETTINGS, "LogLevel");
@@ -57,6 +58,7 @@ namespace Euricom.IoT.DataLayer
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureAccountName", settings.AzureAccountName);
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "AzureStorageAccessKey", settings.AzureStorageAccessKey);
             _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "DropboxAccessToken", settings.DropboxAccessToken);
+            _database.SetValue(Constants.DBREEZE_TABLE_SETTINGS, "ZWaveNetworkKey", settings.ZWaveNetworkKey);
         }
 
         public void Seed()
@@ -70,6 +72,7 @@ namespace Euricom.IoT.DataLayer
                 HistoryLog = 1,
                 LogLevel = LogLevel.Debug,
                 GatewayDeviceKey = "q5H3XA0s+XFhh+qNdfUmeJdCM9/88Hs5w59XGevZNkE=",
+                ZWaveNetworkKey = "0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10"
             });
         }
     }

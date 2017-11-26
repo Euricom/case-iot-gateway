@@ -17,6 +17,7 @@
     <table class="table table-striped table-bordered">
       <thead>
         <tr>
+          <th>Device ID</th>
           <th>Name</th>
           <th>Node ID</th>
           <th>PollingTime</th>
@@ -30,6 +31,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let wallmount of wallmounts; let i=index" (click)="setClickedRow(i, wallmount)" [class.active]="i == selectedRowIndex">
+          <td>{{wallmount.DeviceId}}</td>
           <td>{{wallmount.Name}}</td>
           <td>{{wallmount.NodeId}}</td>
           <td>{{wallmount.PollingTime}}</td>
@@ -71,6 +73,12 @@
       </div>
       <div class="panel-body">
         <form class="form-horizontal" role="form" (ngSubmit)="onSubmit(form)" novalidate>
+          <div class="form-group">
+            <label for="deviceId" class="control-label col-sm-4">Device ID</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="deviceId" id="deviceId" [(ngModel)]="wallmount.DeviceId" pattern="^[A-Za-z_\-0-9]+$" placeholder="Enter Wallmount Switch Id">
+            </div>
+          </div>
           <div class="form-group">
             <label for="name" class="control-label col-sm-4">Wallmount Switch name</label>
             <div class="col-sm-8">

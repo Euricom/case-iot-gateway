@@ -9,9 +9,9 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         IEnumerable<LazyBoneDto> Get();
         LazyBoneDto Get(string deviceId);
-        LazyBoneDto Add(LazyBoneDto lazybone);
+        Task<LazyBoneDto> Add(LazyBoneDto lazybone);
         LazyBoneDto Update(LazyBoneDto lazybone);
-        void Remove(string deviceId);
+        Task Remove(string deviceId);
 
         bool TestConnection(string deviceId);
         /// <param name="deviceId"></param>

@@ -2,22 +2,27 @@
 using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.LazyBone;
+using Euricom.IoT.Tcp.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class LazyBoneManager : ILazyBoneManager
     {
         private readonly IDeviceRepository<LazyBone> _repository;
-        private readonly SocketClient _socketClient;
+        private readonly ISocketClient _socketClient;
+        private readonly IAzureDeviceManager _deviceManager;
 
-        public LazyBoneManager(IDeviceRepository<LazyBone> repository, SocketClient socketClient)
+        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
             _socketClient = socketClient;
+            _deviceManager = deviceManager;
         }
 
         public IEnumerable<LazyBoneDto> Get()
@@ -34,9 +39,11 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<LazyBoneDto>(device);
         }
 
-        public LazyBoneDto Add(LazyBoneDto dto)
+        public async Task<LazyBoneDto> Add(LazyBoneDto dto)
         {
-            var device = new LazyBone(dto.DeviceId, dto.IsDimmer,dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
+            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+
+            var device = new LazyBone(dto.DeviceId, primaryKey, dto.IsDimmer,dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
 
             _repository.Add(device);
 
@@ -63,8 +70,10 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<LazyBoneDto>(lazybone);
         }
 
-        public void Remove(string deviceId)
+        public async Task Remove(string deviceId)
         {
+            await _deviceManager.RemoveDeviceAsync(deviceId);
+
             _repository.Remove(deviceId);
         }
 

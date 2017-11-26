@@ -2,8 +2,10 @@
 using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.DanaLock;
 using IZWaveManager = Euricom.IoT.ZWave.Interfaces.IZWaveManager;
@@ -14,11 +16,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<DanaLock> _repository;
         private readonly IZWaveManager _manager;
+        private readonly IAzureDeviceManager _deviceManager;
 
-        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveManager manager)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveManager manager, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
             _manager = manager;
+            _deviceManager = deviceManager;
         }
 
         public IEnumerable<DanaLockDto> Get()
@@ -35,10 +39,12 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<DanaLockDto>(wallmount);
         }
 
-        public DanaLockDto Add(DanaLockDto dto)
+        public async Task<DanaLockDto> Add(DanaLockDto dto)
         {
-            var danalock = new DanaLock(dto.DeviceId, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
 
+            var danalock = new DanaLock(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+            
             _repository.Add(danalock);
 
             return Mapper.Map<DanaLockDto>(danalock);
@@ -64,8 +70,10 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<DanaLockDto>(wallmount);
         }
 
-        public void Remove(string deviceId)
+        public async Task Remove(string deviceId)
         {
+            await _deviceManager.RemoveDeviceAsync(deviceId);
+
             _repository.Remove(deviceId);
         }
 

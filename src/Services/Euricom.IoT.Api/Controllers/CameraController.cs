@@ -52,7 +52,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera")]
-        public IPostResponse Add([FromContent] CameraDto dto)
+        public async Task<IPostResponse> Add([FromContent] CameraDto dto)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace Euricom.IoT.Api.Controllers
                     throw new ArgumentException(nameof(dto.DeviceId));
                 }
 
-                var newCamera = _cameraManager.Add(dto);
+                var newCamera = await _cameraManager.Add(dto);
                 return ResponseUtilities.PostResponseOk(newCamera);
             }
             catch (Exception ex)
@@ -87,11 +87,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/camera/{deviceId}")]
-        public IDeleteResponse Delete(string deviceId)
+        public async Task<IDeleteResponse> Delete(string deviceId)
         {
             try
             {
-                _cameraManager.Remove(deviceId);
+                await _cameraManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)

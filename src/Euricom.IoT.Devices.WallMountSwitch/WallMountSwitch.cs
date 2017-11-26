@@ -5,8 +5,8 @@ namespace Euricom.IoT.Devices.WallMountSwitch
 {
     public class WallMountSwitch : ZWaveDevice
     {
-        public WallMountSwitch(string deviceId, byte nodeId, string name, bool enabled, int pollingTime)
-            : base(deviceId, HardwareType.WallMountSwitch, nodeId)
+        public WallMountSwitch(string deviceId, string primaryKey, byte nodeId, string name, bool enabled, int pollingTime)
+            : base(deviceId, primaryKey, HardwareType.WallMountSwitch, nodeId)
         {
             Name = name;
             Enabled = enabled;

@@ -185,6 +185,10 @@
       <Project>{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}</Project>
       <Name>Euricom.IoT.AzureBlobStorage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj">
+      <Project>{A1673557-C45C-457B-BD38-597549771075}</Project>
+      <Name>Euricom.IoT.AzureDeviceManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
       <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
       <Name>Euricom.IoT.Common</Name>
@@ -224,6 +228,10 @@
     <ProjectReference Include="..\..\Euricom.IoT.Security\Euricom.IoT.Security.csproj">
       <Project>{4CC1DA31-1F5A-42CC-835E-C233C1633CEB}</Project>
       <Name>Euricom.IoT.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Tcp\Euricom.IoT.Tcp.csproj">
+      <Project>{01FA1D57-2394-40E7-87DC-756648D5E05C}</Project>
+      <Name>Euricom.IoT.Tcp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.ZWave\Euricom.IoT.ZWave.csproj">
       <Project>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</Project>

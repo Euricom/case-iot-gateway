@@ -6,6 +6,7 @@ using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.Devices.LazyBone;
 
@@ -38,11 +39,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/lazybone")]
-        public PostResponse Add([FromContent] LazyBoneDto lazyBoneDto)
+        public async Task<PostResponse> Add([FromContent] LazyBoneDto lazyBoneDto)
         {
             try
             {
-                var newLazyBone = _lazyBoneManager.Add(lazyBoneDto);
+                var newLazyBone = await _lazyBoneManager.Add(lazyBoneDto);
                 return ResponseUtilities.PostResponseOk(newLazyBone);
             }
             catch (Exception ex)
@@ -68,11 +69,11 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/lazybone/{deviceId}")]
-        public IDeleteResponse Delete(string deviceId)
+        public async Task<IDeleteResponse> Delete(string deviceId)
         {
             try
             {
-                _lazyBoneManager.Remove(deviceId);
+                await _lazyBoneManager.Remove(deviceId);
                 return ResponseUtilities.DeleteResponseOk();
             }
             catch (Exception ex)
@@ -113,7 +114,7 @@ namespace Euricom.IoT.Api.Controllers
         }
 
         [UriFormat("/lazybone/{deviceId}/state")]
-        public IPutResponse SetState(string deviceId, LazyBoneState state)
+        public IPutResponse SetState(string deviceId, [FromContent] LazyBoneState state)
         {
             try
             {

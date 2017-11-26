@@ -13,8 +13,4 @@ export class LazyBone {
   constructor(resource) {
     Object.assign(this, resource)
   }
-
-  isNew(): boolean {
-    return !(this.DeviceId)
-  }
 }

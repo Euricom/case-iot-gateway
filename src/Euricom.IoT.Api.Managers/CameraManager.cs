@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Http.Interfaces;
@@ -14,11 +15,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<Camera> _repository;
         private readonly IHttpService _httpService;
+        private readonly IAzureDeviceManager _deviceManager;
 
-        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService)
+        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
             _httpService = httpService;
+            _deviceManager = deviceManager;
         }
 
         public IEnumerable<CameraDto> Get()
@@ -33,9 +36,11 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<CameraDto>(camera);
         }
         
-        public CameraDto Add(CameraDto dto)
+        public async Task<CameraDto> Add(CameraDto dto)
         {
-            var camera = new Camera(dto.DeviceId, dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
+            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+
+            var camera = new Camera(dto.DeviceId, primaryKey, dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
                 dto.MaximumDaysDropbox, dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
 
             _repository.Add(camera);
@@ -65,8 +70,10 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<CameraDto>(camera);
         }
 
-        public void Remove(string deviceId)
+        public async Task Remove(string deviceId)
         {
+           await _deviceManager.RemoveDeviceAsync(deviceId);
+
             _repository.Remove(deviceId);
         }
 

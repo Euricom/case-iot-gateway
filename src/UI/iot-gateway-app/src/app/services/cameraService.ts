@@ -27,14 +27,6 @@ export class CameraService {
       .map((data) => new Camera(data))
   }
 
-  save(camera: Camera): Observable<Camera> {
-    if (camera.isNew()) {
-      return this.create(camera)
-    } else {
-      return this.update(camera)
-    }
-  }
-
   update(camera: Camera): Observable<Camera> {
     return this.authHttp.put(`/api/camera`, camera)
       .map((res: Response) => (res.json()))

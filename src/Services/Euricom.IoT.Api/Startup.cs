@@ -50,8 +50,6 @@ namespace Euricom.IoT.Api
             //StartMonitors();
 
             // Init Webserver
-            
-
             await _container.Resolve<WebServer>().InitializeWebServer();
 
             // Process incoming IoT Hub messages

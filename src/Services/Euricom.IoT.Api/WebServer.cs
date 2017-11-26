@@ -64,19 +64,10 @@ namespace Euricom.IoT.Api
                 }
             }
 
-            //restRouteHandler.RegisterController<ConfigurationController>();
-            //restRouteHandler.RegisterController<DevicesController>();
-            //restRouteHandler.RegisterController<CameraController>();
-            //restRouteHandler.RegisterController<DanaLockController>();
-            //restRouteHandler.RegisterController<LazyBoneController>();
-            //restRouteHandler.RegisterController<WallMountSwitchController>();
-            //restRouteHandler.RegisterController<LogController>();
-            //restRouteHandler.RegisterController<SecurityController>();
-
             var configuration = new HttpServerConfiguration()
               .ListenOnPort(8800)
               .RegisterRoute("api", restRouteHandler)
-              .RegisterRoute(new StaticFileRouteHandler(@"Euricom.IoT.UI.WebAdministration\Web"))
+              .RegisterRoute("web", new StaticFileRouteHandler(@"Euricom.IoT.UI.WebAdministration\Web"))
               .EnableCors();
 
             _httpServer = new HttpServer(configuration);

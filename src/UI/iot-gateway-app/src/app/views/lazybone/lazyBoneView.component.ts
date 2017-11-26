@@ -40,14 +40,20 @@ export class LazyBonesViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.lazyBoneService.save(this.lazyBone)
-      .subscribe(
+    var save;
+    if(this.isAddMode) {
+      save = this.lazyBoneService.create(this.lazyBone);
+    } else {
+      save = this.lazyBoneService.update(this.lazyBone);
+    }
+
+    save.subscribe(
       (data) => {
         this.isAddMode = false
-        this.toastr.info('Lazy bone updated successfully')
+        this.toastr.info('LazyBone updated successfully')
         this.refresh()
       },
-      )
+    )
   }
 
   delete(lazyBone: LazyBone, event: Event): void {

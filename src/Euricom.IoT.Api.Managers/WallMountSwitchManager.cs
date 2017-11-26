@@ -2,8 +2,10 @@
 using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.WallMountSwitch;
 using IZWaveManager = Euricom.IoT.ZWave.Interfaces.IZWaveManager;
@@ -14,11 +16,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<WallMountSwitch> _repository;
         private readonly IZWaveManager _manager;
+        private readonly IAzureDeviceManager _deviceManager;
 
-        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveManager manager)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveManager manager, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
             _manager = manager;
+            _deviceManager = deviceManager;
         }
         
         public IEnumerable<WallMountSwitchDto> Get()
@@ -35,9 +39,10 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
-        public WallMountSwitchDto Add(WallMountSwitchDto dto)
+        public async Task<WallMountSwitchDto> Add(WallMountSwitchDto dto)
         {
-            var wallmount = new WallMountSwitch(dto.DeviceId, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
+            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+            var wallmount = new WallMountSwitch(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(wallmount);
 
@@ -64,8 +69,10 @@ namespace Euricom.IoT.Api.Managers
             return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
-        public void Remove(string deviceId)
+        public async Task Remove(string deviceId)
         {
+            await _deviceManager.RemoveDeviceAsync(deviceId);
+
             _repository.Remove(deviceId);
         }
 

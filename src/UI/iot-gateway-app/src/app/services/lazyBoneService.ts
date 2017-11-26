@@ -27,14 +27,6 @@ export class LazyBoneService {
       .map((data) => new LazyBone(data))
   }
 
-  save(lazyBone: LazyBone): Observable<LazyBone> {
-    if (lazyBone.isNew()) {
-      return this.create(lazyBone)
-    } else {
-      return this.update(lazyBone)
-    }
-  }
-
   update(lazyBone: LazyBone): Observable<LazyBone> {
     return this.authHttp.put(`/api/lazyBone`, lazyBone)
       .map((res: Response) => (res.json()))

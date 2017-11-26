@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
@@ -7,9 +8,9 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         IEnumerable<WallMountSwitchDto> Get();
         WallMountSwitchDto Get(string deviceId);
-        WallMountSwitchDto Add(WallMountSwitchDto wallmount);
+        Task<WallMountSwitchDto> Add(WallMountSwitchDto wallmount);
         WallMountSwitchDto Update(WallMountSwitchDto wallmount);
-        void Remove(string deviceId);
+        Task Remove(string deviceId);
 
         bool IsOn(string deviceId);
         void Switch(string deviceId, string state);

@@ -1,5 +1,4 @@
 ﻿using Euricom.IoT.Logging;
-using Euricom.IoT.Models;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using System;
@@ -12,61 +11,66 @@ namespace Euricom.IoT.AzureDeviceManager
     {
         private RegistryManager _registryManager;
 
-        public AzureDeviceManager(Settings settings)
+        public AzureDeviceManager(string connectionString)
         {
-            string connectionString = GetConnectionString(settings);
+            if (String.IsNullOrEmpty(connectionString))
+            {
+                Logger.Instance.LogWarningWithContext(GetType(), "Please set a connection string for Azure IoT Hub URI");
+                throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
+            }
+
             _registryManager = RegistryManager.CreateFromConnectionString(connectionString);
         }
 
-        public async Task<IEnumerable<Microsoft.Azure.Devices.Device>> GetDevicesAsync()
+        public async Task<IEnumerable<Device>> GetDevicesAsync()
         {
             var devices = await _registryManager.GetDevicesAsync(int.MaxValue);
             return devices;
         }
 
-        public async Task<string> AddDeviceAsync(string deviceName)
+        public async Task<string> AddDeviceAsync(string deviceId)
         {
-            Microsoft.Azure.Devices.Device device;
             try
             {
-                device = await _registryManager.AddDeviceAsync(new Microsoft.Azure.Devices.Device(deviceName));
+                var device = await _registryManager.AddDeviceAsync(new Device(deviceId));
                 return device.Authentication.SymmetricKey.PrimaryKey;
             }
             catch (DeviceAlreadyExistsException deviceAlreadyExistsException)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), deviceAlreadyExistsException);
+                Logger.Instance.LogErrorWithContext(GetType(), deviceAlreadyExistsException);
                 throw;
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw;
             }
         }
 
-        public async Task RemoveDeviceAsync(string deviceName)
+        public async Task RemoveDeviceAsync(string deviceId)
         {
             try
             {
-                var device = await _registryManager.GetDeviceAsync(deviceName);
+                var device = await _registryManager.GetDeviceAsync(deviceId);
                 if (device != null)
                     await _registryManager.RemoveDeviceAsync(device);
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw;
             }
         }
 
-        private string GetConnectionString(Settings settings)
+        public void UpdateConnectionString(string connectionstring)
         {
-            if (String.IsNullOrEmpty(settings.AzureIotHubUriConnectionString))
+            if (String.IsNullOrEmpty(connectionstring))
             {
-                Logger.Instance.LogWarningWithContext(this.GetType(), "Please set a connection string for Azure IoT Hub URI");
+                Logger.Instance.LogWarningWithContext(GetType(), "Please set a connection string for Azure IoT Hub URI");
                 throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
             }
-            return settings.AzureIotHubUriConnectionString;
+
+            _registryManager = RegistryManager.CreateFromConnectionString(connectionstring);
         }
     }
 }

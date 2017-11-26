@@ -40,14 +40,20 @@ export class DanaLocksViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.danaLockService.save(this.danalock)
-      .subscribe(
+    var save;
+    if(this.selectedRowIndex) {
+      save = this.danaLockService.update(this.danalock);
+    } else {
+      save = this.danaLockService.create(this.danalock);
+    }
+
+    save.subscribe(
       (data) => {
         this.isAddMode = false
         this.toastr.info('DanaLock updated successfully')
         this.refresh()
       },
-      )
+    )
   }
 
   delete(danaLock: DanaLock, event: Event): void {

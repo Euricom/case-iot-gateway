@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
@@ -7,9 +8,9 @@ namespace Euricom.IoT.Api.Managers.Interfaces
     {
         IEnumerable<DanaLockDto> Get();
         DanaLockDto Get(string deviceId);
-        DanaLockDto Add(DanaLockDto danalock);
+        Task<DanaLockDto> Add(DanaLockDto danalock);
         DanaLockDto Update(DanaLockDto danalock);
-        void Remove(string deviceId);
+        Task Remove(string deviceId);
 
         bool TestConnection(string deviceId);
         bool IsLocked(string deviceId);

@@ -40,15 +40,20 @@ export class WallMountViewComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.wallmountService.save(this.wallmount)
-      .subscribe(
+    var save;
+    if(this.isAddMode) {
+      save = this.wallmountService.create(this.wallmount);
+    } else {
+      save = this.wallmountService.update(this.wallmount);
+    }
+
+    save.subscribe(
       (data) => {
-        this.selectedRowIndex = undefined
         this.isAddMode = false
         this.toastr.info('Wallmount updated successfully')
         this.refresh()
       },
-      )
+    )
   }
 
   delete(wallmount: Wallmount, event: Event): void {
