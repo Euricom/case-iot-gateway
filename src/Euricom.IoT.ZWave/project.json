@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2",
+    "OpenZWave": "2.0.0-beta2"
   },
   "frameworks": {
     "uap10.0.10586": {}

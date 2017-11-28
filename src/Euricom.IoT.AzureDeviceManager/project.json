@@ -1,8 +1,7 @@
 ﻿{
   "dependencies": {
-    "Microsoft.Azure.Devices": "1.2.5",
-    "Microsoft.Azure.Devices.Shared": "1.0.10",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
+    "Microsoft.Azure.Devices": "1.4.1",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2"
   },
   "frameworks": {
     "uap10.0.10586": {}

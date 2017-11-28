@@ -5,9 +5,6 @@ namespace Euricom.IoT.ZWave.Interfaces
 {
     public interface IZWaveManager
     {
-        uint HomeId { get; }
-        string CurrentStatus { get; }
-
         Task SoftReset();
         Task Initialize();
 

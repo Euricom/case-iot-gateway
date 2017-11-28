@@ -1,9 +1,10 @@
 ﻿{
   "dependencies": {
     "AutoMapper": "6.0.2",
-    "Dropbox.Api": "4.2.5",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0",
-    "Newtonsoft.Json": "10.0.2",
+    "Dropbox.Api": "4.6.0",
+    "Microsoft.Azure.Devices.Client": "1.5.2",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2",
+    "Newtonsoft.Json": "10.0.3",
     "Stormpath.SDK": "0.96.1",
     "System.IdentityModel.Tokens.Jwt": "5.1.3"
   },

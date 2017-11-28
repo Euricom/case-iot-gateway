@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
-    "Dropbox.Api": "4.2.5",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
+    "Dropbox.Api": "4.6.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2"
   },
   "frameworks": {
     "uap10.0.10586": {}

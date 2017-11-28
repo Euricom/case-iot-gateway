@@ -1,10 +1,8 @@
 ﻿{
   "dependencies": {
-    "Autofac": "4.6.1",
+    "Autofac": "4.6.2",
     "AutoMapper": "6.0.2",
-    "Microsoft.Azure.Devices.Client": "1.2.9",
-    "Microsoft.Azure.Devices.Shared": "1.0.10",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.4.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2"
   },
   "frameworks": {
     "uap10.0.10586": {}

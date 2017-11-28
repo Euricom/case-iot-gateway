@@ -1,12 +1,4 @@
-[submodule "open-zwave"]
-	path = open-zwave
-	url = https://github.com/OpenZWave/open-zwave.git
-	branch = Dev
 [submodule "restup"]
 	path = restup
 	url = https://github.com/euricom/restup.git
 	branch = feature-implement-basic-authorization
-[submodule "zwave-app"]
-	path = zwave-app
-	url = https://github.com/OpenZWave/openzwave-dotnet-uwp
-	branch = master
