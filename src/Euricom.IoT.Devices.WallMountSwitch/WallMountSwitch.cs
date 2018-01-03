@@ -1,5 +1,6 @@
-﻿using Euricom.IoT.Models;
-using Euricom.IoT.ZWave.Interfaces;
+﻿using Euricom.IoT.Devices.ZWave;
+using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Devices.WallMountSwitch
 {

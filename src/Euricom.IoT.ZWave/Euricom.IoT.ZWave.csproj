@@ -11,8 +11,8 @@
     <AssemblyName>Euricom.IoT.ZWave</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -107,8 +107,6 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IZWaveManager.cs" />
-    <Compile Include="Interfaces\NodeQueryStatus.cs" />
     <Compile Include="SerialPortInfo.cs" />
     <Compile Include="ZWaveManager.cs" />
     <Compile Include="Node.cs" />
@@ -117,6 +115,10 @@
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
+      <Project>{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}</Project>
+      <Name>Euricom.IoT.Devices.ZWave</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
       <Name>Euricom.IoT.Logging</Name>

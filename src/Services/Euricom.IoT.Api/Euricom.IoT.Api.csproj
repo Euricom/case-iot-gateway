@@ -209,6 +209,10 @@
       <Project>{9edc1c3d-7e2b-4769-a260-8885487d45b7}</Project>
       <Name>Euricom.IoT.Devices.WallMountSwitch</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
+      <Project>{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}</Project>
+      <Name>Euricom.IoT.Devices.ZWave</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
       <Project>{0525E383-D416-4465-8B1D-A06E9D48CF9B}</Project>
       <Name>Euricom.IoT.Http</Name>

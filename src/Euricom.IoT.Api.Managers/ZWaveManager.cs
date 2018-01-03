@@ -1,16 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using AutoMapper;
-using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.Devices.ZWave;
+using Euricom.IoT.Devices.ZWave.Interfaces;
+using IZWaveManager = Euricom.IoT.Api.Managers.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api.Managers
 {
+    public class ZWaveDeviceNotifier : IZWaveDeviceNotifier
+    {
+        public async Task Notify(byte nodeId, byte key, byte value)
+        {
+            Debug.WriteLine($"NodeID: {nodeId}, Key: {key}, Value: {value}");
+        }
+    }
+
     public class ZWaveManager: IZWaveManager
     {
-        private readonly ZWave.Interfaces.IZWaveManager _zWaveManager;
+        private readonly Devices.ZWave.Interfaces.IZWaveManager _zWaveManager;
 
-        public ZWaveManager(ZWave.Interfaces.IZWaveManager zWaveManager)
+        public ZWaveManager(Devices.ZWave.Interfaces.IZWaveManager zWaveManager)
         {
             _zWaveManager = zWaveManager;
         }
@@ -40,6 +51,11 @@ namespace Euricom.IoT.Api.Managers
         public void RemoveNode()
         {
             _zWaveManager.RemoveNode();
+        }
+
+        public string GetStatus()
+        {
+            return _zWaveManager.GetStatus();
         }
     }
 }

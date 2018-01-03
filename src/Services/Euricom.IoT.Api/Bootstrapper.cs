@@ -11,6 +11,8 @@ using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Devices.WallMountSwitch;
+using Euricom.IoT.Devices.ZWave;
+using Euricom.IoT.Devices.ZWave.Interfaces;
 using Euricom.IoT.Http;
 using Euricom.IoT.Http.Interfaces;
 using Euricom.IoT.Logging;
@@ -18,6 +20,7 @@ using Euricom.IoT.Models;
 using Euricom.IoT.Tcp;
 using Euricom.IoT.Tcp.Interfaces;
 using Restup.WebServer.Http;
+using IZWaveManager = Euricom.IoT.Api.Managers.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api
 {
@@ -48,8 +51,8 @@ namespace Euricom.IoT.Api
             {
                 var settings = context.Resolve<Settings>();
 
-                return new ZWave.ZWaveManager(settings.ZWaveNetworkKey);
-            }).As<ZWave.Interfaces.IZWaveManager>().SingleInstance();
+                return new ZWave.ZWaveManager(context.Resolve<IZWaveDeviceNotifier>(), settings.ZWaveNetworkKey);
+            }).As<Devices.ZWave.Interfaces.IZWaveManager>().SingleInstance();
         }
 
         private static void RegisterAzure(ContainerBuilder builder)
@@ -82,6 +85,8 @@ namespace Euricom.IoT.Api
             builder.RegisterType<SecurityManager>().As<ISecurityManager>();
             builder.RegisterType<WallMountSwitchManager>().As<IWallMountSwitchManager>();
             builder.RegisterType<ZWaveManager>().As<IZWaveManager>().SingleInstance();
+
+            builder.RegisterType<ZWaveDeviceNotifier>().As<IZWaveDeviceNotifier>().SingleInstance();
         }
 
         private static void RegisterDatabase(ContainerBuilder builder)

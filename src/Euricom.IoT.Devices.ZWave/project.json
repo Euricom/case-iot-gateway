@@ -1,8 +1,6 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2",
-    "Serilog": "2.5.0",
-    "Serilog.Sinks.RollingFile": "3.3.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.0.2"
   },
   "frameworks": {
     "uap10.0.10586": {}

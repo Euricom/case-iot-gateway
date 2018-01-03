@@ -1,4 +1,6 @@
-﻿namespace Euricom.IoT.Models
+﻿using Euricom.IoT.Models;
+
+namespace Euricom.IoT.Devices.ZWave
 {
     public abstract class ZWaveDevice : Device
     {
@@ -9,5 +11,7 @@
         {
             NodeId = nodeId;
         }
+
+
     }
 }

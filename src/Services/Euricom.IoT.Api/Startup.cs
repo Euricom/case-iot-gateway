@@ -5,8 +5,8 @@ using System;
 using System.Threading.Tasks;
 using Autofac;
 using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Devices.ZWave.Interfaces;
 using Euricom.IoT.Models;
-using Euricom.IoT.ZWave.Interfaces;
 
 namespace Euricom.IoT.Api
 {
@@ -44,6 +44,7 @@ namespace Euricom.IoT.Api
 
             // Init DanaLock
             var zWaveManager = _container.Resolve<IZWaveManager>();
+            
             await zWaveManager.Initialize();
 
             // Set up monitoring of devices / regular tasks that cleanup files

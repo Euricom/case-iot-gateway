@@ -8,7 +8,7 @@ using Euricom.IoT.Api.Models;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.WallMountSwitch;
-using IZWaveManager = Euricom.IoT.ZWave.Interfaces.IZWaveManager;
+using IZWaveManager = Euricom.IoT.Devices.ZWave.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api.Managers
 {

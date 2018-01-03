@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.ZWave.Interfaces
+namespace Euricom.IoT.Devices.ZWave.Interfaces
 {
     public interface IZWaveManager
     {
@@ -11,8 +11,9 @@ namespace Euricom.IoT.ZWave.Interfaces
         bool TestConnection(byte nodeId);
         bool GetValue(byte nodeId, byte commandId);
         void SetValue(byte nodeId, byte commandId, bool value);
-        List<Node> GetNodes();
+        List<INode> GetNodes();
         void RemoveNode();
         void AddNode(bool secure);
+        string GetStatus();
     }
 }

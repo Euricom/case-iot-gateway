@@ -112,6 +112,10 @@
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
+      <Project>{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}</Project>
+      <Name>Euricom.IoT.Devices.ZWave</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
       <Name>Euricom.IoT.Models</Name>

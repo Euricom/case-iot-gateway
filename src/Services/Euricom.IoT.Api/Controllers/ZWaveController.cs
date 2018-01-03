@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
@@ -12,9 +12,9 @@ namespace Euricom.IoT.Api.Controllers
     [RestController(InstanceCreationType.Singleton)]
     public class ZWaveController
     {
-        private readonly ZWaveManager _zWaveManager;
+        private readonly IZWaveManager _zWaveManager;
 
-        public ZWaveController(ZWaveManager zWaveManager)
+        public ZWaveController(IZWaveManager zWaveManager)
         {
             _zWaveManager = zWaveManager;
         }
@@ -42,6 +42,21 @@ namespace Euricom.IoT.Api.Controllers
             {
                 var nodes = _zWaveManager.GetNodes();
                 return new GetResponse(GetResponse.ResponseStatus.OK, nodes);
+            }
+            catch (Exception ex)
+            {
+                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw new Exception($"Could not initialize ZWave: exception: {ex.Message}");
+            }
+        }
+
+        [UriFormat("/zwave/status")]
+        public IGetResponse GetStatus()
+        {
+            try
+            {
+                var status = _zWaveManager.GetStatus();
+                return new GetResponse(GetResponse.ResponseStatus.OK, status);
             }
             catch (Exception ex)
             {
