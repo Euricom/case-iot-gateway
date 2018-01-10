@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{26441922-0B30-43AD-BC24-CD181762FFC1}"
 EndProject
@@ -79,6 +79,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Tcp", "Euricom.IoT.Tcp\Euricom.IoT.Tcp.csproj", "{01FA1D57-2394-40E7-87DC-756648D5E05C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Devices.ZWave", "Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj", "{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euricom.IoT.Interfaces", "Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj", "{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -538,6 +540,22 @@ Global
 		{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}.Release|x64.Build.0 = Release|x64
 		{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}.Release|x86.ActiveCfg = Release|x86
 		{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}.Release|x86.Build.0 = Release|x86
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|ARM.ActiveCfg = Debug|ARM
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|ARM.Build.0 = Debug|ARM
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|x64.ActiveCfg = Debug|x64
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|x64.Build.0 = Debug|x64
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|x86.ActiveCfg = Debug|x86
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Debug|x86.Build.0 = Debug|x86
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|ARM.ActiveCfg = Release|ARM
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|ARM.Build.0 = Release|ARM
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|x64.ActiveCfg = Release|x64
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|x64.Build.0 = Release|x64
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|x86.ActiveCfg = Release|x86
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -570,6 +588,7 @@ Global
 		{0525E383-D416-4465-8B1D-A06E9D48CF9B} = {775030D7-24C8-4B61-91F0-05B12415CBF6}
 		{01FA1D57-2394-40E7-87DC-756648D5E05C} = {775030D7-24C8-4B61-91F0-05B12415CBF6}
 		{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A} = {3A0ABAA4-C65D-4625-9D9B-934D4FA706A0}
+		{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903} = {DB1D6C0F-5AFC-4193-8E53-B0D9848D2A33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADF45E88-9A32-4BE3-9EA9-B4CB718761A2}

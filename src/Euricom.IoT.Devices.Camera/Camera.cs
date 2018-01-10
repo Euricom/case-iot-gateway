@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Euricom.IoT.Http.Interfaces;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Devices.Camera

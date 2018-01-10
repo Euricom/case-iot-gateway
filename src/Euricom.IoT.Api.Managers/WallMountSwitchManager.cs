@@ -8,20 +8,20 @@ using Euricom.IoT.Api.Models;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.WallMountSwitch;
-using IZWaveManager = Euricom.IoT.Devices.ZWave.Interfaces.IZWaveManager;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class WallMountSwitchManager : IWallMountSwitchManager
     {
         private readonly IDeviceRepository<WallMountSwitch> _repository;
-        private readonly IZWaveManager _manager;
+        private readonly IZWaveController _controller;
         private readonly IAzureDeviceManager _deviceManager;
 
-        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveManager manager, IAzureDeviceManager deviceManager)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
-            _manager = manager;
+            _controller = controller;
             _deviceManager = deviceManager;
         }
         
@@ -87,7 +87,7 @@ namespace Euricom.IoT.Api.Managers
                     throw new InvalidOperationException($"Device: {device.Name} {deviceId} is not enabled");
                 }
 
-                return device.IsOn(_manager);
+                return device.IsOn(_controller);
             }
             catch (Exception ex)
             {
@@ -121,10 +121,10 @@ namespace Euricom.IoT.Api.Managers
                 switch (state)
                 {
                     case "on":
-                        device.TurnOn(_manager);
+                        device.TurnOn(_controller);
                         break;
                     case "off":
-                        device.TurnOff(_manager);
+                        device.TurnOff(_controller);
                         break;
                 }
 
@@ -142,7 +142,7 @@ namespace Euricom.IoT.Api.Managers
         {
             var device = _repository.Get(deviceId);
 
-            return device.TestConnection(_manager);
+            return device.TestConnection(_controller);
         }
     }
 }

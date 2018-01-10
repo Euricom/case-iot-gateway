@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Euricom.IoT.Http.Interfaces;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Http
 {

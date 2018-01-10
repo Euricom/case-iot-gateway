@@ -2,10 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using AutoMapper;
+using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
-using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Devices.ZWave.Interfaces;
-using IZWaveManager = Euricom.IoT.Api.Managers.Interfaces.IZWaveManager;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -19,43 +18,43 @@ namespace Euricom.IoT.Api.Managers
 
     public class ZWaveManager: IZWaveManager
     {
-        private readonly Devices.ZWave.Interfaces.IZWaveManager _zWaveManager;
+        private readonly IZWaveController _izWaveController;
 
-        public ZWaveManager(Devices.ZWave.Interfaces.IZWaveManager zWaveManager)
+        public ZWaveManager(IZWaveController izWaveController)
         {
-            _zWaveManager = zWaveManager;
+            _izWaveController = izWaveController;
         }
 
         public async Task Initialize()
         {
-            await _zWaveManager.Initialize();
+            await _izWaveController.Initialize();
         }
 
         public async Task SoftReset()
         {
-            await _zWaveManager.SoftReset();
+            await _izWaveController.SoftReset();
         }
         
         public List<NodeDto> GetNodes()
         {
-            var nodes = _zWaveManager.GetNodes();
+            var nodes = _izWaveController.GetNodes();
 
             return Mapper.Map<List<NodeDto>>(nodes);
         }
 
         public void AddNode(bool secure)
         {
-            _zWaveManager.AddNode(secure);
+            _izWaveController.AddNode(secure);
         }
 
         public void RemoveNode()
         {
-            _zWaveManager.RemoveNode();
+            _izWaveController.RemoveNode();
         }
 
         public string GetStatus()
         {
-            return _zWaveManager.GetStatus();
+            return _izWaveController.GetStatus();
         }
     }
 }

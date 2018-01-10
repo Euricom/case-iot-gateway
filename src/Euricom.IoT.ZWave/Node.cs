@@ -1,6 +1,6 @@
 ﻿using OpenZWave;
 using System;
-using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.ZWave
 {

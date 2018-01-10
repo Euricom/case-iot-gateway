@@ -7,7 +7,7 @@ using Euricom.IoT.Api.Models;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
-using Euricom.IoT.Http.Interfaces;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {

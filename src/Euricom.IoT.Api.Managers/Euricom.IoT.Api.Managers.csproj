@@ -11,11 +11,12 @@
     <AssemblyName>Euricom.IoT.Api.Managers</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -103,10 +104,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="CameraManager.cs" />
     <Compile Include="Interfaces\IWallMountSwitchManager.cs" />
     <Compile Include="Interfaces\IZWaveManager.cs" />
@@ -157,6 +154,10 @@
       <Project>{0525E383-D416-4465-8B1D-A06E9D48CF9B}</Project>
       <Name>Euricom.IoT.Http</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
+      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
+      <Name>Euricom.IoT.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Mailing\Euricom.IoT.Mailing.csproj">
       <Project>{621670d2-9491-4c59-aea8-85f819ddf811}</Project>
       <Name>Euricom.IoT.Mailing</Name>
@@ -201,6 +202,29 @@
       <Project>{BCAC3E11-F195-4C66-9E8F-B1E5B200E3BA}</Project>
       <Name>Euricom.IoT.Api.Models</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper">
+      <Version>6.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Dropbox.Api">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Devices.Client">
+      <Version>1.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Stormpath.SDK">
+      <Version>0.96.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt">
+      <Version>5.1.3</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -11,11 +11,12 @@
     <AssemblyName>Euricom.IoT.Devices.DanaLock</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -103,10 +104,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="DanaLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
@@ -116,6 +113,10 @@
       <Project>{502B51BE-19CE-4CA8-AB8F-09D11F5A6B4A}</Project>
       <Name>Euricom.IoT.Devices.ZWave</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
+      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
+      <Name>Euricom.IoT.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
       <Name>Euricom.IoT.Models</Name>
@@ -124,6 +125,11 @@
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
       <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.0.6</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

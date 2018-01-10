@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Euricom.IoT.Devices.ZWave.Interfaces
+namespace Euricom.IoT.Interfaces
 {
-    public interface IZWaveManager
+    public interface IZWaveController
     {
         Task SoftReset();
         Task Initialize();

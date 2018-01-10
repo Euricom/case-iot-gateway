@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Euricom.IoT.Common;
+using System.Linq;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
-using Newtonsoft.Json;
 
 namespace Euricom.IoT.DataLayer
 {
     public class UserRepository : IUserRepository
     {
-        private readonly IDbBreezeDatabase _database;
+        private readonly IotDbContext _database;
 
-        public UserRepository(IDbBreezeDatabase database)
+        public UserRepository(IotDbContext database)
         {
             _database = database;
         }
@@ -26,12 +25,13 @@ namespace Euricom.IoT.DataLayer
 
             try
             {
-                _database.SetValue(Constants.DBREEZE_TABLE_USERS, user.Username, user);
+                _database.Users.Add(user);
+                _database.SaveChanges();
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not set value for table: {Constants.DBREEZE_TABLE_USERS}, key: {user.Username}, exception: " + ex);
+                throw new Exception($"Could not add user, key: {user.Username}, exception: " + ex);
             }
         }
 
@@ -39,10 +39,12 @@ namespace Euricom.IoT.DataLayer
         {
             try
             {
-                using (var tran = _database.GetTransaction())
+                var user = _database.Users.Find(username);
+
+                if (user != null)
                 {
-                    tran.RemoveKey(Constants.DBREEZE_TABLE_USERS, username);
-                    tran.Commit();
+                    _database.Users.Remove(user);
+                    _database.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -56,7 +58,7 @@ namespace Euricom.IoT.DataLayer
         {
             try
             {
-                return _database.GetValue<User>(Constants.DBREEZE_TABLE_USERS, username);
+                return _database.Users.Find(username);
             }
             catch (Exception ex)
             {
@@ -69,15 +71,7 @@ namespace Euricom.IoT.DataLayer
         {
             try
             {
-                var users = new List<User>();
-                using (var tran = _database.GetTransaction())
-                {
-                    foreach (var row in tran.SelectForward<string, string>(Constants.DBREEZE_TABLE_USERS))
-                    {
-                        users.Add(JsonConvert.DeserializeObject<User>(row.Value));
-                    }
-                }
-                return users;
+                return _database.Users.ToList();
             }
             catch (Exception ex)
             {
@@ -95,7 +89,10 @@ namespace Euricom.IoT.DataLayer
 
             try
             {
-                _database.SetValue(Constants.DBREEZE_TABLE_USERS, user.Username, user);
+                var u = _database.Users.Find(user.Username);
+
+                _database.Entry(u).CurrentValues.SetValues(user);
+                _database.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -108,11 +105,7 @@ namespace Euricom.IoT.DataLayer
         {
             try
             {
-                using (var tran = _database.GetTransaction())
-                {
-                    var result = tran.Select<string, string>(Constants.DBREEZE_TABLE_USERS, username);
-                    return result.Exists;
-                }
+                return _database.Users.Find(username) != null;
             }
             catch (Exception ex)
             {

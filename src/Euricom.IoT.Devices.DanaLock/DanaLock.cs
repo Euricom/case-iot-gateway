@@ -1,5 +1,5 @@
 ﻿using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Devices.DanaLock
@@ -26,24 +26,24 @@ namespace Euricom.IoT.Devices.DanaLock
 
         #region Functionality
 
-        public bool IsLocked(IZWaveManager manager)
+        public bool IsLocked(IZWaveController controller)
         {
-            return manager.GetValue(NodeId, 0x62);
+            return controller.GetValue(NodeId, 0x62);
         }
 
-        public void OpenLock(IZWaveManager manager)
+        public void OpenLock(IZWaveController controller)
         {
-            manager.SetValue(NodeId, 0x62, false);
+            controller.SetValue(NodeId, 0x62, false);
         }
 
-        public void CloseLock(IZWaveManager manager)
+        public void CloseLock(IZWaveController controller)
         {
-            manager.SetValue(NodeId, 0x62, true);
+            controller.SetValue(NodeId, 0x62, true);
         }
 
-        public bool TestConnection(IZWaveManager manager)
+        public bool TestConnection(IZWaveController controller)
         {
-            return manager.TestConnection(NodeId);
+            return controller.TestConnection(NodeId);
         }
 
         #endregion

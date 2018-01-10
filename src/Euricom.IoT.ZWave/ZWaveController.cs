@@ -5,14 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
-using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Interfaces;
 using Newtonsoft.Json;
 using OpenZWave;
 
 namespace Euricom.IoT.ZWave
 {
-    public class ZWaveManager : IZWaveManager
+    public class ZWaveController : IZWaveController
     {
         private readonly IZWaveDeviceNotifier _notifier;
         private readonly string _networkKey;
@@ -22,7 +21,7 @@ namespace Euricom.IoT.ZWave
 
         private bool _initialized;
 
-        public ZWaveManager(IZWaveDeviceNotifier notifier, string networkKey)
+        public ZWaveController(IZWaveDeviceNotifier notifier, string networkKey)
         {
             _notifier = notifier;
             _networkKey = networkKey;

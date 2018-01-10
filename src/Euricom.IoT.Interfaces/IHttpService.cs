@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Euricom.IoT.Http.Interfaces
+namespace Euricom.IoT.Interfaces
 {
     public interface IHttpService
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using Windows.Storage;
-using Autofac;
-using DBreeze;
+﻿using Autofac;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.AzureDeviceManager;
@@ -11,16 +8,11 @@ using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Devices.WallMountSwitch;
-using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Devices.ZWave.Interfaces;
 using Euricom.IoT.Http;
-using Euricom.IoT.Http.Interfaces;
-using Euricom.IoT.Logging;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 using Euricom.IoT.Tcp;
-using Euricom.IoT.Tcp.Interfaces;
 using Restup.WebServer.Http;
-using IZWaveManager = Euricom.IoT.Api.Managers.Interfaces.IZWaveManager;
 
 namespace Euricom.IoT.Api
 {
@@ -51,8 +43,8 @@ namespace Euricom.IoT.Api
             {
                 var settings = context.Resolve<Settings>();
 
-                return new ZWave.ZWaveManager(context.Resolve<IZWaveDeviceNotifier>(), settings.ZWaveNetworkKey);
-            }).As<Devices.ZWave.Interfaces.IZWaveManager>().SingleInstance();
+                return new ZWave.ZWaveController(context.Resolve<IZWaveDeviceNotifier>(), settings.ZWaveNetworkKey);
+            }).As<IZWaveController>().SingleInstance();
         }
 
         private static void RegisterAzure(ContainerBuilder builder)
@@ -91,23 +83,7 @@ namespace Euricom.IoT.Api
 
         private static void RegisterDatabase(ContainerBuilder builder)
         {
-            builder.Register(context =>
-            {
-                try
-                {
-                    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                    var engine = new DBreezeEngine(new DBreezeConfiguration { DBreezeDataFolderName = localFolder.Path });
-                    Logger.Instance.LogInformationWithContext(typeof(Bootstrapper), "Database DBreeze (settings DB) Initialized succesfully");
-
-                    return engine;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Instance.LogErrorWithContext(typeof(Bootstrapper), ex);
-                    throw;
-                }
-            }).SingleInstance();
-            builder.RegisterType<DbBreezeDatabase>().As<IDbBreezeDatabase>();
+            builder.RegisterType<IotDbContext>().SingleInstance();
             builder.Register(context =>
             {
                 var repository = context.Resolve<ISettingsRepository>();

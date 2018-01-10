@@ -1,4 +1,4 @@
-﻿namespace Euricom.IoT.Tcp.Interfaces
+﻿namespace Euricom.IoT.Interfaces
 {
     public interface ISocketClient
     {

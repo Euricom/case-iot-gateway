@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Euricom.IoT.Devices.ZWave.Interfaces
+﻿namespace Euricom.IoT.Interfaces
 {
     public interface INode
     {

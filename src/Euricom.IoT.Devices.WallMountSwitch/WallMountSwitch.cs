@@ -1,5 +1,5 @@
 ﻿using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Devices.WallMountSwitch
@@ -25,24 +25,24 @@ namespace Euricom.IoT.Devices.WallMountSwitch
         }
 
         #region Functionality
-        public bool IsOn(IZWaveManager manager)
+        public bool IsOn(IZWaveController controller)
         {
-            return manager.GetValue(NodeId, 0x25);
+            return controller.GetValue(NodeId, 0x25);
         }
 
-        public void TurnOn(IZWaveManager manager)
+        public void TurnOn(IZWaveController controller)
         {
-            manager.SetValue(NodeId, 0x25, true);
+            controller.SetValue(NodeId, 0x25, true);
         }
 
-        public void TurnOff(IZWaveManager manager)
+        public void TurnOff(IZWaveController controller)
         {
-            manager.SetValue(NodeId, 0x25, false);
+            controller.SetValue(NodeId, 0x25, false);
         }
 
-        public bool TestConnection(IZWaveManager manager)
+        public bool TestConnection(IZWaveController controller)
         {
-            return manager.TestConnection(NodeId);
+            return controller.TestConnection(NodeId);
         }
         #endregion
     }

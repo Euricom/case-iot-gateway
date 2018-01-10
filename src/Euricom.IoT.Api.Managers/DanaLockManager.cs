@@ -8,20 +8,20 @@ using Euricom.IoT.Api.Models;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.DanaLock;
-using IZWaveManager = Euricom.IoT.Devices.ZWave.Interfaces.IZWaveManager;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
     public class DanaLockManager : IDanaLockManager
     {
         private readonly IDeviceRepository<DanaLock> _repository;
-        private readonly IZWaveManager _manager;
+        private readonly IZWaveController _controller;
         private readonly IAzureDeviceManager _deviceManager;
 
-        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveManager manager, IAzureDeviceManager deviceManager)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IAzureDeviceManager deviceManager)
         {
             _repository = repository;
-            _manager = manager;
+            _controller = controller;
             _deviceManager = deviceManager;
         }
 
@@ -83,7 +83,7 @@ namespace Euricom.IoT.Api.Managers
             {
                 var device = _repository.Get(deviceId);
 
-                return device.TestConnection(_manager);
+                return device.TestConnection(_controller);
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace Euricom.IoT.Api.Managers
                     throw new InvalidOperationException($"Device: {danalock.Name} {deviceId} is not enabled");
                 }
 
-                return danalock.IsLocked(_manager);
+                return danalock.IsLocked(_controller);
             }
             catch (Exception ex)
             {
@@ -136,10 +136,10 @@ namespace Euricom.IoT.Api.Managers
                 switch (state)
                 {
                     case "open":
-                        danalock.OpenLock(_manager);
+                        danalock.OpenLock(_controller);
                         break;
                     case "close":
-                        danalock.CloseLock(_manager);
+                        danalock.CloseLock(_controller);
                         break;
                     default:
                         throw new InvalidOperationException($"unknown operation for DanaLock node: {deviceId}, state: {state}");

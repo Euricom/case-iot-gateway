@@ -2,10 +2,9 @@
 using Euricom.IoT.Api.Mappings;
 using Euricom.IoT.Logging;
 using System;
-using System.Threading.Tasks;
 using Autofac;
 using Euricom.IoT.DataLayer.Interfaces;
-using Euricom.IoT.Devices.ZWave.Interfaces;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api
@@ -40,12 +39,11 @@ namespace Euricom.IoT.Api
 
             // Init logger
             Logger.Configure(preserveHistoryLogDays, logLevel);
-            var instLogger = Logger.Instance;
+            //var instLogger = Logger.Instance;
 
             // Init DanaLock
-            var zWaveManager = _container.Resolve<IZWaveManager>();
-            
-            await zWaveManager.Initialize();
+            var zWaveController = _container.Resolve<IZWaveController>();
+            await zWaveController.Initialize();
 
             // Set up monitoring of devices / regular tasks that cleanup files
             //StartMonitors();
@@ -71,10 +69,10 @@ namespace Euricom.IoT.Api
             });
         }
 
-        private void StartMonitors()
-        {
-            //var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
-        }
+        //private void StartMonitors()
+        //{
+        //    //var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
+        //}
 
         public void Dispose()
         {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Euricom.IoT.Devices.ZWave.Interfaces
+namespace Euricom.IoT.Interfaces
 {
     public interface IZWaveDeviceNotifier
     {

@@ -4,6 +4,8 @@ namespace Euricom.IoT.Models
 {
     public class Settings
     {
+        public int Id { get; set; }
+
         public Settings()
         {
             GatewayName = "IoTGateway";

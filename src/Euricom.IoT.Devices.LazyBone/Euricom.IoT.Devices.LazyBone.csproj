@@ -11,11 +11,12 @@
     <AssemblyName>Euricom.IoT.Devices.LazyBone</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -103,10 +104,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="LazyBone.cs" />
     <Compile Include="LazyBoneState.cs" />
     <Compile Include="LazyBoneStates.cs" />
@@ -117,6 +114,10 @@
     <ProjectReference Include="..\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
       <Project>{A0990875-4EBE-4CB7-AC1C-11855EB6280A}</Project>
       <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
+      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
+      <Name>Euricom.IoT.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
       <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
@@ -130,6 +131,11 @@
       <Project>{01FA1D57-2394-40E7-87DC-756648D5E05C}</Project>
       <Name>Euricom.IoT.Tcp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.0.6</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

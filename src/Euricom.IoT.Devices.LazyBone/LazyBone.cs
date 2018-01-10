@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using Euricom.IoT.Common.Utilities;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
-using Euricom.IoT.Tcp.Interfaces;
 
 namespace Euricom.IoT.Devices.LazyBone
 {
