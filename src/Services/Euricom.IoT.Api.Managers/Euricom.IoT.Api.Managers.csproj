@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2B675E07-0441-4FA5-9F46-435EFFD17A01}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Euricom.IoT.Api.Managers</RootNamespace>
+    <AssemblyName>Euricom.IoT.Api.Managers</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CameraManager.cs" />
+    <Compile Include="Interfaces\IWallMountSwitchManager.cs" />
+    <Compile Include="Interfaces\IZWaveManager.cs" />
+    <Compile Include="WallMountSwitchManager.cs" />
+    <Compile Include="Interfaces\IGatewayManager.cs" />
+    <Compile Include="GatewayManager.cs" />
+    <Compile Include="SecurityManager.cs" />
+    <Compile Include="Interfaces\IConfigurationManager.cs" />
+    <Compile Include="Interfaces\ILogManager.cs" />
+    <Compile Include="Interfaces\ICameraManager.cs" />
+    <Compile Include="Interfaces\IDanaLockManager.cs" />
+    <Compile Include="Interfaces\ILazyBoneManager.cs" />
+    <Compile Include="DanaLockManager.cs" />
+    <Compile Include="Interfaces\ISecurityManager.cs" />
+    <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="LogManager.cs" />
+    <Compile Include="LazyBoneManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZWaveManager.cs" />
+    <EmbeddedResource Include="Properties\Euricom.IoT.Api.Components.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.Camera\Euricom.IoT.Devices.Camera.csproj">
+      <Project>{9da8728a-ee56-48c5-92ec-087dbfc9bf18}</Project>
+      <Name>Euricom.IoT.Devices.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.DanaLock\Euricom.IoT.Devices.DanaLock.csproj">
+      <Project>{3021fe48-a1a3-4c3d-9aa6-8601813acaed}</Project>
+      <Name>Euricom.IoT.Devices.DanaLock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.LazyBone\Euricom.IoT.Devices.LazyBone.csproj">
+      <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
+      <Name>Euricom.IoT.Devices.LazyBone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.WallMountSwitch\Euricom.IoT.Devices.WallMountSwitch.csproj">
+      <Project>{9edc1c3d-7e2b-4769-a260-8885487d45b7}</Project>
+      <Name>Euricom.IoT.Devices.WallMountSwitch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
+      <Project>{502b51be-19ce-4ca8-ab8f-09d11f5a6b4a}</Project>
+      <Name>Euricom.IoT.Devices.ZWave</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
+      <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
+      <Name>Euricom.IoT.AzureBlobStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj">
+      <Project>{a1673557-c45c-457b-bd38-597549771075}</Project>
+      <Name>Euricom.IoT.AzureDeviceManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
+      <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
+      <Project>{0525E383-D416-4465-8B1D-A06E9D48CF9B}</Project>
+      <Name>Euricom.IoT.Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
+      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
+      <Name>Euricom.IoT.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Mailing\Euricom.IoT.Mailing.csproj">
+      <Project>{621670d2-9491-4c59-aea8-85f819ddf811}</Project>
+      <Name>Euricom.IoT.Mailing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
+      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Name>Euricom.IoT.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Name>Euricom.IoT.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Security\Euricom.IoT.Security.csproj">
+      <Project>{4cc1da31-1f5a-42cc-835e-c233c1633ceb}</Project>
+      <Name>Euricom.IoT.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Datalayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
+      <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
+      <Name>Euricom.IoT.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Tcp\Euricom.IoT.Tcp.csproj">
+      <Project>{01FA1D57-2394-40E7-87DC-756648D5E05C}</Project>
+      <Name>Euricom.IoT.Tcp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.ZWave\Euricom.IoT.ZWave.csproj">
+      <Project>{A0B0AE9E-6E31-49FC-818F-94B0D10BB9F8}</Project>
+      <Name>Euricom.IoT.ZWave</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
+      <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>
+      <Name>Euricom.IoT.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Euricom.IoT.Api.Models\Euricom.IoT.Api.Models.csproj">
+      <Project>{BCAC3E11-F195-4C66-9E8F-B1E5B200E3BA}</Project>
+      <Name>Euricom.IoT.Api.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper">
+      <Version>6.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Dropbox.Api">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Devices.Client">
+      <Version>1.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Stormpath.SDK">
+      <Version>0.96.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt">
+      <Version>5.1.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>..\..\..\..\..\.nuget\packages\System.Threading.Tasks\4.3.0\ref\netcore50\System.Threading.Tasks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

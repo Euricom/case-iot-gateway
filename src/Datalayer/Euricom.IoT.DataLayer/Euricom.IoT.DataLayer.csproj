@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B70FC52F-D02C-4F41-9CB9-E64DFDE544D7}</ProjectGuid>
+    <ProjectGuid>{D0EC9A71-0C47-4F57-8A36-587596418681}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Euricom.IoT.Messaging</RootNamespace>
-    <AssemblyName>Euricom.IoT.Messaging</AssemblyName>
+    <RootNamespace>Euricom.IoT.DataLayer</RootNamespace>
+    <AssemblyName>Euricom.IoT.DataLayer</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
@@ -16,10 +16,6 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -108,17 +104,28 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="IMqttMessagePublisher.cs" />
-    <Compile Include="MqttMessagePublisher.cs" />
+    <Compile Include="IotDbContext.cs" />
+    <Compile Include="DeviceRepository.cs" />
+    <Compile Include="Interfaces\IDeviceRepository.cs" />
+    <Compile Include="Interfaces\ISettingsRepository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Euricom.IoT.Messaging.rd.xml" />
+    <Compile Include="SettingsRepository.cs" />
+    <Compile Include="UserRepository.cs" />
+    <EmbeddedResource Include="Properties\Euricom.IoT.DataLayer.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Devices.Client">
-      <Version>1.6.1</Version>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+      <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +133,27 @@
       <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
       <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.Camera\Euricom.IoT.Devices.Camera.csproj">
+      <Project>{9da8728a-ee56-48c5-92ec-087dbfc9bf18}</Project>
+      <Name>Euricom.IoT.Devices.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.DanaLock\Euricom.IoT.Devices.DanaLock.csproj">
+      <Project>{3021fe48-a1a3-4c3d-9aa6-8601813acaed}</Project>
+      <Name>Euricom.IoT.Devices.DanaLock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.LazyBone\Euricom.IoT.Devices.LazyBone.csproj">
+      <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
+      <Name>Euricom.IoT.Devices.LazyBone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.WallMountSwitch\Euricom.IoT.Devices.WallMountSwitch.csproj">
+      <Project>{9edc1c3d-7e2b-4769-a260-8885487d45b7}</Project>
+      <Name>Euricom.IoT.Devices.WallMountSwitch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
+      <Project>{502b51be-19ce-4ca8-ab8f-09d11f5a6b4a}</Project>
+      <Name>Euricom.IoT.Devices.ZWave</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
       <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
       <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
