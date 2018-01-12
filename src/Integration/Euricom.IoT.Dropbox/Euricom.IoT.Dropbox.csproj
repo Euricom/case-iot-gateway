@@ -112,15 +112,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
+      <Project>{67F146AF-D466-4393-8782-E8F91F696EE8}</Project>
       <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Datalayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
-      <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
+    <ProjectReference Include="..\..\DataLayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
+      <Project>{C9C7BBCB-8B67-4408-B74D-211BDAD4CFDF}</Project>
       <Name>Euricom.IoT.DataLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Project>{4BB55C8E-EA52-4D0D-94CE-656199F1352D}</Project>
       <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
   </ItemGroup>

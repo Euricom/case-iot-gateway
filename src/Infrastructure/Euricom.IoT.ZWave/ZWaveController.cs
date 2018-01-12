@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Euricom.IoT.Interfaces;
-using Newtonsoft.Json;
 using OpenZWave;
 
 namespace Euricom.IoT.ZWave

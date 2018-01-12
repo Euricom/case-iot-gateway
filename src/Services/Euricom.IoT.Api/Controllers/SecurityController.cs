@@ -1,12 +1,12 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using System;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.Logging;
 using Restup.WebServer.Attributes;
 
 namespace Euricom.IoT.Api.Controllers

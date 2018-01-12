@@ -123,11 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Project>{67F146AF-D466-4393-8782-E8F91F696EE8}</Project>
       <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Project>{4BB55C8E-EA52-4D0D-94CE-656199F1352D}</Project>
       <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
   </ItemGroup>

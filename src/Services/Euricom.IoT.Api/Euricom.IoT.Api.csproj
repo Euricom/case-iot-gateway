@@ -185,39 +185,39 @@
       <Name>WebServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
-      <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
+      <Project>{7abe0fea-6b32-4515-a5c3-e511951f3562}</Project>
       <Name>Euricom.IoT.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
-      <Project>{23f9b361-6dce-4cf7-8d6c-3913ed4b0903}</Project>
+      <Project>{5111A896-62D6-4239-B352-426A2C48960D}</Project>
       <Name>Euricom.IoT.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
+      <Project>{67F146AF-D466-4393-8782-E8F91F696EE8}</Project>
       <Name>Euricom.IoT.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Datalayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
-      <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
+    <ProjectReference Include="..\..\DataLayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
+      <Project>{C9C7BBCB-8B67-4408-B74D-211BDAD4CFDF}</Project>
       <Name>Euricom.IoT.DataLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.Camera\Euricom.IoT.Devices.Camera.csproj">
-      <Project>{9da8728a-ee56-48c5-92ec-087dbfc9bf18}</Project>
+      <Project>{2435BE22-D69C-4A43-804F-2BD12371FD56}</Project>
       <Name>Euricom.IoT.Devices.Camera</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.DanaLock\Euricom.IoT.Devices.DanaLock.csproj">
-      <Project>{3021fe48-a1a3-4c3d-9aa6-8601813acaed}</Project>
+      <Project>{7EC62B13-6D16-4A21-AACE-9A6B8C4413F9}</Project>
       <Name>Euricom.IoT.Devices.DanaLock</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.LazyBone\Euricom.IoT.Devices.LazyBone.csproj">
-      <Project>{c6fd53cc-6841-4956-81da-40bdb332705e}</Project>
+      <Project>{63AD8716-DEF1-4EF1-9C90-927294733436}</Project>
       <Name>Euricom.IoT.Devices.LazyBone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.WallMountSwitch\Euricom.IoT.Devices.WallMountSwitch.csproj">
-      <Project>{9edc1c3d-7e2b-4769-a260-8885487d45b7}</Project>
+      <Project>{9DFD708D-7449-48E7-ACF7-6CDFF5BC1D10}</Project>
       <Name>Euricom.IoT.Devices.WallMountSwitch</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Devices\Euricom.IoT.Devices.ZWave\Euricom.IoT.Devices.ZWave.csproj">
-      <Project>{502b51be-19ce-4ca8-ab8f-09d11f5a6b4a}</Project>
+      <Project>{45EE642F-ED31-4973-90B0-3C837FD3C115}</Project>
       <Name>Euricom.IoT.Devices.ZWave</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
@@ -225,7 +225,7 @@
       <Name>Euricom.IoT.Http</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6b8d0662-b290-451d-add6-73634a7f0c33}</Project>
+      <Project>{4BB55C8E-EA52-4D0D-94CE-656199F1352D}</Project>
       <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Mailing\Euricom.IoT.Mailing.csproj">

@@ -1,10 +1,10 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Models.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Managers
 {

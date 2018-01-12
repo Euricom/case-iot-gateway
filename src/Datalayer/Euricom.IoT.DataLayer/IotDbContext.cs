@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Devices.Camera;
+﻿using System;
+using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Devices.WallMountSwitch;
@@ -28,6 +29,7 @@ namespace Euricom.IoT.DataLayer
         {
             modelBuilder.Entity<Settings>().HasKey(c => c.Id);
             modelBuilder.Entity<User>().HasKey(c => c.Username);
+            modelBuilder.Entity<Device>().HasKey(c => c.DeviceId);
         }
     }
 }

@@ -8,12 +8,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace Euricom.IoT.Logging
 {
     public class Logger : ILogger
     {
+        private static string _path;
         private static volatile Logger _instance;
         private static object _syncRoot = new Object(); //for thread safe singleton
 
@@ -27,11 +27,12 @@ namespace Euricom.IoT.Logging
 
         private Logger()
         {
-            Init().Wait();
+            Init();
         }
 
-        public static void Configure(int historyLog, LogLevel logLevel)
+        public static void Configure(int historyLog, LogLevel logLevel, string path)
         {
+            _path = path;
             _historyLog = historyLog;
             _logEventLevel = (LogEventLevel)Enum.Parse(typeof(LogEventLevel), logLevel.ToString());
         }
@@ -53,53 +54,42 @@ namespace Euricom.IoT.Logging
             }
         }
 
-        private async Task Init()
+        public void Init()
         {
-            try
+            Debug.WriteLine("Logger Init()");
+
+            Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
+
+            string logDirectory = Path.Combine(_path, "logs");
+            if (!Directory.Exists(logDirectory))
             {
-                Debug.WriteLine("Logger Init()");
-
-                Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
-
-                StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-                string logDirectory = System.IO.Path.Combine(localFolder.Path, "logs");
-                if (!System.IO.Directory.Exists(logDirectory))
-                {
-                    await localFolder.CreateFolderAsync("logs");
-                }
-
-                // string template = "{Timestamp} [{Level}] {Message}{NewLine}{Exception}";
-                string pathFormat = logDirectory + "\\" + "log-{Date}.txt";
-                var jsonFormatter = new JsonFormatter(null, false, null);
-
-                var logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(jsonFormatter, pathFormat, _logEventLevel, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
-                .CreateLogger();
-
-                _logger = logger;
-
-                _logger.Information($"Logging started: history log will be saved for {_historyLog} days");
+                Directory.CreateDirectory(logDirectory);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            // string template = "{Timestamp} [{Level}] {Message}{NewLine}{Exception}";
+            string pathFormat = logDirectory + "\\" + "log-{Date}.txt";
+            var jsonFormatter = new JsonFormatter(null, false, null);
+
+            var logger = new LoggerConfiguration()
+            .WriteTo.RollingFile(jsonFormatter, pathFormat, _logEventLevel, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
+            .CreateLogger();
+
+            _logger = logger;
+
+            _logger.Information($"Logging started: history log will be saved for {_historyLog} days");
         }
 
         public string[] QueryLogFiles()
         {
-            var logFiles = new List<string>();
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            string logDirectory = System.IO.Path.Combine(localFolder.Path, "logs");
-            var files = System.IO.Directory.GetFiles(logDirectory);
+            string logDirectory = Path.Combine(_path, "logs");
+            var files = Directory.GetFiles(logDirectory);
             return files;
         }
 
         public string[] GetLogLines(string date)
         {
             var logLines = new List<string>();
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            string logDirectory = System.IO.Path.Combine(localFolder.Path, "logs");
+            string logDirectory = System.IO.Path.Combine(_path, "logs");
             string logFile = System.IO.Path.Combine(logDirectory, "log-" + date + ".txt");
             if (System.IO.File.Exists(logFile))
             {
@@ -120,10 +110,9 @@ namespace Euricom.IoT.Logging
         public string[] GetOpenZWaveLog()
         {
             var logLines = new List<string>();
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            string logDirectory = System.IO.Path.Combine(localFolder.Path);
-            string logFile = System.IO.Path.Combine(logDirectory, "OZW_Log.txt");
-            if (System.IO.File.Exists(logFile))
+            string logDirectory = Path.Combine(_path);
+            string logFile = Path.Combine(logDirectory, "OZW_Log.txt");
+            if (File.Exists(logFile))
             {
                 using (var fileStream = File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))

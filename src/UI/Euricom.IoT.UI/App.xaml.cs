@@ -5,6 +5,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Euricom.IoT.Logging;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace Euricom.IoT.UI
@@ -99,7 +100,7 @@ namespace Euricom.IoT.UI
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logging.Logger.Instance.LogError(e.Exception);
+            Logger.Instance.LogError(e.Exception);
         }
     }
 }

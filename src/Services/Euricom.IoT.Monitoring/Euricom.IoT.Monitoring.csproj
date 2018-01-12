@@ -113,6 +113,10 @@
     <EmbeddedResource Include="Properties\Euricom.IoT.Monitoring.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{7abe0fea-6b32-4515-a5c3-e511951f3562}</Project>
+      <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
       <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
@@ -121,25 +125,9 @@
       <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
       <Name>Euricom.IoT.AzureBlobStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
-      <Project>{a0990875-4ebe-4cb7-ac1c-11855eb6280a}</Project>
-      <Name>Euricom.IoT.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{af740215-006d-4021-a019-6127b64dae88}</Project>
-      <Name>Euricom.IoT.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Datalayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
-      <Project>{d0ec9a71-0c47-4f57-8a36-587596418681}</Project>
-      <Name>Euricom.IoT.DataLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Integration\Euricom.IoT.Dropbox\Euricom.IoT.Dropbox.csproj">
       <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
       <Name>Euricom.IoT.Dropbox</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
-      <Name>Euricom.IoT.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
       <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>

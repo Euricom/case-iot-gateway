@@ -1,8 +1,5 @@
 ﻿using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Common;
-using Euricom.IoT.Logging;
-using Euricom.IoT.Models;
-using Euricom.IoT.Models.Messages;
 using System;
 using System.Diagnostics;
 using System.Threading;

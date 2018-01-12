@@ -1,5 +1,4 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 using Euricom.IoT.Models.Messages;
 using Euricom.IoT.Security;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.LazyBone;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Managers
 {

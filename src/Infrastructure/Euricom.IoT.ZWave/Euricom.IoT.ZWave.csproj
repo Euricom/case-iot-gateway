@@ -112,22 +112,18 @@
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
-      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
-      <Name>Euricom.IoT.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.Logging\Euricom.IoT.Logging.csproj">
-      <Project>{6B8D0662-B290-451D-ADD6-73634A7F0C33}</Project>
-      <Name>Euricom.IoT.Logging</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.6</Version>
     </PackageReference>
     <PackageReference Include="OpenZWave">
       <Version>2.0.0-beta2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
+      <Project>{5111A896-62D6-4239-B352-426A2C48960D}</Project>
+      <Name>Euricom.IoT.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

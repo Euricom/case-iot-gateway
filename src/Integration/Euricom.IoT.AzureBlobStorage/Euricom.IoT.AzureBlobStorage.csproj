@@ -111,12 +111,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Models\Euricom.IoT.Models.csproj">
-      <Project>{AF740215-006D-4021-A019-6127B64DAE88}</Project>
+      <Project>{67F146AF-D466-4393-8782-E8F91F696EE8}</Project>
       <Name>Euricom.IoT.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Datalayer\Euricom.IoT.DataLayer\Euricom.IoT.DataLayer.csproj">
-      <Project>{D0EC9A71-0C47-4F57-8A36-587596418681}</Project>
-      <Name>Euricom.IoT.DataLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

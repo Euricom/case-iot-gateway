@@ -1,5 +1,4 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,6 +8,7 @@ using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Managers
 {

@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Mappings;
-using Euricom.IoT.Logging;
 using System;
+using Windows.Storage;
 using Autofac;
+using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Euricom.IoT.Api
 {
@@ -23,6 +26,9 @@ namespace Euricom.IoT.Api
             // Add AutoMapper mappings
             AddAutoMapperMappings();
 
+            var iotDbContext = _container.Resolve<IotDbContext>();
+            await iotDbContext.Database.MigrateAsync();
+
             // Init admin user
             var userRepository = _container.Resolve<IUserRepository>();
             userRepository.Seed();
@@ -36,10 +42,12 @@ namespace Euricom.IoT.Api
             var preserveHistoryLogDays = settings.HistoryLog;
             // Get setting for log level
             var logLevel = settings.LogLevel;
-
             // Init logger
-            Logger.Configure(preserveHistoryLogDays, logLevel);
-            //var instLogger = Logger.Instance;
+            Logger.Configure(preserveHistoryLogDays, logLevel, ApplicationData.Current.LocalFolder.Path);
+            var instLogger = Logger.Instance;
+
+            var database = _container.Resolve<IotDbContext>();
+            await database.Database.MigrateAsync();
 
             // Init DanaLock
             var zWaveController = _container.Resolve<IZWaveController>();

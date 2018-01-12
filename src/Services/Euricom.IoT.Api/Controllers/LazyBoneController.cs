@@ -1,6 +1,5 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
-using Euricom.IoT.Logging;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
@@ -9,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.Devices.LazyBone;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Controllers
 {

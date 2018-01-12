@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
@@ -9,6 +8,7 @@ using Euricom.IoT.Interfaces;
 using System.Collections.Generic;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Managers
 {

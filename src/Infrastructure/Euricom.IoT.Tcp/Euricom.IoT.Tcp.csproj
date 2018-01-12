@@ -117,7 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
-      <Project>{23F9B361-6DCE-4CF7-8D6C-3913ED4B0903}</Project>
+      <Project>{5111A896-62D6-4239-B352-426A2C48960D}</Project>
       <Name>Euricom.IoT.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
