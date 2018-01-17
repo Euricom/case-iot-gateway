@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Devices.ZWave;
+﻿using System.Collections.Generic;
+using Euricom.IoT.Devices.ZWave;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
@@ -6,6 +7,9 @@ namespace Euricom.IoT.Devices.WallMountSwitch
 {
     public class WallMountSwitch : ZWaveDevice
     {
+        // EF
+        private WallMountSwitch() { }
+
         public WallMountSwitch(string deviceId, string primaryKey, byte nodeId, string name, bool enabled, int pollingTime)
             : base(deviceId, primaryKey, HardwareType.WallMountSwitch, nodeId)
         {
@@ -45,5 +49,10 @@ namespace Euricom.IoT.Devices.WallMountSwitch
             return controller.TestConnection(NodeId);
         }
         #endregion
+
+        public override Dictionary<string, string> GetState(byte key, byte value)
+        {
+            return new Dictionary<string, string>();
+        }
     }
 }

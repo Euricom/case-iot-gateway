@@ -4,12 +4,14 @@ using Microsoft.Azure.Devices.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Euricom.IoT.Interfaces;
+using Newtonsoft.Json;
 
 namespace Euricom.IoT.AzureDeviceManager
 {
     public class AzureDeviceManager : IAzureDeviceManager
     {
-        private RegistryManager _registryManager;
+        private readonly RegistryManager _registryManager;
 
         public AzureDeviceManager(string connectionString)
         {
@@ -62,15 +64,27 @@ namespace Euricom.IoT.AzureDeviceManager
             }
         }
 
-        public void UpdateConnectionString(string connectionstring)
+        public async Task UpdateStateAsync(string deviceId, Dictionary<string, string> properties)
         {
-            if (String.IsNullOrEmpty(connectionstring))
+            try
             {
-                Logger.Instance.LogWarningWithContext(GetType(), "Please set a connection string for Azure IoT Hub URI");
-                throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
-            }
+                var twin = await _registryManager.GetDeviceAsync(deviceId);
 
-            _registryManager = RegistryManager.CreateFromConnectionString(connectionstring);
+                var patch = new
+                {
+                    properties = new
+                    {
+                        desired = properties
+                    }
+                };
+                
+                await _registryManager.UpdateTwinAsync(deviceId, JsonConvert.SerializeObject(patch), twin.ETag);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw;
+            }
         }
     }
 }

@@ -5,6 +5,9 @@ namespace Euricom.IoT.Models
 {
     public class Device
     {
+        // EF
+        protected Device() { }
+
         public Device(string deviceId, string primaryKey, HardwareType type)
         {
             if (Validation.ValidateDeviceId(deviceId))

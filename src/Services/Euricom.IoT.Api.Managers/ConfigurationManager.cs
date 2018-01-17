@@ -1,6 +1,6 @@
 ﻿using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
@@ -24,8 +24,6 @@ namespace Euricom.IoT.Api.Managers
         public void SaveConfigSettings(Settings settings)
         {
             _settingsRepository.Update(settings);
-
-            _deviceManager.UpdateConnectionString(settings.AzureIotHubUriConnectionString);
         }
     }
 }

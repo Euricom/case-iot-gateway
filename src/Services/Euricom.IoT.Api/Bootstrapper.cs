@@ -59,6 +59,7 @@ namespace Euricom.IoT.Api
         private static void RegisterRepositories(ContainerBuilder builder)
         {
             builder.RegisterType<UserRepository>().As<IUserRepository>();
+            builder.RegisterType<ZWaveDeviceRepository>().As<IZWaveDeviceRepository>();
             builder.RegisterType<SettingsRepository>().As<ISettingsRepository>();
             builder.RegisterType<DeviceRepository<WallMountSwitch>>().As<IDeviceRepository<WallMountSwitch>>();
             builder.RegisterType<DeviceRepository<DanaLock>>().As<IDeviceRepository<DanaLock>>();

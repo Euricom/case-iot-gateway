@@ -256,6 +256,10 @@
       <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
       <Name>Euricom.IoT.Dropbox</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\UI\Euricom.IoT.UI.WebAdministration\Euricom.IoT.UI.WebAdministration.csproj">
+      <Project>{fb95c4c7-5c90-4b6d-a35d-0a96bca47e5f}</Project>
+      <Name>Euricom.IoT.UI.WebAdministration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Euricom.IoT.Api.Managers\Euricom.IoT.Api.Managers.csproj">
       <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>

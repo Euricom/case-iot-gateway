@@ -8,6 +8,9 @@ namespace Euricom.IoT.Devices.LazyBone
 {
     public class LazyBone: Device
     {
+        // EF
+        private LazyBone() { }
+
         public LazyBone(string deviceId, string primaryKey, bool isDimmer, string name, bool enabled, int pollingTime, string host, short port)
             : base(deviceId, primaryKey, isDimmer == false
                 ? HardwareType.LazyBoneSwitch

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
-using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.WallMountSwitch;
 using Euricom.IoT.Interfaces;

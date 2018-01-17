@@ -122,6 +122,7 @@
     <Compile Include="LogManager.cs" />
     <Compile Include="LazyBoneManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZWaveDeviceNotifier.cs" />
     <Compile Include="ZWaveManager.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Api.Components.rd.xml" />
   </ItemGroup>
@@ -169,10 +170,6 @@
     <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
       <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
       <Name>Euricom.IoT.AzureBlobStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj">
-      <Project>{a1673557-c45c-457b-bd38-597549771075}</Project>
-      <Name>Euricom.IoT.AzureDeviceManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
       <Project>{0525E383-D416-4465-8B1D-A06E9D48CF9B}</Project>

@@ -1,4 +1,5 @@
-﻿using Euricom.IoT.Devices.ZWave;
+﻿using System.Collections.Generic;
+using Euricom.IoT.Devices.ZWave;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
@@ -6,6 +7,9 @@ namespace Euricom.IoT.Devices.DanaLock
 {
     public class DanaLock : ZWaveDevice
     {
+        // EF
+        private DanaLock() { }
+
         public DanaLock(string deviceId, string primaryKey, byte nodeId, string name, bool enabled, int pollingTime) 
             : base(deviceId, primaryKey, HardwareType.DanaLock, nodeId)
         {
@@ -47,5 +51,10 @@ namespace Euricom.IoT.Devices.DanaLock
         }
 
         #endregion
+
+        public override Dictionary<string, string> GetState(byte key, byte value)
+        {
+            return new Dictionary<string, string>();
+        }
     }
 }

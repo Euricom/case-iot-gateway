@@ -6,6 +6,9 @@ namespace Euricom.IoT.Devices.Camera
 {
     public class Camera : Device
     {
+        // EF
+        private Camera() { }
+
         public Camera(string deviceId, string primaryKey, string name, bool enabled, string address, string dropboxPath, int pollingTime, int maximumDaysDropbox, double maximumStorageDropbox, int maximumDaysAzureBlobStorage)
             : base(deviceId, primaryKey, HardwareType.Camera)
         {

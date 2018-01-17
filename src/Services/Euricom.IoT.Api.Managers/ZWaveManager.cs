@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
@@ -8,14 +7,6 @@ using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Managers
 {
-    public class ZWaveDeviceNotifier : IZWaveDeviceNotifier
-    {
-        public async Task Notify(byte nodeId, byte key, byte value)
-        {
-            Debug.WriteLine($"NodeID: {nodeId}, Key: {key}, Value: {value}");
-        }
-    }
-
     public class ZWaveManager: IZWaveManager
     {
         private readonly IZWaveController _izWaveController;

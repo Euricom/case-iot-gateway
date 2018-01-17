@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
-using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Interfaces;
