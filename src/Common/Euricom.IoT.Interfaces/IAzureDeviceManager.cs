@@ -7,6 +7,6 @@ namespace Euricom.IoT.Interfaces
     {
         Task<string> AddDeviceAsync(string deviceId);
         Task RemoveDeviceAsync(string deviceId);
-        Task UpdateStateAsync(string deviceId, Dictionary<string, string> properties);
+        Task UpdateStateAsync(string deviceId, Dictionary<string, object> properties);
     }
 }

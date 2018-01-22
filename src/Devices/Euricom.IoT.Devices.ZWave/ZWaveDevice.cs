@@ -16,6 +16,7 @@ namespace Euricom.IoT.Devices.ZWave
             NodeId = nodeId;
         }
 
-        public abstract Dictionary<string, string> GetState(byte key, byte value);
+        public abstract bool UpdateState(byte key, byte value);
+        public abstract Dictionary<string, object> GetState();
     }
 }

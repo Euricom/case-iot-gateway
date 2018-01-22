@@ -27,5 +27,25 @@ namespace Euricom.IoT.DataLayer
                 throw;
             }
         }
+
+        public void UpdateZWaveDevice(ZWaveDevice device)
+        {
+            if (device == null)
+            {
+                throw new ArgumentNullException(nameof(device));
+            }
+
+            try
+            {
+                var d = _database.ZWaveDevices.Find(device.DeviceId);
+                _database.Entry(d).CurrentValues.SetValues(device);
+                _database.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogErrorWithContext(GetType(), ex);
+                throw;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
 
@@ -21,9 +22,13 @@ namespace Euricom.IoT.Api.Managers
 
             if (device != null)
             {
-                var state = device.GetState(key, value);
+                if (device.UpdateState(key, value))
+                {
+                    _repository.UpdateZWaveDevice(device);
 
-                await _deviceManager.UpdateStateAsync(device.DeviceId, state);
+                    var state = device.GetState();
+                    await _deviceManager.UpdateStateAsync(device.DeviceId, state);
+                }
             }
         }
     }

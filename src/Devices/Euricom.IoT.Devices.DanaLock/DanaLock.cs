@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Euricom.IoT.Devices.ZWave;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
@@ -16,9 +17,12 @@ namespace Euricom.IoT.Devices.DanaLock
             Name = name;
             Enabled = enabled;
             PollingTime = pollingTime;
+            Locked = false;
         }
 
         public int PollingTime { get; protected set; }
+
+        public bool Locked { get; private set; }
 
         public void Update(byte nodeId, string name, int pollingTime, bool enabled)
         {
@@ -32,17 +36,19 @@ namespace Euricom.IoT.Devices.DanaLock
 
         public bool IsLocked(IZWaveController controller)
         {
-            return controller.GetValue(NodeId, 0x62);
+            Locked = controller.GetValue(NodeId, 0x62);
+
+            return Locked;
         }
 
         public void OpenLock(IZWaveController controller)
         {
-            controller.SetValue(NodeId, 0x62, false);
+            controller.SetValue(NodeId, 98, false);
         }
 
         public void CloseLock(IZWaveController controller)
         {
-            controller.SetValue(NodeId, 0x62, true);
+            controller.SetValue(NodeId, 98, true);
         }
 
         public bool TestConnection(IZWaveController controller)
@@ -51,10 +57,30 @@ namespace Euricom.IoT.Devices.DanaLock
         }
 
         #endregion
-
-        public override Dictionary<string, string> GetState(byte key, byte value)
+        
+        public override bool UpdateState(byte key, byte value)
         {
-            return new Dictionary<string, string>();
+            if (key != 98)
+            {
+                return false;
+            }
+
+            var val = Convert.ToBoolean(value);
+            if (Locked == val)
+            {
+                return false;
+            }
+
+            Locked = val;
+            return true;
+        }
+
+        public override Dictionary<string, object> GetState()
+        {
+            return new Dictionary<string, object>
+            {
+                { "Locked", Locked }
+            };
         }
     }
 }

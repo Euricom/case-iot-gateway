@@ -25,6 +25,7 @@ namespace Euricom.IoT.DataLayer
             try
             {
                 _database.Set<TDevice>().Add(device);
+                _database.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -89,6 +90,7 @@ namespace Euricom.IoT.DataLayer
             {
                 var d =_database.Set<TDevice>().Find(device.DeviceId);
                 _database.Entry(d).CurrentValues.SetValues(device);
+                _database.SaveChanges();
             }
             catch (Exception ex)
             {

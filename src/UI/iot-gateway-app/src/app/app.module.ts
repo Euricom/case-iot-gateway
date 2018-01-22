@@ -8,6 +8,7 @@ import { ButtonsModule, TabsModule } from 'ng2-bootstrap'
 import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http'
 import { DatePickerModule } from 'ng2-datepicker'
 import { CollapseModule } from 'ng2-bootstrap/collapse'
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import '../styles.less'
 import { routes } from './app.routes'
@@ -46,57 +47,58 @@ import { CustomHttpService } from './services/customHttp'
 import { EventAggregator } from './services/eventAggregator'
 
 export function httpFactory(backend: XHRBackend, options, eventAggregator: EventAggregator) {
-  return new CustomHttpService(backend, options, eventAggregator)
+    return new CustomHttpService(backend, options, eventAggregator)
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    UnauthorizedComponent,
-    PageNotFoundComponent,
-    NavigationComponent,
-    LoginViewComponent,
-    SettingsViewComponent,
-    ZwaveViewComponent,
-    CameraViewComponent,
-    LazyBonesViewComponent,
-    DanaLocksViewComponent,
-    WallMountViewComponent,
-    LogViewComponent,
-    OpenZWaveLogViewComponent,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    RouterModule.forRoot(routes),
-    ButtonsModule.forRoot(),
-    CollapseModule,
-    TabsModule.forRoot(),
-    ToastModule.forRoot(),
-    HttpModule,
-    DatePickerModule,
-    AuthModule,
-    CustomErrorHandler,
-  ],
-  providers: [
-    Config,
-    AuthService,
-    AuthGuardService,
-    ZwaveService,
-    SettingsService,
-    CameraService,
-    LazyBoneService,
-    DanaLockService,
-    WallmountService,
-    LogService,
-    EventAggregator,
-    { provide: CustomErrorHandler, useClass: CustomErrorHandler },
-    {
-      provide: Http,
-      useFactory: httpFactory,
-      deps: [XHRBackend, RequestOptions, EventAggregator],
-    },
-  ],
-  bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        UnauthorizedComponent,
+        PageNotFoundComponent,
+        NavigationComponent,
+        LoginViewComponent,
+        SettingsViewComponent,
+        ZwaveViewComponent,
+        CameraViewComponent,
+        LazyBonesViewComponent,
+        DanaLocksViewComponent,
+        WallMountViewComponent,
+        LogViewComponent,
+        OpenZWaveLogViewComponent,
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        RouterModule.forRoot(routes),
+        ButtonsModule.forRoot(),
+        CollapseModule,
+        TabsModule.forRoot(),
+        ToastModule.forRoot(),
+        HttpModule,
+        DatePickerModule,
+        AuthModule,
+        CustomErrorHandler,
+    ],
+    providers: [
+        Config,
+        AuthService,
+        AuthGuardService,
+        ZwaveService,
+        SettingsService,
+        CameraService,
+        LazyBoneService,
+        DanaLockService,
+        WallmountService,
+        LogService,
+        EventAggregator,
+        { provide: CustomErrorHandler, useClass: CustomErrorHandler },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        {
+            provide: Http,
+            useFactory: httpFactory,
+            deps: [XHRBackend, RequestOptions, EventAggregator],
+        },
+    ],
+    bootstrap: [AppComponent],
 })
 export class AppModule { }

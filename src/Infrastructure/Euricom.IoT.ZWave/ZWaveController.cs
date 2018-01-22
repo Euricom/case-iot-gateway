@@ -97,6 +97,14 @@ namespace Euricom.IoT.ZWave
             return false;
         }
 
+        private byte GetValueAsByte(byte nodeId, byte commandId)
+        {
+            _zwManager.GetValueAsByte(
+                new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
+                out var currentVal);
+            return currentVal;
+        }
+
         public bool GetValue(byte nodeId, byte commandId)
         {
             _zwManager.GetValueAsBool(
@@ -259,15 +267,9 @@ namespace Euricom.IoT.ZWave
                             var node = GetNode(homeId, nodeId);
                             if (node != null)
                             {
-                                _notifier.Notify(nodeId, notification.ValueId.CommandClassId, notification.Event);
+                                _notifier.Notify(nodeId, notification.ValueId.CommandClassId, Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
                             }
                         }
-                        break;
-                    }
-                default:
-                    {
-                        //Debug.WriteLine($"******Controller error '{notification.Code}'");
-                        Debug.WriteLine($"******Notification '{notification.Type.ToString()}' not Handled @ ID: {nodeId}");
                         break;
                     }
             }

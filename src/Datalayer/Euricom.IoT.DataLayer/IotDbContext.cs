@@ -30,6 +30,9 @@ namespace Euricom.IoT.DataLayer
             modelBuilder.Entity<Settings>().HasKey(c => c.Id);
             modelBuilder.Entity<User>().HasKey(c => c.Username);
             modelBuilder.Entity<Device>().HasKey(c => c.DeviceId);
+
+            modelBuilder.Entity<DanaLock>().Property(d => d.Locked).IsRequired();
+            modelBuilder.Entity<WallMountSwitch>().Property(d => d.On).IsRequired();
         }
     }
 }

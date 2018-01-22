@@ -203,36 +203,37 @@ var CustomErrorHandler_1, _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__angular_http__ = __webpack_require__("../../../http/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_ng2_datepicker__ = __webpack_require__("../../../../ng2-datepicker/lib-dist/ng2-datepicker.module.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_ng2_bootstrap_collapse__ = __webpack_require__("../../../../ng2-bootstrap/collapse/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__styles_less__ = __webpack_require__("../../../../../src/styles.less");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__styles_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__styles_less__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__app_routes__ = __webpack_require__("../../../../../src/app/app.routes.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__config__ = __webpack_require__("../../../../../src/config.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__services_authService__ = __webpack_require__("../../../../../src/app/services/authService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_zwaveService__ = __webpack_require__("../../../../../src/app/services/zwaveService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_settingsService__ = __webpack_require__("../../../../../src/app/services/settingsService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_cameraService__ = __webpack_require__("../../../../../src/app/services/cameraService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__services_lazyBoneService__ = __webpack_require__("../../../../../src/app/services/lazyBoneService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__services_danaLockService__ = __webpack_require__("../../../../../src/app/services/danaLockService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__services_wallmountService__ = __webpack_require__("../../../../../src/app/services/wallmountService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__services_logService__ = __webpack_require__("../../../../../src/app/services/logService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__components_unauthorized_unauthorized_component__ = __webpack_require__("../../../../../src/app/components/unauthorized/unauthorized.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__components_pageNotFound_pageNotFound_component__ = __webpack_require__("../../../../../src/app/components/pageNotFound/pageNotFound.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__components_navigation_navigation_component__ = __webpack_require__("../../../../../src/app/components/navigation/navigation.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__views_login_loginView_component__ = __webpack_require__("../../../../../src/app/views/login/loginView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__views_settings_settingsView_component__ = __webpack_require__("../../../../../src/app/views/settings/settingsView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__views_zwave_zwaveView_component__ = __webpack_require__("../../../../../src/app/views/zwave/zwaveView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__views_camera_cameraView_component__ = __webpack_require__("../../../../../src/app/views/camera/cameraView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__views_lazybone_lazyBoneView_component__ = __webpack_require__("../../../../../src/app/views/lazybone/lazyBoneView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__views_danalocks_danalocksView_component__ = __webpack_require__("../../../../../src/app/views/danalocks/danalocksView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__views_wallmount_switches_wallmountView_component__ = __webpack_require__("../../../../../src/app/views/wallmount-switches/wallmountView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__views_log_logView_component__ = __webpack_require__("../../../../../src/app/views/log/logView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__views_openzwavelog_openzwavelogView_component__ = __webpack_require__("../../../../../src/app/views/openzwavelog/openzwavelogView.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__app_auth_module__ = __webpack_require__("../../../../../src/app/app.auth.module.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__app_error_module__ = __webpack_require__("../../../../../src/app/app.error.module.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_35__services_authGuardService__ = __webpack_require__("../../../../../src/app/services/authGuardService.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_36__services_customHttp__ = __webpack_require__("../../../../../src/app/services/customHttp.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_37__services_eventAggregator__ = __webpack_require__("../../../../../src/app/services/eventAggregator.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_common__ = __webpack_require__("../../../common/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__styles_less__ = __webpack_require__("../../../../../src/styles.less");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__styles_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__styles_less__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__app_routes__ = __webpack_require__("../../../../../src/app/app.routes.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__config__ = __webpack_require__("../../../../../src/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_authService__ = __webpack_require__("../../../../../src/app/services/authService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_zwaveService__ = __webpack_require__("../../../../../src/app/services/zwaveService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_settingsService__ = __webpack_require__("../../../../../src/app/services/settingsService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__services_cameraService__ = __webpack_require__("../../../../../src/app/services/cameraService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__services_lazyBoneService__ = __webpack_require__("../../../../../src/app/services/lazyBoneService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__services_danaLockService__ = __webpack_require__("../../../../../src/app/services/danaLockService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__services_wallmountService__ = __webpack_require__("../../../../../src/app/services/wallmountService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__services_logService__ = __webpack_require__("../../../../../src/app/services/logService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__components_unauthorized_unauthorized_component__ = __webpack_require__("../../../../../src/app/components/unauthorized/unauthorized.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__components_pageNotFound_pageNotFound_component__ = __webpack_require__("../../../../../src/app/components/pageNotFound/pageNotFound.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__components_navigation_navigation_component__ = __webpack_require__("../../../../../src/app/components/navigation/navigation.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__views_login_loginView_component__ = __webpack_require__("../../../../../src/app/views/login/loginView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__views_settings_settingsView_component__ = __webpack_require__("../../../../../src/app/views/settings/settingsView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__views_zwave_zwaveView_component__ = __webpack_require__("../../../../../src/app/views/zwave/zwaveView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__views_camera_cameraView_component__ = __webpack_require__("../../../../../src/app/views/camera/cameraView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__views_lazybone_lazyBoneView_component__ = __webpack_require__("../../../../../src/app/views/lazybone/lazyBoneView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__views_danalocks_danalocksView_component__ = __webpack_require__("../../../../../src/app/views/danalocks/danalocksView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__views_wallmount_switches_wallmountView_component__ = __webpack_require__("../../../../../src/app/views/wallmount-switches/wallmountView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__views_log_logView_component__ = __webpack_require__("../../../../../src/app/views/log/logView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__views_openzwavelog_openzwavelogView_component__ = __webpack_require__("../../../../../src/app/views/openzwavelog/openzwavelogView.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__app_auth_module__ = __webpack_require__("../../../../../src/app/app.auth.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_35__app_error_module__ = __webpack_require__("../../../../../src/app/app.error.module.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_36__services_authGuardService__ = __webpack_require__("../../../../../src/app/services/authGuardService.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_37__services_customHttp__ = __webpack_require__("../../../../../src/app/services/customHttp.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_38__services_eventAggregator__ = __webpack_require__("../../../../../src/app/services/eventAggregator.ts");
 /* unused harmony export httpFactory */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -279,8 +280,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 function httpFactory(backend, options, eventAggregator) {
-    return new __WEBPACK_IMPORTED_MODULE_36__services_customHttp__["a" /* CustomHttpService */](backend, options, eventAggregator);
+    return new __WEBPACK_IMPORTED_MODULE_37__services_customHttp__["a" /* CustomHttpService */](backend, options, eventAggregator);
 }
 var AppModule = (function () {
     function AppModule() {
@@ -290,53 +292,54 @@ var AppModule = (function () {
 AppModule = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["NgModule"])({
         declarations: [
-            __WEBPACK_IMPORTED_MODULE_20__app_component__["a" /* AppComponent */],
-            __WEBPACK_IMPORTED_MODULE_21__components_unauthorized_unauthorized_component__["a" /* UnauthorizedComponent */],
-            __WEBPACK_IMPORTED_MODULE_22__components_pageNotFound_pageNotFound_component__["a" /* PageNotFoundComponent */],
-            __WEBPACK_IMPORTED_MODULE_23__components_navigation_navigation_component__["a" /* NavigationComponent */],
-            __WEBPACK_IMPORTED_MODULE_24__views_login_loginView_component__["a" /* LoginViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_25__views_settings_settingsView_component__["a" /* SettingsViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_26__views_zwave_zwaveView_component__["a" /* ZwaveViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_27__views_camera_cameraView_component__["a" /* CameraViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_28__views_lazybone_lazyBoneView_component__["a" /* LazyBonesViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_29__views_danalocks_danalocksView_component__["a" /* DanaLocksViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_30__views_wallmount_switches_wallmountView_component__["a" /* WallMountViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_31__views_log_logView_component__["a" /* LogViewComponent */],
-            __WEBPACK_IMPORTED_MODULE_32__views_openzwavelog_openzwavelogView_component__["a" /* OpenZWaveLogViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_21__app_component__["a" /* AppComponent */],
+            __WEBPACK_IMPORTED_MODULE_22__components_unauthorized_unauthorized_component__["a" /* UnauthorizedComponent */],
+            __WEBPACK_IMPORTED_MODULE_23__components_pageNotFound_pageNotFound_component__["a" /* PageNotFoundComponent */],
+            __WEBPACK_IMPORTED_MODULE_24__components_navigation_navigation_component__["a" /* NavigationComponent */],
+            __WEBPACK_IMPORTED_MODULE_25__views_login_loginView_component__["a" /* LoginViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_26__views_settings_settingsView_component__["a" /* SettingsViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_27__views_zwave_zwaveView_component__["a" /* ZwaveViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_28__views_camera_cameraView_component__["a" /* CameraViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_29__views_lazybone_lazyBoneView_component__["a" /* LazyBonesViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_30__views_danalocks_danalocksView_component__["a" /* DanaLocksViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_31__views_wallmount_switches_wallmountView_component__["a" /* WallMountViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_32__views_log_logView_component__["a" /* LogViewComponent */],
+            __WEBPACK_IMPORTED_MODULE_33__views_openzwavelog_openzwavelogView_component__["a" /* OpenZWaveLogViewComponent */],
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["BrowserModule"],
             __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormsModule */],
-            __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* RouterModule */].forRoot(__WEBPACK_IMPORTED_MODULE_10__app_routes__["a" /* routes */]),
+            __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* RouterModule */].forRoot(__WEBPACK_IMPORTED_MODULE_11__app_routes__["a" /* routes */]),
             __WEBPACK_IMPORTED_MODULE_5_ng2_bootstrap__["a" /* ButtonsModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_8_ng2_bootstrap_collapse__["a" /* CollapseModule */],
             __WEBPACK_IMPORTED_MODULE_5_ng2_bootstrap__["b" /* TabsModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_4_ng2_toastr_ng2_toastr__["ToastModule"].forRoot(),
             __WEBPACK_IMPORTED_MODULE_6__angular_http__["HttpModule"],
             __WEBPACK_IMPORTED_MODULE_7_ng2_datepicker__["a" /* DatePickerModule */],
-            __WEBPACK_IMPORTED_MODULE_33__app_auth_module__["a" /* AuthModule */],
-            __WEBPACK_IMPORTED_MODULE_34__app_error_module__["a" /* CustomErrorHandler */],
+            __WEBPACK_IMPORTED_MODULE_34__app_auth_module__["a" /* AuthModule */],
+            __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */],
         ],
         providers: [
-            __WEBPACK_IMPORTED_MODULE_11__config__["a" /* Config */],
-            __WEBPACK_IMPORTED_MODULE_12__services_authService__["a" /* AuthService */],
-            __WEBPACK_IMPORTED_MODULE_35__services_authGuardService__["a" /* AuthGuardService */],
-            __WEBPACK_IMPORTED_MODULE_13__services_zwaveService__["a" /* ZwaveService */],
-            __WEBPACK_IMPORTED_MODULE_14__services_settingsService__["a" /* SettingsService */],
-            __WEBPACK_IMPORTED_MODULE_15__services_cameraService__["a" /* CameraService */],
-            __WEBPACK_IMPORTED_MODULE_16__services_lazyBoneService__["a" /* LazyBoneService */],
-            __WEBPACK_IMPORTED_MODULE_17__services_danaLockService__["a" /* DanaLockService */],
-            __WEBPACK_IMPORTED_MODULE_18__services_wallmountService__["a" /* WallmountService */],
-            __WEBPACK_IMPORTED_MODULE_19__services_logService__["a" /* LogService */],
-            __WEBPACK_IMPORTED_MODULE_37__services_eventAggregator__["a" /* EventAggregator */],
-            { provide: __WEBPACK_IMPORTED_MODULE_34__app_error_module__["a" /* CustomErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_34__app_error_module__["a" /* CustomErrorHandler */] },
+            __WEBPACK_IMPORTED_MODULE_12__config__["a" /* Config */],
+            __WEBPACK_IMPORTED_MODULE_13__services_authService__["a" /* AuthService */],
+            __WEBPACK_IMPORTED_MODULE_36__services_authGuardService__["a" /* AuthGuardService */],
+            __WEBPACK_IMPORTED_MODULE_14__services_zwaveService__["a" /* ZwaveService */],
+            __WEBPACK_IMPORTED_MODULE_15__services_settingsService__["a" /* SettingsService */],
+            __WEBPACK_IMPORTED_MODULE_16__services_cameraService__["a" /* CameraService */],
+            __WEBPACK_IMPORTED_MODULE_17__services_lazyBoneService__["a" /* LazyBoneService */],
+            __WEBPACK_IMPORTED_MODULE_18__services_danaLockService__["a" /* DanaLockService */],
+            __WEBPACK_IMPORTED_MODULE_19__services_wallmountService__["a" /* WallmountService */],
+            __WEBPACK_IMPORTED_MODULE_20__services_logService__["a" /* LogService */],
+            __WEBPACK_IMPORTED_MODULE_38__services_eventAggregator__["a" /* EventAggregator */],
+            { provide: __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */] },
+            { provide: __WEBPACK_IMPORTED_MODULE_9__angular_common__["LocationStrategy"], useClass: __WEBPACK_IMPORTED_MODULE_9__angular_common__["HashLocationStrategy"] },
             {
                 provide: __WEBPACK_IMPORTED_MODULE_6__angular_http__["Http"],
                 useFactory: httpFactory,
-                deps: [__WEBPACK_IMPORTED_MODULE_6__angular_http__["XHRBackend"], __WEBPACK_IMPORTED_MODULE_6__angular_http__["RequestOptions"], __WEBPACK_IMPORTED_MODULE_37__services_eventAggregator__["a" /* EventAggregator */]],
+                deps: [__WEBPACK_IMPORTED_MODULE_6__angular_http__["XHRBackend"], __WEBPACK_IMPORTED_MODULE_6__angular_http__["RequestOptions"], __WEBPACK_IMPORTED_MODULE_38__services_eventAggregator__["a" /* EventAggregator */]],
             },
         ],
-        bootstrap: [__WEBPACK_IMPORTED_MODULE_20__app_component__["a" /* AppComponent */]],
+        bootstrap: [__WEBPACK_IMPORTED_MODULE_21__app_component__["a" /* AppComponent */]],
     })
 ], AppModule);
 
@@ -674,7 +677,7 @@ var Node = (function () {
     }
     Object.defineProperty(Node.prototype, "DeviceIcon", {
         get: function () {
-            return "/assets/" + this.GenericType + ".png";
+            return "assets/" + this.GenericType + ".png";
         },
         enumerable: true,
         configurable: true
@@ -1705,6 +1708,7 @@ var DanaLocksViewComponent = (function () {
     DanaLocksViewComponent.prototype.onSubmit = function () {
         var _this = this;
         var save;
+        console.log(this.selectedRowIndex);
         if (this.selectedRowIndex) {
             save = this.danaLockService.update(this.danalock);
         }

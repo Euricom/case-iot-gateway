@@ -59,10 +59,6 @@ namespace Euricom.IoT.DataLayer
             {
                 Create(settings);
             }
-            else
-            {
-                Update(settings);
-            }
         }
     }
 }

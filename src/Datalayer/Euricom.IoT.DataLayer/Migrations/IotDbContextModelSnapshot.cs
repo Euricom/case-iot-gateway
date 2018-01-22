@@ -140,6 +140,8 @@ namespace Euricom.IoT.DataLayer.Migrations
                 {
                     b.HasBaseType("Euricom.IoT.Devices.ZWave.ZWaveDevice");
 
+                    b.Property<bool>("Locked");
+
                     b.Property<int>("PollingTime")
                         .HasColumnName("DanaLock_PollingTime");
 
@@ -151,6 +153,8 @@ namespace Euricom.IoT.DataLayer.Migrations
             modelBuilder.Entity("Euricom.IoT.Devices.WallMountSwitch.WallMountSwitch", b =>
                 {
                     b.HasBaseType("Euricom.IoT.Devices.ZWave.ZWaveDevice");
+
+                    b.Property<bool>("On");
 
                     b.Property<int>("PollingTime")
                         .HasColumnName("WallMountSwitch_PollingTime");

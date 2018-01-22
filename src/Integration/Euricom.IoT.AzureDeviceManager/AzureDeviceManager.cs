@@ -64,17 +64,17 @@ namespace Euricom.IoT.AzureDeviceManager
             }
         }
 
-        public async Task UpdateStateAsync(string deviceId, Dictionary<string, string> properties)
+        public async Task UpdateStateAsync(string deviceId, Dictionary<string, object> properties)
         {
             try
             {
-                var twin = await _registryManager.GetDeviceAsync(deviceId);
-
+                var twin = await _registryManager.GetTwinAsync(deviceId);
+                
                 var patch = new
                 {
                     properties = new
                     {
-                        desired = properties
+                        reported = properties
                     }
                 };
                 
