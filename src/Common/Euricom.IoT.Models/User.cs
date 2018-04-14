@@ -36,6 +36,7 @@ namespace Euricom.IoT.Models
                 return Convert.ToBase64String(random);
             }
         }
+
         private static string HashPassword(string password, string salt, int iterations)
         {
             using (var rfc2898DeriveBytes = new Rfc2898DeriveBytes(Encoding.UTF8.GetBytes(password), Convert.FromBase64String(salt), iterations))

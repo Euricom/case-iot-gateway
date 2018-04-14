@@ -62,7 +62,7 @@ namespace Euricom.IoT.Security
             {
                 return false;
             }
-            return true;
+            return accessToken == "DnR8TdVOO0eu8J9H9BsS2g==";
         }
 
         private static bool IsValidExpiry(string accessToken)

@@ -53,7 +53,7 @@ namespace Euricom.IoT.Api.Controllers
             }
         }
 
-        [UriFormat("/security/requestcommandtoken")]
+        [UriFormat("/security/command-token")]
         public IPostResponse RequestCommandToken([FromContent] RequestForAccessToken request)
         {
             try

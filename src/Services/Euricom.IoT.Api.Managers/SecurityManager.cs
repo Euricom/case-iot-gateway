@@ -44,12 +44,12 @@ namespace Euricom.IoT.Api.Managers
             var isValid = JwtSecurity.VerifyAccessTokenJwt(accessToken);
             if (isValid)
             {
-                // TODO get user from accesstoken
                 var user = "user";
 
                 // Generate a jwt with a secret
                 return JwtSecurity.GenerateJwt(user, _wifiExpires);
             }
+
             throw new UnauthorizedAccessException();
         }
         public bool ValidateToken(string jwt)

@@ -12,6 +12,13 @@ namespace Euricom.IoT.Api.Controllers
 {
     [Authorize]
     [RestController(InstanceCreationType.Singleton)]
+    public class AccessTokenController
+    {
+
+    }
+
+    [Authorize]
+    [RestController(InstanceCreationType.Singleton)]
     public class CameraController
     {
         private readonly ICameraManager _cameraManager;
