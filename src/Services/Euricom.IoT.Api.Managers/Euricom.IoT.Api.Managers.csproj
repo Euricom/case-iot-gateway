@@ -223,11 +223,6 @@
       <Version>5.1.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Threading.Tasks">
-      <HintPath>..\..\..\..\..\.nuget\packages\System.Threading.Tasks\4.3.0\ref\netcore50\System.Threading.Tasks.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
@@ -16,7 +16,7 @@ namespace Euricom.IoT.Api.Managers
             _deviceManager = deviceManager;
         }
 
-        public async Task Notify(byte nodeId, byte key, byte value)
+        public void Notify(byte nodeId, byte key, byte value)
         {
             var device = _repository.GetZWaveDevice(nodeId);
 
@@ -27,9 +27,15 @@ namespace Euricom.IoT.Api.Managers
                     _repository.UpdateZWaveDevice(device);
 
                     var state = device.GetState();
-                    await _deviceManager.UpdateStateAsync(device.DeviceId, state);
+
+                    MyTaskFactory.StartNew(() => _deviceManager.UpdateStateAsync(device.DeviceId, device.PrimaryKey, state))
+                        .Unwrap()
+                        .GetAwaiter()
+                        .GetResult();
                 }
             }
         }
+        private static readonly TaskFactory MyTaskFactory =
+            new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
     }
 }

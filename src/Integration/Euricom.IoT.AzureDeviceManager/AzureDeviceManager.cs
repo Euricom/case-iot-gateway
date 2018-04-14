@@ -1,84 +1,40 @@
-﻿using Euricom.IoT.Logging;
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Common.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Logging;
+using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Euricom.IoT.AzureDeviceManager
 {
     public class AzureDeviceManager : IAzureDeviceManager
     {
-        private readonly RegistryManager _registryManager;
+        private const string ConnectionStringTemplate = "HostName={0};DeviceId={1};SharedAccessKey={2}";
+        private readonly string _connectionString;
 
         public AzureDeviceManager(string connectionString)
         {
-            if (String.IsNullOrEmpty(connectionString))
-            {
-                Logger.Instance.LogWarningWithContext(GetType(), "Please set a connection string for Azure IoT Hub URI");
-                throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
-            }
-
-            _registryManager = RegistryManager.CreateFromConnectionString(connectionString);
+            _connectionString = connectionString;
         }
 
-        public async Task<IEnumerable<Device>> GetDevicesAsync()
-        {
-            var devices = await _registryManager.GetDevicesAsync(int.MaxValue);
-            return devices;
-        }
-
-        public async Task<string> AddDeviceAsync(string deviceId)
+        public async Task UpdateStateAsync(string deviceId, string primaryKey, Dictionary<string, object> properties)
         {
             try
             {
-                var device = await _registryManager.AddDeviceAsync(new Device(deviceId));
-                return device.Authentication.SymmetricKey.PrimaryKey;
-            }
-            catch (DeviceAlreadyExistsException deviceAlreadyExistsException)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), deviceAlreadyExistsException);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
-        }
-
-        public async Task RemoveDeviceAsync(string deviceId)
-        {
-            try
-            {
-                var device = await _registryManager.GetDeviceAsync(deviceId);
-                if (device != null)
-                    await _registryManager.RemoveDeviceAsync(device);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
-        }
-
-        public async Task UpdateStateAsync(string deviceId, Dictionary<string, object> properties)
-        {
-            try
-            {
-                var twin = await _registryManager.GetTwinAsync(deviceId);
-                
-                var patch = new
+                using (var client = DeviceClient.CreateFromConnectionString(string.Format(ConnectionStringTemplate, _connectionString, deviceId, primaryKey), TransportType.Mqtt))
                 {
-                    properties = new
+                    var report = JObject.FromObject(properties);
+                    var collection = new TwinCollection(JsonConvert.SerializeObject(report, Formatting.None, new JsonSerializerSettings
                     {
-                        reported = properties
-                    }
-                };
-                
-                await _registryManager.UpdateTwinAsync(deviceId, JsonConvert.SerializeObject(patch), twin.ETag);
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+
+                    await client.UpdateReportedPropertiesAsync(collection);
+                }
             }
             catch (Exception ex)
             {

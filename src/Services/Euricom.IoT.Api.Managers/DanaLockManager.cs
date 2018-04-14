@@ -15,13 +15,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<DanaLock> _repository;
         private readonly IZWaveController _controller;
-        private readonly IAzureDeviceManager _deviceManager;
+        private readonly IAzureDeviceRegistry _deviceRegistry;
 
-        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IAzureDeviceManager deviceManager)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IAzureDeviceRegistry deviceRegistry)
         {
             _repository = repository;
             _controller = controller;
-            _deviceManager = deviceManager;
+            _deviceRegistry = deviceRegistry;
         }
 
         public IEnumerable<DanaLockDto> Get()
@@ -40,7 +40,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<DanaLockDto> Add(DanaLockDto dto)
         {
-            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
 
             var danalock = new DanaLock(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
             
@@ -71,7 +71,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
-            await _deviceManager.RemoveDeviceAsync(deviceId);
+            await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
         }

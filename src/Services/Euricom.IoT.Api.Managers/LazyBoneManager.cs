@@ -15,13 +15,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<LazyBone> _repository;
         private readonly ISocketClient _socketClient;
-        private readonly IAzureDeviceManager _deviceManager;
+        private readonly IAzureDeviceRegistry _deviceRegistry;
 
-        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IAzureDeviceManager deviceManager)
+        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IAzureDeviceRegistry deviceRegistry)
         {
             _repository = repository;
             _socketClient = socketClient;
-            _deviceManager = deviceManager;
+            _deviceRegistry = deviceRegistry;
         }
 
         public IEnumerable<LazyBoneDto> Get()
@@ -40,7 +40,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<LazyBoneDto> Add(LazyBoneDto dto)
         {
-            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
 
             var device = new LazyBone(dto.DeviceId, primaryKey, dto.IsDimmer,dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
 
@@ -71,7 +71,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
-            await _deviceManager.RemoveDeviceAsync(deviceId);
+            await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
         }

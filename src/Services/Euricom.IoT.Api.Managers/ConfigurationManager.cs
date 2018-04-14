@@ -8,12 +8,12 @@ namespace Euricom.IoT.Api.Managers
     public class ConfigurationManager : IConfigurationManager
     {
         private readonly ISettingsRepository _settingsRepository;
-        private readonly IAzureDeviceManager _deviceManager;
+        private readonly IAzureDeviceRegistry _deviceRegistry;
 
-        public ConfigurationManager(ISettingsRepository settingsRepository, IAzureDeviceManager deviceManager)
+        public ConfigurationManager(ISettingsRepository settingsRepository, IAzureDeviceRegistry deviceRegistry)
         {
             _settingsRepository = settingsRepository;
-            _deviceManager = deviceManager;
+            _deviceRegistry = deviceRegistry;
         }
 
         public Settings GetConfigSettings()

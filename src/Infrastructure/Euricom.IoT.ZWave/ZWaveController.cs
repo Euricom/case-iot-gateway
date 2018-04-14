@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Euricom.IoT.Interfaces;
@@ -91,7 +92,8 @@ namespace Euricom.IoT.ZWave
         {
             if (_homeId > 0 && _nodeList != null && _nodeList.Any(x => x.Id == nodeId))
             {
-                return _zwManager.IsNodeAwake(_homeId, nodeId);
+                return _zwManager.IsNodeFailed(_homeId, nodeId) == false
+                    && _zwManager.IsNodeAwake(_homeId, nodeId);
             }
 
             return false;
@@ -267,7 +269,8 @@ namespace Euricom.IoT.ZWave
                             var node = GetNode(homeId, nodeId);
                             if (node != null)
                             {
-                                _notifier.Notify(nodeId, notification.ValueId.CommandClassId, Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
+                                _notifier.Notify(nodeId, notification.ValueId.CommandClassId,
+                                    Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
                             }
                         }
                         break;

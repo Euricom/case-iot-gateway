@@ -15,13 +15,13 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<WallMountSwitch> _repository;
         private readonly IZWaveController _controller;
-        private readonly IAzureDeviceManager _deviceManager;
+        private readonly IAzureDeviceRegistry _deviceRegistry;
 
-        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IAzureDeviceManager deviceManager)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IAzureDeviceRegistry deviceRegistry)
         {
             _repository = repository;
             _controller = controller;
-            _deviceManager = deviceManager;
+            _deviceRegistry = deviceRegistry;
         }
         
         public IEnumerable<WallMountSwitchDto> Get()
@@ -40,7 +40,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<WallMountSwitchDto> Add(WallMountSwitchDto dto)
         {
-            var primaryKey = await _deviceManager.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
             var wallmount = new WallMountSwitch(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(wallmount);
@@ -70,7 +70,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
-            await _deviceManager.RemoveDeviceAsync(deviceId);
+            await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
         }

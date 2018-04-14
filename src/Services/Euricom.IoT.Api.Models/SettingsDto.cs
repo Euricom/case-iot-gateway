@@ -11,5 +11,6 @@
         public string AzureAccountName { get; set; }
         public string AzureStorageAccessKey { get; set; }
         public string DropboxAccessToken { get; set; }
+        public string ZWaveNetworkKey { get; set; }
     }
 }

@@ -28,6 +28,9 @@ namespace Euricom.IoT.DataLayer
             }
 
             var s = Get();
+
+            settings.Id = s.Id;
+
             _database.Entry(s).CurrentValues.SetValues(settings);
             _database.SaveChanges();
         }

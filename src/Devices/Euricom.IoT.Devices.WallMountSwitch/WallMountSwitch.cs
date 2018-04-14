@@ -72,7 +72,10 @@ namespace Euricom.IoT.Devices.WallMountSwitch
 
         public override Dictionary<string, object> GetState()
         {
-            throw new System.NotImplementedException();
+            return new Dictionary<string, object>
+            {
+                { "State", On }
+            };
         }
     }
 }

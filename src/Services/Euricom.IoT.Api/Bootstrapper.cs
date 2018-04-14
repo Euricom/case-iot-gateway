@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
-using Euricom.IoT.AzureDeviceManager;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
@@ -52,7 +51,13 @@ namespace Euricom.IoT.Api
             builder.Register(c =>
             {
                 var settings = c.Resolve<Settings>();
-                return new AzureDeviceManager.AzureDeviceManager(settings.AzureIotHubUriConnectionString);
+                return new AzureDeviceManager.AzureDeviceRegistry(settings.AzureIotHubUriConnectionString);
+            }).As<IAzureDeviceRegistry>().SingleInstance();
+
+            builder.Register(c =>
+            {
+                var settings = c.Resolve<Settings>();
+                return new AzureDeviceManager.AzureDeviceManager(settings.AzureIotHubUri);
             }).As<IAzureDeviceManager>().SingleInstance();
         }
 
@@ -89,7 +94,7 @@ namespace Euricom.IoT.Api
             {
                 var repository = context.Resolve<ISettingsRepository>();
                 return repository.Get();
-            });
+            }).SingleInstance();
         }
     }
 }
