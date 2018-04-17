@@ -1,8 +1,6 @@
 ﻿using Restup.Webserver.Http;
 using Restup.Webserver.Rest;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Restup.Webserver.File;
 using System.Diagnostics;
@@ -28,7 +26,7 @@ namespace Euricom.IoT.Api
 
         public async Task InitializeWebServer()
         {
-            var restRouteHandler = new RestRouteHandler(_authProvider);
+            var restRouteHandler = new DependencyResolverRouteHandler(type => _lifetimeScope.Resolve(type), _authProvider);
 
             // Register controllers
             foreach (Type type in GetType().GetTypeInfo().Assembly.GetTypes())
@@ -36,31 +34,7 @@ namespace Euricom.IoT.Api
                 var attribute = type.GetTypeInfo().GetCustomAttribute<RestControllerAttribute>();
                 if (attribute != null)
                 {
-                    var @params = new List<object>();
-
-                    var constructor = type.GetConstructors().FirstOrDefault();
-                    if (constructor != null)
-                    {
-                        var parameters = constructor.GetParameters();
-                        foreach (var parameterInfo in parameters)
-                        {
-                            @params.Add(_lifetimeScope.Resolve(parameterInfo.ParameterType));
-                        }
-                    }
-
-                    try
-                    {
-                        MethodInfo method = @params.Any()
-                            ? GetMethod<RestRouteHandler>(x =>
-                                x.RegisterController<object>(new object[] { @params.ToArray() }))
-                            : GetMethod<RestRouteHandler>(x => x.RegisterController<object>());
-                        MethodInfo genericMethod = method.MakeGenericMethod(type);
-                        genericMethod.Invoke(restRouteHandler, new object[]{ @params.ToArray() });
-                    }
-                    catch (Exception e)
-                    {
-                        
-                    }
+                   restRouteHandler.RegisterController(type);
                 }
             }
 

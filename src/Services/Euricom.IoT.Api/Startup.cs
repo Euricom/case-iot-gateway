@@ -9,6 +9,7 @@ using Euricom.IoT.Interfaces;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 using Microsoft.EntityFrameworkCore;
+using Restup.Webserver.InstanceCreators;
 
 namespace Euricom.IoT.Api
 {
@@ -44,8 +45,7 @@ namespace Euricom.IoT.Api
             var logLevel = settings.LogLevel;
             // Init logger
             Logger.Configure(preserveHistoryLogDays, logLevel, ApplicationData.Current.LocalFolder.Path);
-            var instLogger = Logger.Instance;
-
+           
             var database = _container.Resolve<IotDbContext>();
             await database.Database.MigrateAsync();
 
@@ -76,12 +76,7 @@ namespace Euricom.IoT.Api
                 cfg.AddProfile<LogMappingProfile>();
             });
         }
-
-        //private void StartMonitors()
-        //{
-        //    //var monitoringSystem = Monitoring.MonitoringSystem.Instance; //Constructor will be called in class and then Init()
-        //}
-
+        
         public void Dispose()
         {
             _container.Dispose();

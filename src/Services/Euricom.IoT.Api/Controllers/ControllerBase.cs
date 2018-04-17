@@ -6,7 +6,7 @@ namespace Euricom.IoT.Api.Controllers
 {
     public class ControllerBase : RestControllerBase
     {
-        public string GetUsername()
+        protected string GetUsername()
         {
             var auth = Request.Headers.SingleOrDefault(h => h.Name == "Authorization");
 

@@ -11,7 +11,7 @@ using Restup.WebServer.Attributes;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [RestController(InstanceCreationType.PerCall)]
+    [RestController]
     public class SecurityController: ControllerBase
     {
         private readonly ISecurityManager _securityManager;
@@ -50,21 +50,6 @@ namespace Euricom.IoT.Api.Controllers
             {
                 Logger.Instance.LogErrorWithContext(GetType(), ex);
                 throw new Exception($"Could not login: exception: {ex.Message}");
-            }
-        }
-
-        [UriFormat("/security/command-token")]
-        public IPostResponse RequestCommandToken([FromContent] RequestForAccessToken request)
-        {
-            try
-            {
-                var commandTokenJwt = _securityManager.RequestCommandToken(request.AccessToken);
-                return ResponseUtilities.PostResponseOk(commandTokenJwt);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not get log: exception: {ex.Message}");
             }
         }
 

@@ -9,7 +9,7 @@ using Restup.WebServer.Attributes;
 namespace Euricom.IoT.Api.Controllers
 {
     [Authorize]
-    [RestController(InstanceCreationType.Singleton)]
+    [RestController]
     public class ZWaveController
     {
         private readonly IZWaveManager _zWaveManager;

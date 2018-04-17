@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using System.Reflection;
+using Autofac;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.DataLayer;
@@ -11,6 +13,7 @@ using Euricom.IoT.Http;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 using Euricom.IoT.Tcp;
+using Restup.Webserver.Attributes;
 using Restup.WebServer.Http;
 
 namespace Euricom.IoT.Api
@@ -26,6 +29,7 @@ namespace Euricom.IoT.Api
             RegisterManagers(builder);
             RegisterInfrastructure(builder);
             RegisterAzure(builder);
+            RegisterControllers(builder);
 
             builder.Register(context => new JwtAuthenticationProvider(null, null, context.Resolve<ISecurityManager>()));
             builder.RegisterType<WebServer>().SingleInstance();
@@ -52,13 +56,13 @@ namespace Euricom.IoT.Api
             {
                 var settings = c.Resolve<Settings>();
                 return new AzureDeviceManager.AzureDeviceRegistry(settings.AzureIotHubUriConnectionString);
-            }).As<IAzureDeviceRegistry>().SingleInstance();
+            }).As<IAzureDeviceRegistry>();
 
             builder.Register(c =>
             {
                 var settings = c.Resolve<Settings>();
                 return new AzureDeviceManager.AzureDeviceManager(settings.AzureIotHubUri);
-            }).As<IAzureDeviceManager>().SingleInstance();
+            }).As<IAzureDeviceManager>();
         }
 
         private static void RegisterRepositories(ContainerBuilder builder)
@@ -82,19 +86,32 @@ namespace Euricom.IoT.Api
             builder.RegisterType<LogManager>().As<ILogManager>();
             builder.RegisterType<SecurityManager>().As<ISecurityManager>();
             builder.RegisterType<WallMountSwitchManager>().As<IWallMountSwitchManager>();
-            builder.RegisterType<ZWaveManager>().As<IZWaveManager>().SingleInstance();
+            builder.RegisterType<ZWaveManager>().As<IZWaveManager>();
 
             builder.RegisterType<ZWaveDeviceNotifier>().As<IZWaveDeviceNotifier>().SingleInstance();
         }
 
         private static void RegisterDatabase(ContainerBuilder builder)
         {
-            builder.RegisterType<IotDbContext>().SingleInstance();
+            builder.RegisterType<IotDbContext>();
             builder.Register(context =>
             {
                 var repository = context.Resolve<ISettingsRepository>();
                 return repository.Get();
-            }).SingleInstance();
+            });
+        }
+
+        private static void RegisterControllers(ContainerBuilder builder)
+        {
+            // Register controllers
+            foreach (Type type in typeof(Bootstrapper).GetTypeInfo().Assembly.GetTypes())
+            {
+                var attribute = type.GetTypeInfo().GetCustomAttribute<RestControllerAttribute>();
+                if (attribute != null)
+                {
+                    builder.RegisterType(type);
+                }
+            }
         }
     }
 }

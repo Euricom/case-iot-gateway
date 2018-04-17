@@ -12,7 +12,7 @@ using System;
 namespace Euricom.IoT.Api.Controllers
 {
     [Authorize]
-    [RestController(InstanceCreationType.Singleton)]
+    [RestController]
     public class LogController
     {
         private readonly ILogManager _logManager;
