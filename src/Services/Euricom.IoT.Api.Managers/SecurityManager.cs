@@ -2,7 +2,10 @@
 using Euricom.IoT.Common;
 using Euricom.IoT.Security;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Euricom.IoT.DataLayer.Interfaces;
+using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -25,7 +28,7 @@ namespace Euricom.IoT.Api.Managers
                 throw new Exception("Invalid login");
             }
 
-            var jwt = JwtSecurity.GenerateJwt(username, _loginExpires);
+            var jwt = JwtSecurity.GenerateJwt(username, _loginExpires, user.Roles.Select(r => r.RoleName).ToList());
             return jwt;
         }
 
@@ -34,27 +37,26 @@ namespace Euricom.IoT.Api.Managers
             if (puk != Constants.PUK)
                 throw new Exception("PUK code invalid!");
 
-            var jwt = JwtSecurity.GenerateJwt(puk, _loginExpires);
+            var jwt = JwtSecurity.GenerateJwt(puk, _loginExpires, new List<string> { "Administrator", "User", "Manager" });
             return jwt;
         }
 
-        public string RequestCommandToken(string accessToken)
+        public string RequestCommandToken(string token)
         {
-            // Verify if access token is valid
-            var isValid = JwtSecurity.VerifyAccessTokenJwt(accessToken);
-            if (isValid)
+            var user = _userRepository.GetUserWithToken(token);
+            if (user != null)
             {
-                var user = "user";
-
+                Logger.Instance.LogDebugWithContext(GetType(), $"User with token {token} requested command token.");
                 // Generate a jwt with a secret
-                return JwtSecurity.GenerateJwt(user, _wifiExpires);
+                return JwtSecurity.GenerateJwt(user.Username, _wifiExpires, user.Roles.Select(r => r.RoleName).ToList());
             }
 
+            Logger.Instance.LogWarningWithContext(GetType(), $"Unknown user with token {token} tried to request a command token.");
             throw new UnauthorizedAccessException();
         }
-        public bool ValidateToken(string jwt)
+        public bool ValidateToken(string jwt, out JwtSecurity.JwtPayload payload)
         {
-            return JwtSecurity.VerifyJwt(jwt);
+            return JwtSecurity.VerifyJwt(jwt, out payload);
         }
 
         public void ChangePassword(string username, string old, string @new)

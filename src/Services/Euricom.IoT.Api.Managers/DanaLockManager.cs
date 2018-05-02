@@ -15,9 +15,9 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<DanaLock> _repository;
         private readonly IZWaveController _controller;
-        private readonly IAzureDeviceRegistry _deviceRegistry;
+        private readonly IDeviceHubRegistry _deviceRegistry;
 
-        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IAzureDeviceRegistry deviceRegistry)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry)
         {
             _repository = repository;
             _controller = controller;

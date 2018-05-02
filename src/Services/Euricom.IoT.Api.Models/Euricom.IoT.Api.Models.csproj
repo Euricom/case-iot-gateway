@@ -111,9 +111,14 @@
     <Compile Include="ChangePasswordDto.cs" />
     <Compile Include="DanaLockDto.cs" />
     <Compile Include="LazyBoneDto.cs" />
+    <Compile Include="LogDto.cs" />
+    <Compile Include="LogLineDto.cs" />
     <Compile Include="NodeDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GetCommandTokenDto.cs" />
+    <Compile Include="RoleDto.cs" />
     <Compile Include="SettingsDto.cs" />
+    <Compile Include="UserDto.cs" />
     <Compile Include="WallMountSwitchDto.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Api.Models.rd.xml" />
   </ItemGroup>

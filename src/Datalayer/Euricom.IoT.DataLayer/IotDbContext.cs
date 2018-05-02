@@ -1,5 +1,4 @@
-﻿using System;
-using Euricom.IoT.Devices.Camera;
+﻿using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Devices.WallMountSwitch;
@@ -12,6 +11,7 @@ namespace Euricom.IoT.DataLayer
     public class IotDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Settings> Settings { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<ZWaveDevice> ZWaveDevices { get; set; }
@@ -28,7 +28,12 @@ namespace Euricom.IoT.DataLayer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Settings>().HasKey(c => c.Id);
+
             modelBuilder.Entity<User>().HasKey(c => c.Username);
+            modelBuilder.Entity<Role>().HasKey(c => c.Name);
+            modelBuilder.Entity<UserRole>()
+                .HasKey(r => new {r.Username, r.RoleName});
+
             modelBuilder.Entity<Device>().HasKey(c => c.DeviceId);
 
             modelBuilder.Entity<DanaLock>().Property(d => d.Locked).IsRequired();

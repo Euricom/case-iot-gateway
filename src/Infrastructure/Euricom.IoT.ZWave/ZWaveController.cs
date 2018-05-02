@@ -13,33 +13,29 @@ namespace Euricom.IoT.ZWave
 {
     public class ZWaveController : IZWaveController
     {
-        private readonly IZWaveDeviceNotifier _notifier;
-        private readonly string _networkKey;
-
+        private IZWaveDeviceNotifier _notifier;
+        
+        private readonly ZWManager _zwManager = ZWManager.Instance;
         private readonly ObservableCollection<Node> _nodeList = new ObservableCollection<Node>();
         private readonly ObservableCollection<SerialPortInfo> _serialPorts = new ObservableCollection<SerialPortInfo>();
 
         private bool _initialized;
+        
+        private uint _homeId;
+        private string _status;
+        private string _networkKey;
 
-        public ZWaveController(IZWaveDeviceNotifier notifier, string networkKey)
+        public async Task Initialize(IZWaveDeviceNotifier notifier, string networkKey)
         {
             _notifier = notifier;
             _networkKey = networkKey;
-        }
 
-
-        private uint _homeId;
-        private string _status;
-        private readonly ZWManager _zwManager = ZWManager.Instance;
-
-        public async Task Initialize()
-        {
             ZWOptions.Instance.Initialize();
             _initialized = true;
 
             // Add any app specific options here...
 
-            ZWOptions.Instance.AddOptionString("NetworkKey", _networkKey, false);
+            ZWOptions.Instance.AddOptionString("NetworkKey", networkKey, false);
             // ordinarily, just write "Detail" level messages to the log
             //m_options.AddOptionInt("SaveLogLevel", (int)ZWLogLevel.Detail);
 
@@ -92,8 +88,50 @@ namespace Euricom.IoT.ZWave
         {
             if (_homeId > 0 && _nodeList != null && _nodeList.Any(x => x.Id == nodeId))
             {
-                return _zwManager.IsNodeFailed(_homeId, nodeId) == false
-                    && _zwManager.IsNodeAwake(_homeId, nodeId);
+                // If the zwManager knows it's failed or not awake then we can return false.
+                if (_zwManager.IsNodeFailed(_homeId, nodeId) || _zwManager.IsNodeAwake(_homeId, nodeId) == false)
+                {
+                    return false;
+                }
+
+                // Else we need to double check with the controller
+                // This is a little tricky because it's async.
+                bool receivedResult = false;
+                bool result = false;
+
+                var @delegate = new NotificationReceivedEventHandler((sender, args) =>
+                {
+                    if (args.Notification.HomeId == _homeId && args.Notification.NodeId == nodeId)
+                    {
+                        receivedResult = true;
+                        if (args.Notification.Type == ZWNotificationType.Notification)
+                        {
+                            result = args.Notification.Code == ZWNotificationCode.Alive || args.Notification.Code == ZWNotificationCode.Awake;
+                        }
+                    }
+                });
+
+                _zwManager.NotificationReceived += @delegate;
+                try
+                {
+                    if (_zwManager.HasNodeFailed(_homeId, nodeId))
+                    {
+                        // Use a stopwatch as fallback
+                        // We don't want to wait more then 5 seconds
+                        var sw = new Stopwatch();
+                        sw.Start();
+                        while (receivedResult == false && sw.ElapsedMilliseconds < 5000)
+                        {
+                            Thread.Sleep(100);
+                        }
+
+                        return result;
+                    }
+                }
+                finally
+                {
+                    _zwManager.NotificationReceived -= @delegate;
+                }
             }
 
             return false;
@@ -166,7 +204,7 @@ namespace Euricom.IoT.ZWave
                 await Task.Delay(10000);
             }
 
-            await Initialize();
+            await Initialize(_notifier, _networkKey);
         }
 
         #region Notifications
@@ -219,7 +257,7 @@ namespace Euricom.IoT.ZWave
 
                 case ZWNotificationType.DriverReady:
                     {
-                        _status = $"Initializing...driver with Home ID 0x{notification.HomeId.ToString("X8")} is ready.";
+                        _status = $"Initializing...driver with Home ID 0x{notification.HomeId:X8} is ready.";
                         break;
                     }
 

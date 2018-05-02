@@ -15,9 +15,9 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<WallMountSwitch> _repository;
         private readonly IZWaveController _controller;
-        private readonly IAzureDeviceRegistry _deviceRegistry;
+        private readonly IDeviceHubRegistry _deviceRegistry;
 
-        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IAzureDeviceRegistry deviceRegistry)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry)
         {
             _repository = repository;
             _controller = controller;

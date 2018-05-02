@@ -16,11 +16,6 @@ namespace Euricom.IoT.Api.Managers
             _izWaveController = izWaveController;
         }
 
-        public async Task Initialize()
-        {
-            await _izWaveController.Initialize();
-        }
-
         public async Task SoftReset()
         {
             await _izWaveController.SoftReset();

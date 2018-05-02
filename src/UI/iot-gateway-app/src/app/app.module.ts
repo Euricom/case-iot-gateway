@@ -41,10 +41,17 @@ import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView
 
 import { AuthModule } from './app.auth.module'
 import { CustomErrorHandler } from './app.error.module'
-import { AuthGuardService } from './services/authGuardService'
+import {
+    AuthGuardService
+} from './services/authGuardService'
 import { CustomHttpService } from './services/customHttp'
 
 import { EventAggregator } from './services/eventAggregator'
+import { UsersViewComponent } from './views/users/usersView.component';
+import { UserService } from './services/userService';
+import { StorageService } from './services/storageService';
+import { HomeViewComponent } from './views/home/homeView.component';
+import { AccountViewComponent } from './views/account/accountView.component';
 
 export function httpFactory(backend: XHRBackend, options, eventAggregator: EventAggregator) {
     return new CustomHttpService(backend, options, eventAggregator)
@@ -58,6 +65,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         NavigationComponent,
         LoginViewComponent,
         SettingsViewComponent,
+        UsersViewComponent,
         ZwaveViewComponent,
         CameraViewComponent,
         LazyBonesViewComponent,
@@ -65,6 +73,8 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         WallMountViewComponent,
         LogViewComponent,
         OpenZWaveLogViewComponent,
+        HomeViewComponent,
+        AccountViewComponent
     ],
     imports: [
         BrowserModule,
@@ -84,6 +94,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         AuthService,
         AuthGuardService,
         ZwaveService,
+        UserService,
         SettingsService,
         CameraService,
         LazyBoneService,
@@ -91,6 +102,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         WallmountService,
         LogService,
         EventAggregator,
+        StorageService,
         { provide: CustomErrorHandler, useClass: CustomErrorHandler },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         {

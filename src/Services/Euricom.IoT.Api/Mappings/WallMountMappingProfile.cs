@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Euricom.IoT.Api.Dtos;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.Devices.WallMountSwitch;
 

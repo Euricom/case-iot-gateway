@@ -105,11 +105,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CameraManager.cs" />
+    <Compile Include="MessageHandler.cs" />
+    <Compile Include="Interfaces\IUserManager.cs" />
     <Compile Include="Interfaces\IWallMountSwitchManager.cs" />
     <Compile Include="Interfaces\IZWaveManager.cs" />
+    <Compile Include="UserManager.cs" />
     <Compile Include="WallMountSwitchManager.cs" />
-    <Compile Include="Interfaces\IGatewayManager.cs" />
-    <Compile Include="GatewayManager.cs" />
     <Compile Include="SecurityManager.cs" />
     <Compile Include="Interfaces\IConfigurationManager.cs" />
     <Compile Include="Interfaces\ILogManager.cs" />

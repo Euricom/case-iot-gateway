@@ -1,39 +1,46 @@
 <nav class="navbar navbar-default">
   <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-target="#bs-example-navbar-collapse-1"
-      aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+    <button type="button" class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
   </div>
-  <div class="navbar-collapse" id="bs-example-navbar-collapse-1" [collapse]="false">
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/settings'> Settings | </a></li>
+  <div class="navbar-collapse flex-list" id="bs-example-navbar-collapse-1" [collapse]="false">
+    <ul class="nav navbar-nav flex-list-u">
+      <li *ngIf="hasRole(roles, ['Administrator', 'Manager', 'User'])">
+        <a routerLink='/account'>Account</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Administrator', 'Manager', 'User'])">
+        <a routerLink='/settings'>Settings</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/users'>Users</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/zwave'>ZWave</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/cameras'>Cameras</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/switches'>LazyBones</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/wallmounts'>Wallmount switches</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/danalocks'>DanaLocks</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/log'>System/Device logs</a>
+      </li>
+      <li *ngIf="hasRole(roles, ['Manager'])">
+        <a routerLink='/openzwavelog'>OpenZWave Logs</a>
+      </li>
     </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/zwave'> ZWave | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/cameras'> Cameras | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/switches'> LazyBones | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/wallmounts'> Wallmount switches | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/danalocks'> DanaLocks | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/log'> System/Device logs | </a></li>
-    </ul>
-    <ul class="nav navbar-nav">
-      <li><a routerLink='/openzwavelog'> OpenZWave Logs </a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right" style="margin-top: 7px;">
+    <ul class="nav navbar-nav navbar-right" style="margin-right: 5px; margin-top: 7px;">
       <li>
         <button class="btn btn-primary" (click)="login()" *ngIf="!isAuthenticated && !currentPageIsLogin()">Log In</button>
         <button class="btn btn-primary" (click)="logout()" *ngIf="isAuthenticated">Log Out</button>

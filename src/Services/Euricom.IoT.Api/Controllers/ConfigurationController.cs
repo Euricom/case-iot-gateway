@@ -11,7 +11,7 @@ using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize]
+    [Authorize("Administrator")]
     [RestController]
     public class ConfigurationController
     {

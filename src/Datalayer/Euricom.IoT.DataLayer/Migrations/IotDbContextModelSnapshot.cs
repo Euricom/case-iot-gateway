@@ -44,6 +44,16 @@ namespace Euricom.IoT.DataLayer.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Device");
                 });
 
+            modelBuilder.Entity("Euricom.IoT.Models.Role", b =>
+                {
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd();
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("Euricom.IoT.Models.Settings", b =>
                 {
                     b.Property<int>("Id")
@@ -79,6 +89,8 @@ namespace Euricom.IoT.DataLayer.Migrations
                     b.Property<string>("Username")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AccessToken");
+
                     b.Property<string>("Hash");
 
                     b.Property<string>("Salt");
@@ -86,6 +98,19 @@ namespace Euricom.IoT.DataLayer.Migrations
                     b.HasKey("Username");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Euricom.IoT.Models.UserRole", b =>
+                {
+                    b.Property<string>("Username");
+
+                    b.Property<string>("RoleName");
+
+                    b.HasKey("Username", "RoleName");
+
+                    b.HasIndex("RoleName");
+
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("Euricom.IoT.Devices.Camera.Camera", b =>
@@ -164,6 +189,19 @@ namespace Euricom.IoT.DataLayer.Migrations
                     b.ToTable("WallMountSwitch");
 
                     b.HasDiscriminator().HasValue("WallMountSwitch");
+                });
+
+            modelBuilder.Entity("Euricom.IoT.Models.UserRole", b =>
+                {
+                    b.HasOne("Euricom.IoT.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Euricom.IoT.Models.User", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("Username")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

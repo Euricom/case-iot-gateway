@@ -1,17 +1,12 @@
-﻿using Euricom.IoT.Api.Managers;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Restup.HttpMessage;
 using Restup.HttpMessage.Models.Schemas;
-using Restup.Webserver.Models.Contracts;
+using Restup.WebServer.Attributes;
 using Restup.WebServer.Models.Contracts;
-using Restup.WebServer.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Restup.WebServer.Http
+namespace Euricom.IoT.Api.Authentication
 {
     public class JwtAuthenticationProvider : IAuthorizationProvider
     {
@@ -19,13 +14,12 @@ namespace Restup.WebServer.Http
 
         public string Realm { get { return null; } }
 
-        //ICredentialValidator is not used
-        public JwtAuthenticationProvider(string realm, ICredentialValidator credentialValidator, ISecurityManager securityManager)
+        public JwtAuthenticationProvider(ISecurityManager securityManager)
         {
             _securityManager = securityManager;
         }
 
-        public HttpResponseStatus Authorize(IHttpServerRequest request)
+        public HttpResponseStatus Authorize(IHttpServerRequest request, AuthorizeAttribute attribute = null)
         {
             if (request.Headers.Any(h => h.Name == "Authorization"))
             {
@@ -34,19 +28,23 @@ namespace Restup.WebServer.Http
                 var jwtToken = authValue.Replace("Bearer ", "");
 
                 // Validate token
-                var valid = _securityManager.ValidateToken(jwtToken);
+                var valid = _securityManager.ValidateToken(jwtToken, out var payload);
 
                 // If not a valid token return unauthorized
-                if (!valid)
+                if (!valid || attribute != null && ValidateRoles(attribute.Roles, payload.roles) == false)
+                {
                     return HttpResponseStatus.Unauthorized;
-                // Else return Http status code 200
-                else
-                    return HttpResponseStatus.OK;
+                }
+
+                return HttpResponseStatus.OK;
             }
-            else // ask for authentication headers
-            {
-                return HttpResponseStatus.Unauthorized;
-            }
+
+            return HttpResponseStatus.Unauthorized;
+        }
+
+        private bool ValidateRoles(List<string> expected, List<string> actual)
+        {
+            return expected.Any() == false || expected.Intersect(actual).Any();
         }
     }
 }

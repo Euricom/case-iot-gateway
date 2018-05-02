@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using Autofac;
-using Restup.WebServer.Http;
+using Euricom.IoT.Api.Authentication;
 using Restup.Webserver.Attributes;
 
 namespace Euricom.IoT.Api
@@ -41,7 +41,7 @@ namespace Euricom.IoT.Api
             var configuration = new HttpServerConfiguration()
               .ListenOnPort(8800)
               .RegisterRoute("api", restRouteHandler)
-              .RegisterRoute("web", new StaticFileRouteHandler(@"Euricom.IoT.UI.WebAdministration\Web"))
+              .RegisterRoute("", new StaticFileRouteHandler(@"Euricom.IoT.UI.WebAdministration\Web"))
               .EnableCors();
 
             _httpServer = new HttpServer(configuration);

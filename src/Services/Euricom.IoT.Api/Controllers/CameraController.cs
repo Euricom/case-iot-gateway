@@ -2,7 +2,6 @@
 using Euricom.IoT.Api.Utilities;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
-using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
 using System;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize]
+    [Authorize("Manager")]
     [RestController]
     public class CameraController
     {

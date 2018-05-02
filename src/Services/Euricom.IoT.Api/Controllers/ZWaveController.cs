@@ -8,7 +8,7 @@ using Restup.WebServer.Attributes;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize]
+    [Authorize("Administrator")]
     [RestController]
     public class ZWaveController
     {

@@ -15,9 +15,9 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<LazyBone> _repository;
         private readonly ISocketClient _socketClient;
-        private readonly IAzureDeviceRegistry _deviceRegistry;
+        private readonly IDeviceHubRegistry _deviceRegistry;
 
-        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IAzureDeviceRegistry deviceRegistry)
+        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IDeviceHubRegistry deviceRegistry)
         {
             _repository = repository;
             _socketClient = socketClient;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
+using Euricom.IoT.Api.Authentication;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.DataLayer;
@@ -11,10 +12,12 @@ using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Devices.WallMountSwitch;
 using Euricom.IoT.Http;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Messaging;
+using Euricom.IoT.Messaging.Interfaces;
 using Euricom.IoT.Models;
 using Euricom.IoT.Tcp;
+using Euricom.IoT.ZWave;
 using Restup.Webserver.Attributes;
-using Restup.WebServer.Http;
 
 namespace Euricom.IoT.Api
 {
@@ -31,7 +34,7 @@ namespace Euricom.IoT.Api
             RegisterAzure(builder);
             RegisterControllers(builder);
 
-            builder.Register(context => new JwtAuthenticationProvider(null, null, context.Resolve<ISecurityManager>()));
+            builder.RegisterType<JwtAuthenticationProvider>();
             builder.RegisterType<WebServer>().SingleInstance();
 
             return builder.Build();
@@ -42,12 +45,7 @@ namespace Euricom.IoT.Api
             builder.RegisterType<SocketClient>().As<ISocketClient>();
             builder.RegisterType<ZWaveManager>();
             builder.RegisterType<HttpService>().As<IHttpService>();
-            builder.Register(context =>
-            {
-                var settings = context.Resolve<Settings>();
-
-                return new ZWave.ZWaveController(context.Resolve<IZWaveDeviceNotifier>(), settings.ZWaveNetworkKey);
-            }).As<IZWaveController>().SingleInstance();
+            builder.RegisterType<ZWaveController>().As<IZWaveController>().SingleInstance();
         }
 
         private static void RegisterAzure(ContainerBuilder builder)
@@ -55,14 +53,20 @@ namespace Euricom.IoT.Api
             builder.Register(c =>
             {
                 var settings = c.Resolve<Settings>();
-                return new AzureDeviceManager.AzureDeviceRegistry(settings.AzureIotHubUriConnectionString);
-            }).As<IAzureDeviceRegistry>();
+                return new DeviceHubRegistry(settings.AzureIotHubUriConnectionString);
+            }).As<IDeviceHubRegistry>().SingleInstance();
+
+            builder
+                .RegisterType<GatewayDeviceRegistry>()
+                .As<IGatewayDeviceRegistry>()
+                .As<IMonitor>()
+                .SingleInstance();
 
             builder.Register(c =>
             {
                 var settings = c.Resolve<Settings>();
-                return new AzureDeviceManager.AzureDeviceManager(settings.AzureIotHubUri);
-            }).As<IAzureDeviceManager>();
+                return new GatewayDeviceFactory(c.Resolve<IMessageHandler>(), settings.AzureIotHubUri);
+            }).As<IGatewayDeviceFactory>().SingleInstance();
         }
 
         private static void RegisterRepositories(ContainerBuilder builder)
@@ -81,13 +85,14 @@ namespace Euricom.IoT.Api
             builder.RegisterType<CameraManager>().As<ICameraManager>();
             builder.RegisterType<ConfigurationManager>().As<IConfigurationManager>();
             builder.RegisterType<DanaLockManager>().As<IDanaLockManager>();
-            builder.RegisterType<GatewayManager>().As<IGatewayManager>();
             builder.RegisterType<LazyBoneManager>().As<ILazyBoneManager>();
             builder.RegisterType<LogManager>().As<ILogManager>();
             builder.RegisterType<SecurityManager>().As<ISecurityManager>();
             builder.RegisterType<WallMountSwitchManager>().As<IWallMountSwitchManager>();
             builder.RegisterType<ZWaveManager>().As<IZWaveManager>();
+            builder.RegisterType<UserManager>().As<IUserManager>();
 
+            builder.RegisterType<MessageHandler>().As<IMessageHandler>();
             builder.RegisterType<ZWaveDeviceNotifier>().As<IZWaveDeviceNotifier>().SingleInstance();
         }
 

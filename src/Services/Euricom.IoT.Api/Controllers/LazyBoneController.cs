@@ -12,7 +12,7 @@ using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize]
+    [Authorize("Manager")]
     [RestController]
     public class LazyBoneController
     {

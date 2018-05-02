@@ -11,6 +11,8 @@ import { User } from '../models/user'
 import { Credentials } from '../models/credentials'
 import { ChangePassword } from '../models/changepassword'
 import { AuthHttp } from 'angular2-jwt'
+import { StorageService } from '../services/storageService';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,11 @@ export class AuthService {
   private subject: Subject<String> = new Subject<String>()
   private loginByPukOk: boolean
 
-  constructor(private http: Http, private authHttp: AuthHttp, private config: Config) {
+  constructor(
+    private http: Http,
+    private authHttp: AuthHttp,
+    private config: Config,
+    private storageService: StorageService) {
     if (tokenNotExpired()) {
       this.setLoggedIn('admin')
     } else {
@@ -72,6 +78,19 @@ export class AuthService {
   logout() {
     this.loggedInUsername = undefined
     this.loginByPukOk = false
-    localStorage.removeItem('token')
+
+    this.storageService.removeToken()
+    this.storageService.removeUsername()
+    this.storageService.removeRoles();
+  }
+
+  hasRole(roles: string[]): boolean {
+    var currentRoles = this.storageService.getRoles().getValue();
+    if (this.isLoggedIn()) {
+      return roles.some(function (item) {
+        return currentRoles.includes(item);
+      });
+    }
+    return false;
   }
 }

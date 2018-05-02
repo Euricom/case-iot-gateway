@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
 
@@ -8,12 +7,12 @@ namespace Euricom.IoT.Api.Managers
     public class ZWaveDeviceNotifier : IZWaveDeviceNotifier
     {
         private readonly IZWaveDeviceRepository _repository;
-        private readonly IAzureDeviceManager _deviceManager;
+        private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public ZWaveDeviceNotifier(IZWaveDeviceRepository repository, IAzureDeviceManager deviceManager)
+        public ZWaveDeviceNotifier(IZWaveDeviceRepository repository, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
-            _deviceManager = deviceManager;
+            _gatewayDeviceRegistry = gatewayDeviceRegistry;
         }
 
         public void Notify(byte nodeId, byte key, byte value)
@@ -22,20 +21,17 @@ namespace Euricom.IoT.Api.Managers
 
             if (device != null)
             {
+                // Sometimes we get notifications twice
+                // We keep the state so we can check 
                 if (device.UpdateState(key, value))
                 {
                     _repository.UpdateZWaveDevice(device);
 
                     var state = device.GetState();
 
-                    MyTaskFactory.StartNew(() => _deviceManager.UpdateStateAsync(device.DeviceId, device.PrimaryKey, state))
-                        .Unwrap()
-                        .GetAwaiter()
-                        .GetResult();
+                    Task.Run(async () => await _gatewayDeviceRegistry.SendAsync(device.DeviceId, state)).Wait();
                 }
             }
         }
-        private static readonly TaskFactory MyTaskFactory =
-            new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
     }
 }

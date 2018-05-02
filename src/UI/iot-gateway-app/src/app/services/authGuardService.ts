@@ -1,7 +1,7 @@
 // auth-guard.service.ts
 
 import { Injectable } from '@angular/core'
-import { Router } from '@angular/router'
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router'
 import { CanActivate } from '@angular/router'
 import { AuthService } from './authService'
 
@@ -11,9 +11,12 @@ export class AuthGuardService implements CanActivate {
   constructor(private authService: AuthService,
     private router: Router) { }
 
-  canActivate() {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authService.isLoggedIn()) {
-      return true
+      if (route.data) {
+        return this.authService.hasRole(Object.keys(route.data).map(key => route.data[key]));
+      }
+      return true;
     } else {
       this.router.navigateByUrl('/unauthorized')
       return false

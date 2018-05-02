@@ -56,9 +56,9 @@ namespace Euricom.IoT.Logging
 
         public void Init()
         {
-            Debug.WriteLine("Logger Init()");
+            System.Diagnostics.Debug.WriteLine("Logger Init()");
 
-            Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
+            Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
 
             string logDirectory = Path.Combine(_path, "logs");
             if (!Directory.Exists(logDirectory))
@@ -226,6 +226,12 @@ namespace Euricom.IoT.Logging
         public void LogFatal(Exception exception)
         {
             _logger.Fatal(exception, "");
+        }
+
+
+        public void Debug(string message)
+        {
+            _logger.Debug(message);
         }
     }
 }

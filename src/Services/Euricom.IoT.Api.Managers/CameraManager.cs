@@ -14,9 +14,9 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IDeviceRepository<Camera> _repository;
         private readonly IHttpService _httpService;
-        private readonly IAzureDeviceRegistry _deviceRegistry;
+        private readonly IDeviceHubRegistry _deviceRegistry;
 
-        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IAzureDeviceRegistry deviceRegistry)
+        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IDeviceHubRegistry deviceRegistry)
         {
             _repository = repository;
             _httpService = httpService;

@@ -10,7 +10,7 @@ using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize]
+    [Authorize("Manager")]
     [RestController]
     public class WallMountSwitchController: ControllerBase
     {

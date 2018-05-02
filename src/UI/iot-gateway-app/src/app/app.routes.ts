@@ -13,23 +13,30 @@ import { WallMountViewComponent } from './views/wallmount-switches/wallmountView
 import { LogViewComponent } from './views/log/logView.component'
 import { OpenZWaveLogViewComponent } from './views/openzwavelog/openzwavelogView.component'
 
-import { AuthGuardService } from './services/authGuardService'
+import {
+  AuthGuardService
+} from './services/authGuardService'
+import { UsersViewComponent } from './views/users/usersView.component';
+import { HomeViewComponent } from './views/home/homeView.component';
+import { AccountViewComponent } from './views/account/accountView.component';
 
 // resolvers: TODO add resolvers
 
 // routing
 
 export const routes: Routes = [
-  { path: '', component: SettingsViewComponent, canActivate: [AuthGuardService] },
+  { path: '', component: HomeViewComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'login', component: LoginViewComponent },
-  { path: 'settings', component: SettingsViewComponent, canActivate: [AuthGuardService] },
-  { path: 'zwave', component: ZwaveViewComponent, canActivate: [AuthGuardService] },
-  { path: 'cameras', component: CameraViewComponent, canActivate: [AuthGuardService] },
-  { path: 'switches', component: LazyBonesViewComponent, canActivate: [AuthGuardService] },
-  { path: 'wallmounts', component: WallMountViewComponent, canActivate: [AuthGuardService] },
-  { path: 'danalocks', component: DanaLocksViewComponent, canActivate: [AuthGuardService] },
-  { path: 'log', component: LogViewComponent, canActivate: [AuthGuardService] },
-  { path: 'openzwavelog', component: OpenZWaveLogViewComponent, canActivate: [AuthGuardService] },
+  { path: 'settings', component: SettingsViewComponent, canActivate: [AuthGuardService], data: ['Administrator'] },
+  { path: 'account', component: AccountViewComponent, canActivate: [AuthGuardService], data: ['Administrator', 'Manager', 'User'] },
+  { path: 'users', component: UsersViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'zwave', component: ZwaveViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'cameras', component: CameraViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'switches', component: LazyBonesViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'wallmounts', component: WallMountViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'danalocks', component: DanaLocksViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'log', component: LogViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
+  { path: 'openzwavelog', component: OpenZWaveLogViewComponent, canActivate: [AuthGuardService], data: ['Manager'] },
   { path: '**', component: PageNotFoundComponent },
 ]

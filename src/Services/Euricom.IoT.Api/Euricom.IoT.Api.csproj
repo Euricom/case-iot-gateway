@@ -96,9 +96,9 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Authentication\JwtValidator.cs" />
     <Compile Include="Authentication\JwtAuthenticationProvider.cs" />
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\CommandTokenController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
@@ -106,13 +106,13 @@
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LazyBoneController.cs" />
     <Compile Include="Controllers\DanaLockController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WallMountSwitchController.cs" />
     <Compile Include="Controllers\ZWaveController.cs" />
-    <Compile Include="Dtos\LogDto.cs" />
-    <Compile Include="Dtos\LogLineDto.cs" />
     <Compile Include="Mappings\DanaLockMappingProfile.cs" />
     <Compile Include="Mappings\CameraMappingProfile.cs" />
     <Compile Include="Mappings\NodeMappingProfile.cs" />
+    <Compile Include="Mappings\UserMappingProfile.cs" />
     <Compile Include="Mappings\WallMountMappingProfile.cs" />
     <Compile Include="Mappings\SettingsMappingProfile.cs" />
     <Compile Include="Mappings\LogMappingProfile.cs" />
@@ -248,10 +248,6 @@
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
       <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureDeviceManager\Euricom.IoT.AzureDeviceManager.csproj">
-      <Project>{a1673557-c45c-457b-bd38-597549771075}</Project>
-      <Name>Euricom.IoT.AzureDeviceManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Integration\Euricom.IoT.Dropbox\Euricom.IoT.Dropbox.csproj">
       <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
       <Name>Euricom.IoT.Dropbox</Name>
@@ -273,6 +269,7 @@
       <Name>Euricom.IoT.Monitoring</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Euricom.IoT.Api.Dtos
+namespace Euricom.IoT.Api.Models
 {
     public class LogLineDto
     {

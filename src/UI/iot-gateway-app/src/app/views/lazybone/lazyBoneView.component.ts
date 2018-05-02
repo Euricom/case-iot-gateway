@@ -35,13 +35,14 @@ export class LazyBonesViewComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    event.stopPropagation();
     this.selectedRowIndex = undefined
     this.refresh()
   }
 
   onSubmit(): void {
     var save;
-    if(this.isAddMode) {
+    if (this.isAddMode) {
       save = this.lazyBoneService.create(this.lazyBone);
     } else {
       save = this.lazyBoneService.update(this.lazyBone);
@@ -60,12 +61,12 @@ export class LazyBonesViewComponent implements OnInit {
     event.stopPropagation()
     this.lazyBoneService.delete(lazyBone.Name)
       .subscribe(
-      (data) => {
-        this.selectedRowIndex = undefined
-        this.toastr.info('Lazy bone removed successfully')
-        this.refresh()
-      },
-      )
+        (data) => {
+          this.selectedRowIndex = undefined
+          this.toastr.info('Lazy bone removed successfully')
+          this.refresh()
+        },
+    )
   }
 
   ngOnInit(): void {
@@ -75,10 +76,10 @@ export class LazyBonesViewComponent implements OnInit {
   refresh() {
     this.lazyBoneService.getAll()
       .subscribe(
-      (data) => {
-        this.lazyBones = data
-      },
-      )
+        (data) => {
+          this.lazyBones = data
+        },
+    )
   }
 
   testConnection(lazyBone: LazyBone, event: Event) {
@@ -89,14 +90,14 @@ export class LazyBonesViewComponent implements OnInit {
     this.toastr.info('testing connection, please wait')
     this.lazyBoneService.testConnection(lazyBone.Name)
       .subscribe(
-      (data) => {
-        if (data) {
-          this.toastr.info('Connection succesfull')
-        } else {
-          this.toastr.error('Connection failed')
-        }
-      },
-      )
+        (data) => {
+          if (data) {
+            this.toastr.info('Connection succesfull')
+          } else {
+            this.toastr.error('Connection failed')
+          }
+        },
+    )
   }
 
   getCurrentState(lazyBone: LazyBone, event: Event) {
@@ -107,10 +108,10 @@ export class LazyBonesViewComponent implements OnInit {
     this.toastr.info('getting state, please wait')
     this.lazyBoneService.getCurrentState(lazyBone.Name)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   switch(lazyBone: LazyBone, state: String, event: Event) {
@@ -121,10 +122,10 @@ export class LazyBonesViewComponent implements OnInit {
     this.toastr.info('switching, please wait')
     this.lazyBoneService.switch(lazyBone.Name, state)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   testChangeLightIntensity(lazyBone: LazyBone, event: Event) {
@@ -135,10 +136,10 @@ export class LazyBonesViewComponent implements OnInit {
     this.toastr.info('changing light intensity 3 times, please wait')
     this.lazyBoneService.testChangeLightIntensity(lazyBone.Name)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   setClickedRow(i: Number, lazyBone: LazyBone) {

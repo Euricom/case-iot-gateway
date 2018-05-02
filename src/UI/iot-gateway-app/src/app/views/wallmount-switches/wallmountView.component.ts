@@ -35,13 +35,14 @@ export class WallMountViewComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    event.stopPropagation();
     this.selectedRowIndex = undefined
     this.refresh()
   }
 
   onSubmit(): void {
     var save;
-    if(this.isAddMode) {
+    if (this.isAddMode) {
       save = this.wallmountService.create(this.wallmount);
     } else {
       save = this.wallmountService.update(this.wallmount);
@@ -60,12 +61,12 @@ export class WallMountViewComponent implements OnInit {
     event.stopPropagation()
     this.wallmountService.delete(wallmount.DeviceId)
       .subscribe(
-      (data) => {
-        this.selectedRowIndex = undefined
-        this.toastr.info('Wallmount removed successfully')
-        this.refresh()
-      },
-      )
+        (data) => {
+          this.selectedRowIndex = undefined
+          this.toastr.info('Wallmount removed successfully')
+          this.refresh()
+        },
+    )
   }
 
   ngOnInit(): void {
@@ -75,10 +76,10 @@ export class WallMountViewComponent implements OnInit {
   refresh() {
     this.wallmountService.getAll()
       .subscribe(
-      (data) => {
-        this.wallmounts = data
-      },
-      )
+        (data) => {
+          this.wallmounts = data
+        },
+    )
   }
 
   testConnection(wallmount: Wallmount, event: Event) {
@@ -89,10 +90,10 @@ export class WallMountViewComponent implements OnInit {
     }
     this.wallmountService.testConnection(wallmount.DeviceId)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   getState(wallmount: Wallmount, event: Event) {
@@ -103,14 +104,14 @@ export class WallMountViewComponent implements OnInit {
     }
     this.wallmountService.getState(wallmount.DeviceId)
       .subscribe(
-      (data) => {
-        if (data === 'True') {
-          this.toastr.info('Wallmount is ON')
-        } else if (data === 'False') {
-          this.toastr.info('Wallmount is OFF')
-        }
-      },
-      )
+        (data) => {
+          if (data === 'True') {
+            this.toastr.info('Wallmount is ON')
+          } else if (data === 'False') {
+            this.toastr.info('Wallmount is OFF')
+          }
+        },
+    )
   }
 
   switch(wallmount: Wallmount, state: String, event: Event) {
@@ -121,10 +122,10 @@ export class WallMountViewComponent implements OnInit {
     }
     this.wallmountService.switch(wallmount.DeviceId, state)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   setClickedRow(i: Number, wallmount: Wallmount) {

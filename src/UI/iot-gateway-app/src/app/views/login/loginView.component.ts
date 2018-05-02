@@ -4,6 +4,8 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr'
 import { AuthService } from '../../services/authService'
 import { Credentials } from '../../models/credentials'
 import { User } from '../../models/user'
+import { UserService } from '../../services/userService';
+import { StorageService } from '../../services/storageService';
 
 @Component({
   selector: 'login',
@@ -24,6 +26,8 @@ export class LoginViewComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private toastr: ToastsManager,
+    private userService: UserService,
+    private storageService: StorageService
   ) {
   }
 
@@ -41,21 +45,27 @@ export class LoginViewComponent implements OnInit {
     if ((credentials.Username && credentials.Password) || this.puk) {
       this.authService.login(credentials, this.puk)
         .subscribe(
-        (data) => {
-          localStorage.setItem('token', data)
+          (data) => {
+            this.storageService.setToken(data);
+            this.storageService.setUsername(<string>credentials.Username)
 
-          if (credentials && credentials.Username && credentials.Password) {
-            this.authService.setLoggedIn(credentials.Username)
-          } else {
-            this.authService.setLoggedInByPuk()
-          }
+            this.userService.get()
+              .subscribe((user) => {
+                this.storageService.setRoles(user.Roles);
 
-          this.router.navigateByUrl('/settings')
-        },
-        (error) => {
-          this.password = ''
-          this.failedLoginTimes++
-        },
+                if (credentials && credentials.Username && credentials.Password) {
+                  this.authService.setLoggedIn(credentials.Username)
+                } else {
+                  this.authService.setLoggedInByPuk()
+                }
+
+                this.router.navigateByUrl('/')
+              });
+          },
+          (error) => {
+            this.password = ''
+            this.failedLoginTimes++
+          },
       )
     }
   }

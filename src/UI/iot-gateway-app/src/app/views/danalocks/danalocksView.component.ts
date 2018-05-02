@@ -35,6 +35,7 @@ export class DanaLocksViewComponent implements OnInit {
     }
 
     cancelEdit(): void {
+        event.stopPropagation();
         this.selectedRowIndex = undefined
         this.refresh()
     }
@@ -60,11 +61,11 @@ export class DanaLocksViewComponent implements OnInit {
         event.stopPropagation()
         this.danaLockService.delete(danaLock.DeviceId)
             .subscribe(
-            (data) => {
-                this.selectedRowIndex = undefined
-                this.toastr.info('DanaLock removed successfully')
-                this.refresh()
-            },
+                (data) => {
+                    this.selectedRowIndex = undefined
+                    this.toastr.info('DanaLock removed successfully')
+                    this.refresh()
+                },
         )
     }
 
@@ -75,9 +76,9 @@ export class DanaLocksViewComponent implements OnInit {
     refresh() {
         this.danaLockService.getAll()
             .subscribe(
-            (data) => {
-                this.danalocks = data
-            },
+                (data) => {
+                    this.danalocks = data
+                },
         )
     }
 
@@ -89,9 +90,9 @@ export class DanaLocksViewComponent implements OnInit {
         }
         this.danaLockService.testConnection(danaLock.DeviceId)
             .subscribe(
-            (data) => {
-                this.toastr.info(data)
-            },
+                (data) => {
+                    this.toastr.info(data)
+                },
         )
     }
 
@@ -103,13 +104,13 @@ export class DanaLocksViewComponent implements OnInit {
         }
         this.danaLockService.isLocked(danaLock.DeviceId)
             .subscribe(
-            (data) => {
-                if (data == 'True') {
-                    this.toastr.info('DanaLock door is locked')
-                } else if (data == 'False') {
-                    this.toastr.info('DanaLock door is unlocked')
-                }
-            },
+                (data) => {
+                    if (data == 'True') {
+                        this.toastr.info('DanaLock door is locked')
+                    } else if (data == 'False') {
+                        this.toastr.info('DanaLock door is unlocked')
+                    }
+                },
         )
     }
 
@@ -121,9 +122,9 @@ export class DanaLocksViewComponent implements OnInit {
         }
         this.danaLockService.switch(danaLock.DeviceId, state)
             .subscribe(
-            (data) => {
-                this.toastr.info(data)
-            },
+                (data) => {
+                    this.toastr.info(data)
+                },
         )
     }
 

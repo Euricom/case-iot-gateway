@@ -35,13 +35,14 @@ export class CameraViewComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    event.stopPropagation();
     this.selectedRowIndex = undefined
     this.refresh()
   }
 
   onSubmit(): void {
     var save;
-    if(this.isAddMode) {
+    if (this.isAddMode) {
       save = this.cameraService.create(this.camera);
     } else {
       save = this.cameraService.update(this.camera);
@@ -60,12 +61,12 @@ export class CameraViewComponent implements OnInit {
     event.stopPropagation()
     this.cameraService.delete(camera.Name)
       .subscribe(
-      (data) => {
-        this.selectedRowIndex = undefined
-        this.toastr.info('Camera removed successfully')
-        this.refresh()
-      },
-      )
+        (data) => {
+          this.selectedRowIndex = undefined
+          this.toastr.info('Camera removed successfully')
+          this.refresh()
+        },
+    )
   }
 
   ngOnInit(): void {
@@ -75,10 +76,10 @@ export class CameraViewComponent implements OnInit {
   refresh() {
     this.cameraService.getAll()
       .subscribe(
-      (data) => {
-        this.cameras = data
-      },
-      )
+        (data) => {
+          this.cameras = data
+        },
+    )
   }
 
   testConnection(camera: Camera, event: Event) {
@@ -90,10 +91,10 @@ export class CameraViewComponent implements OnInit {
     this.toastr.info('testing connection, please wait')
     this.cameraService.testConnection(camera.Name)
       .subscribe(
-      (data) => {
-        this.toastr.info(data)
-      },
-      )
+        (data) => {
+          this.toastr.info(data)
+        },
+    )
   }
 
   setClickedRow(i: Number, camera: Camera) {

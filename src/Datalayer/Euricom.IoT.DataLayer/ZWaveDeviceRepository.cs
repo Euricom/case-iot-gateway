@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.ZWave;
@@ -13,6 +14,11 @@ namespace Euricom.IoT.DataLayer
         public ZWaveDeviceRepository(IotDbContext database)
         {
             _database = database;
+        }
+
+        public List<ZWaveDevice> GetDevices()
+        {
+            return _database.ZWaveDevices.ToList();
         }
 
         public ZWaveDevice GetZWaveDevice(byte nodeId)
