@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Euricom.IoT.Security;
+﻿using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.Common.Exceptions;
 using Restup.WebServer.Rest;
 
 namespace Euricom.IoT.Api.Controllers
@@ -8,17 +8,14 @@ namespace Euricom.IoT.Api.Controllers
     {
         protected string GetUsername()
         {
-            var auth = Request.Headers.SingleOrDefault(h => h.Name == "Authorization");
+            var username = Request.GetUsername();
 
-            if (auth == null)
+            if (string.IsNullOrEmpty(username))
             {
-                return null;
+                throw new UnauthorizedException();
             }
 
-            var jwt = auth.Value.Replace("Bearer ", "");
-            var claims = JwtSecurity.DecodeJwt(jwt);
-
-            return claims.sub;
+            return username;
         }
     }
 }

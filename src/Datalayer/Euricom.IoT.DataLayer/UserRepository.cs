@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Euricom.IoT.Common.Exceptions;
 using Euricom.IoT.DataLayer.Interfaces;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,70 +31,55 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not add user, key: {user.Username}, exception: " + ex);
+                ex.HandleAlreadyExistsException();
+                throw;
             }
         }
 
         public void Remove(string username)
         {
-            try
-            {
-                var user = _database.Users.Find(username);
+            var user = _database
+                .Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(u => u.Username == username);
 
-                if (user != null)
-                {
-                    _database.Users.Remove(user);
-                    _database.SaveChanges();
-                }
-            }
-            catch (Exception ex)
+            if (user != null)
             {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
+                _database.Users.Remove(user);
+                _database.SaveChanges();
             }
         }
 
         public User Get(string username)
         {
-            try
+            var user = _database
+                .Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(u => u.Username == username);
+
+            if (user == null)
             {
-                return _database
-                    .Users
-                    .Include(u => u.Roles)
-                    .FirstOrDefault(u => u.Username == username);
+                throw new NotFoundException(username);
             }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+
+            return user;
         }
 
         public User GetUserWithToken(string token)
         {
-            try
-            {
-                return _database.Users.FirstOrDefault(u => u.AccessToken == token);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
-        }
+            var user = _database.Users.FirstOrDefault(u => u.AccessToken == token);
 
+            if (user == null)
+            {
+                throw new NotFoundException(token);
+            }
+
+            return user;
+        }
+        
         public List<User> Get()
         {
-            try
-            {
-                return _database.Users.Include(u => u.Roles).ToList();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            return _database.Users.Include(u => u.Roles).ToList();
         }
 
         public void Update(User user)
@@ -104,63 +89,38 @@ namespace Euricom.IoT.DataLayer
                 throw new ArgumentNullException(nameof(user));
             }
 
-            try
-            {
-                var u = _database.Users.Find(user.Username);
+            var u = Get(user.Username);
 
-                _database.Entry(u).CurrentValues.SetValues(user);
-                _database.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            _database.Entry(u).CurrentValues.SetValues(user);
+            _database.SaveChanges();
         }
 
         public bool Exists(string username)
         {
-            try
-            {
-                return _database.Users.Find(username) != null;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            return _database
+                .Users
+                .Include(u => u.Roles)
+                .FirstOrDefault(u => u.Username == username) != null;
         }
 
         public void AddUserRole(string username, string roleName)
         {
             var user = Get(username);
-            if (user != null)
-            {
-                var role = GetRole(roleName);
-                if (role == null)
-                {
-                    throw new Exception("Role not found.");
-                }
+            var role = GetRole(roleName);
 
-                user.AddRole(role);
-                _database.SaveChanges();
-            }
+            user.AddRole(role);
+
+            _database.SaveChanges();
         }
 
         public void RemoveUserRole(string username, string roleName)
         {
             var user = Get(username);
-            if (user != null)
-            {
-                var role = GetRole(roleName);
-                if (role == null)
-                {
-                    throw new Exception("Role not found.");
-                }
+            var role = GetRole(roleName);
 
-                user.RemoveRole(roleName);
-                _database.SaveChanges();
-            }
+            user.RemoveRole(role.Name);
+
+            _database.SaveChanges();
         }
 
         public List<Role> GetRoles()
@@ -193,13 +153,28 @@ namespace Euricom.IoT.DataLayer
 
         private void AddRole(string name)
         {
-            _database.Roles.Add(new Role(name));
-            _database.SaveChanges();
+            try
+            {
+                _database.Roles.Add(new Role(name));
+                _database.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ex.HandleAlreadyExistsException();
+                throw;
+            }
         }
 
         private Role GetRole(string name)
         {
-            return _database.Roles.FirstOrDefault(r => r.Name == name);
+            var role = _database.Roles.FirstOrDefault(r => r.Name == name);
+
+            if (role == null)
+            {
+                throw new NotFoundException(name);
+            }
+
+            return role;
         }
     }
 }

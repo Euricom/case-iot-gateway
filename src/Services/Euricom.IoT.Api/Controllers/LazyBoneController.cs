@@ -4,11 +4,9 @@ using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
 using Restup.WebServer.Attributes;
-using System;
 using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.Devices.LazyBone;
-using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.Api.Controllers
 {
@@ -26,106 +24,50 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/lazybone")]
         public IGetResponse GetAll()
         {
-            try
-            {
-                var lazyBones = _lazyBoneManager.Get();
-                return ResponseUtilities.GetResponseOk(lazyBones);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not get lazyBones: exception: {ex.Message}");
-            }
+            var lazyBones = _lazyBoneManager.Get();
+            return ResponseUtilities.GetResponseOk(lazyBones);
         }
 
         [UriFormat("/lazybone")]
         public async Task<PostResponse> Add([FromContent] LazyBoneDto lazyBoneDto)
         {
-            try
-            {
-                var newLazyBone = await _lazyBoneManager.Add(lazyBoneDto);
-                return ResponseUtilities.PostResponseOk(newLazyBone);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not add lazyBone: exception: {ex.Message}");
-            }
+            var newLazyBone = await _lazyBoneManager.Add(lazyBoneDto);
+            return ResponseUtilities.PostResponseOk(newLazyBone);
         }
 
         [UriFormat("/lazybone")]
         public IPutResponse Edit([FromContent] LazyBoneDto lazyBoneDto)
         {
-            try
-            {
-                var lazyBoneEdited = _lazyBoneManager.Update(lazyBoneDto);
-                return ResponseUtilities.PutResponseOk(lazyBoneEdited);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not edit lazyBone: exception: {ex.Message}");
-            }
+            var lazyBoneEdited = _lazyBoneManager.Update(lazyBoneDto);
+            return ResponseUtilities.PutResponseOk(lazyBoneEdited);
         }
 
         [UriFormat("/lazybone/{deviceId}")]
         public async Task<IDeleteResponse> Delete(string deviceId)
         {
-            try
-            {
-                await _lazyBoneManager.Remove(deviceId);
-                return ResponseUtilities.DeleteResponseOk();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not remove lazyBone: exception: {ex.Message}");
-            }
+            await _lazyBoneManager.Remove(deviceId);
+            return ResponseUtilities.DeleteResponseOk();
         }
 
         [UriFormat("/lazybone/{deviceId}/testconnection")]
         public IGetResponse TestConnection(string deviceId)
         {
-            try
-            {
-                var result = _lazyBoneManager.TestConnection(deviceId);
-                return ResponseUtilities.GetResponseOk(result);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception(ex.Message);
-            }
+            var result = _lazyBoneManager.TestConnection(deviceId);
+            return ResponseUtilities.GetResponseOk(result);
         }
 
         [UriFormat("/lazybone/{deviceId}/state")]
         public IGetResponse GetState(string deviceId)
         {
-            try
-            {
-                var state = _lazyBoneManager.GetState(deviceId);
-                return ResponseUtilities.GetResponseOk(state);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
-            }
+            var state = _lazyBoneManager.GetState(deviceId);
+            return ResponseUtilities.GetResponseOk(state);
         }
 
         [UriFormat("/lazybone/{deviceId}/state")]
         public IPutResponse SetState(string deviceId, [FromContent] LazyBoneState state)
         {
-            try
-            {
-                _lazyBoneManager.SetState(deviceId, state);
-                return new PutResponse(PutResponse.ResponseStatus.NoContent);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw new Exception($"Could not determine lazybone state: exception: {ex.Message}");
-            }
+            _lazyBoneManager.SetState(deviceId, state);
+            return new PutResponse(PutResponse.ResponseStatus.NoContent);
         }
     }
 }

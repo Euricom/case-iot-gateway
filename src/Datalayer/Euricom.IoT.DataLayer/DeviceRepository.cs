@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Euricom.IoT.Common.Exceptions;
 using Euricom.IoT.DataLayer.Interfaces;
-using Euricom.IoT.Logging;
 using Euricom.IoT.Models;
 
 namespace Euricom.IoT.DataLayer
 {
-    public class DeviceRepository<TDevice>: IDeviceRepository<TDevice> where TDevice : Device
+    public class DeviceRepository<TDevice> : IDeviceRepository<TDevice> where TDevice : Device
     {
         private readonly IotDbContext _database;
 
@@ -21,7 +22,7 @@ namespace Euricom.IoT.DataLayer
             {
                 throw new ArgumentNullException(nameof(device));
             }
-            
+
             try
             {
                 _database.Set<TDevice>().Add(device);
@@ -29,54 +30,41 @@ namespace Euricom.IoT.DataLayer
             }
             catch (Exception ex)
             {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not set value for device, key: {device.DeviceId}, exception: " + ex);
+                ex.HandleAlreadyExistsException();
+                throw;
             }
         }
 
         public void Remove(string id)
         {
-            try
-            {
-                var device = _database.Set<TDevice>().Find(id);
+            var device = _database
+                .Set<TDevice>()
+                .FirstOrDefault(d => d.DeviceId == id);
 
-                if (device != null)
-                {
-                    _database.Set<TDevice>().Remove(device);
-                    _database.SaveChanges();
-                }
-            }
-            catch (Exception ex)
+            if (device != null)
             {
-                Logger.Instance.LogErrorWithDeviceContext(id, ex);
-                throw;
+                _database.Set<TDevice>().Remove(device);
+                _database.SaveChanges();
             }
         }
 
         public TDevice Get(string id)
         {
-            try
+            var device = _database
+                .Set<TDevice>()
+                .FirstOrDefault(d => d.DeviceId == id);
+
+            if (device == null)
             {
-                return _database.Set<TDevice>().Find(id);
+                throw new NotFoundException(id);
             }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(id, ex);
-                throw;
-            }
+
+            return device;
         }
 
         public IEnumerable<TDevice> Get()
         {
-            try
-            {
-                return _database.Set<TDevice>();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            return _database.Set<TDevice>().ToList();
         }
 
         public void Update(TDevice device)
@@ -85,18 +73,11 @@ namespace Euricom.IoT.DataLayer
             {
                 throw new ArgumentNullException(nameof(device));
             }
+
+            var d = Get(device.DeviceId);
             
-            try
-            {
-                var d =_database.Set<TDevice>().Find(device.DeviceId);
-                _database.Entry(d).CurrentValues.SetValues(device);
-                _database.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            _database.Entry(d).CurrentValues.SetValues(device);
+            _database.SaveChanges();
         }
     }
 }

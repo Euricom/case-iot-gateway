@@ -67,7 +67,7 @@ namespace Euricom.IoT.Dropbox
             }
             catch (HttpException ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.Error(ex);
 
                 Debug.WriteLine("Exception reported from RPC layer");
                 Debug.WriteLine("    Status code: {0}", ex.StatusCode);
@@ -105,7 +105,7 @@ namespace Euricom.IoT.Dropbox
             }
             catch (HttpException ex)
             {
-                Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logger.Instance.Error(ex);
 
                 Debug.WriteLine("Exception reported from RPC layer");
                 Debug.WriteLine("    Status code: {0}", ex.StatusCode);

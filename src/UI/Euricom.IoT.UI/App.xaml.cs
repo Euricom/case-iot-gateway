@@ -100,7 +100,7 @@ namespace Euricom.IoT.UI
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Instance.LogError(e.Exception);
+            Logger.Instance.Error(e.Exception);
         }
     }
 }

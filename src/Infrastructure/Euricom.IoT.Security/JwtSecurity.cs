@@ -14,15 +14,15 @@ namespace Euricom.IoT.Security
             var now = DateTimeOffset.Now;
             var payload = JsonConvert.SerializeObject(new JwtPayload
             {
-                iss = "IoT Gateway",
-                iat = now.ToUnixTimeSeconds(),
-                exp = now.AddMinutes(expiryInMinutes).ToUnixTimeSeconds(),
-                sub = username,
-                roles = roles
+                Iss = "IoT Gateway",
+                Iat = now.ToUnixTimeSeconds(),
+                Exp = now.AddMinutes(expiryInMinutes).ToUnixTimeSeconds(),
+                Sub = username,
+                Roles = roles
 
             });
-            string jwt = Jwt.Encode(payload, JwsAlgorithms.HS256, SecretKey);
-            return jwt;
+
+            return Jwt.Encode(payload, JwsAlgorithms.HS256, SecretKey);
         }
 
         public static JwtPayload DecodeJwt(string jwt)
@@ -38,7 +38,7 @@ namespace Euricom.IoT.Security
                 payload = DecodeJwt(jwt);
 
                 // Check if token is not yet expired
-                var expirationDate = DateTimeOffset.FromUnixTimeSeconds(payload.exp).DateTime;
+                var expirationDate = DateTimeOffset.FromUnixTimeSeconds(payload.Exp).DateTime;
                 if (expirationDate <= DateTime.UtcNow)
                 {
                     return false;
@@ -54,11 +54,16 @@ namespace Euricom.IoT.Security
         
         public class JwtPayload
         {
-            public string iss { get; set; }
-            public long iat { get; set; }
-            public long exp { get; set; }
-            public string sub { get; set; }
-            public List<string> roles { get; set; }
+            [JsonProperty("iss")]
+            public string Iss { get; set; }
+            [JsonProperty("iat")]
+            public long Iat { get; set; }
+            [JsonProperty("exp")]
+            public long Exp { get; set; }
+            [JsonProperty("sub")]
+            public string Sub { get; set; }
+            [JsonProperty("roles")]
+            public List<string> Roles { get; set; }
         }
     }
 }

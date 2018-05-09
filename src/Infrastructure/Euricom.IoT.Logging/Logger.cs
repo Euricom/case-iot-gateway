@@ -4,27 +4,23 @@ using Serilog.Events;
 using Serilog.Formatting.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euricom.IoT.Logging
 {
     public class Logger : ILogger
     {
         private static string _path;
-        private static volatile Logger _instance;
-        private static object _syncRoot = new Object(); //for thread safe singleton
 
-        private static object _syncRootContextLogger = new Object(); //For locking the logging context (if two threads try to log from two different managers/device id, the context must be correct)
+        private static Lazy<Logger> _lazy =
+            new Lazy<Logger>(() => new Logger());
 
-        private Serilog.Core.Logger _logger;
+        private Serilog.ILogger _logger;
 
         private static int _historyLog = 31;
         private static LogEventLevel _logEventLevel = LogEventLevel.Information;
-
-
+        
         private Logger()
         {
             Init();
@@ -35,26 +31,13 @@ namespace Euricom.IoT.Logging
             _path = path;
             _historyLog = historyLog;
             _logEventLevel = (LogEventLevel)Enum.Parse(typeof(LogEventLevel), logLevel.ToString());
+
+            _lazy = new Lazy<Logger>(() => new Logger());
         }
 
-        public static Logger Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new Logger();
-                    }
-                }
+        public static ILogger Instance => _lazy.Value;
 
-                return _instance;
-            }
-        }
-
-        public void Init()
+        private void Init()
         {
             System.Diagnostics.Debug.WriteLine("Logger Init()");
 
@@ -66,13 +49,14 @@ namespace Euricom.IoT.Logging
                 Directory.CreateDirectory(logDirectory);
             }
 
-            // string template = "{Timestamp} [{Level}] {Message}{NewLine}{Exception}";
             string pathFormat = logDirectory + "\\" + "log-{Date}.txt";
-            var jsonFormatter = new JsonFormatter(null, false, null);
+
+            var jsonFormatter = new JsonFormatter();
 
             var logger = new LoggerConfiguration()
-            .WriteTo.RollingFile(jsonFormatter, pathFormat, _logEventLevel, null, _historyLog, null, false, false, null) //Third parameter from right is buffered
-            .CreateLogger();
+                .MinimumLevel.Verbose()
+                .WriteTo.RollingFile(jsonFormatter, pathFormat, _logEventLevel, null, _historyLog, null, false, false, null)
+                .CreateLogger();
 
             _logger = logger;
 
@@ -89,9 +73,9 @@ namespace Euricom.IoT.Logging
         public string[] GetLogLines(string date)
         {
             var logLines = new List<string>();
-            string logDirectory = System.IO.Path.Combine(_path, "logs");
-            string logFile = System.IO.Path.Combine(logDirectory, "log-" + date + ".txt");
-            if (System.IO.File.Exists(logFile))
+            string logDirectory = Path.Combine(_path, "logs");
+            string logFile = Path.Combine(logDirectory, "log-" + date + ".txt");
+            if (File.Exists(logFile))
             {
                 using (var fileStream = File.Open(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
@@ -128,110 +112,39 @@ namespace Euricom.IoT.Logging
             throw new Exception($"Could not get logFile {logFile} from logDirectory {logDirectory}");
         }
 
-        public void LogVerboseWithDeviceContext(string deviceId, string message)
+        public bool IsEnabled(LogLevel level)
         {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext("DeviceId", deviceId);
-                contextLogger.Verbose(message);
-            }
+            return _logger.IsEnabled((LogEventLevel)Enum.Parse(typeof(LogEventLevel), level.ToString()));
         }
-
-        public void LogVerboseWithContext(Type type, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext(type);
-                contextLogger.Verbose(message);
-            }
-        }
-
-        public void LogDebugWithDeviceContext(string deviceId, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext("DeviceId", deviceId);
-                contextLogger.Debug(message);
-            }
-        }
-
-        public void LogDebugWithContext(Type type, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext(type);
-                contextLogger.Debug(message);
-            }
-        }
-
-        public void LogInformationWithDeviceContext(string deviceId, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext("DeviceId", deviceId);
-                contextLogger.Information(message);
-            }
-        }
-
-        public void LogWarningWithDeviceContext(string deviceId, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext("DeviceId", deviceId);
-                contextLogger.Warning(message);
-            }
-        }
-
-        public void LogErrorWithDeviceContext(string deviceId, Exception exception)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext("DeviceId", deviceId);
-                contextLogger.Error(exception, "");
-            }
-        }
-
-        public void LogInformationWithContext(Type type, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext(type);
-                contextLogger.Information(message);
-            }
-        }
-
-        public void LogWarningWithContext(Type type, string message)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext(type);
-                contextLogger.Warning(message);
-            }
-        }
-
-        public void LogErrorWithContext(Type type, Exception exception)
-        {
-            lock (_syncRootContextLogger)
-            {
-                var contextLogger = _logger.ForContext(type);
-                contextLogger.Error(exception, "");
-            }
-        }
-
-        public void LogError(Exception exception)
-        {
-            _logger.Error(exception, "");
-        }
-
-        public void LogFatal(Exception exception)
-        {
-            _logger.Fatal(exception, "");
-        }
-
 
         public void Debug(string message)
         {
             _logger.Debug(message);
+        }
+
+        public void Verbose(string message)
+        {
+            _logger.Verbose(message);
+        }
+
+        public void Information(string message)
+        {
+            _logger.Information(message);
+        }
+
+        public void Warning(string message)
+        {
+            _logger.Warning(message);
+        }
+
+        public void Error(Exception exception, string message = null)
+        {
+            _logger.Error(exception, message);
+        }
+
+        public void Fatal(Exception exception, string message = null)
+        {
+            _logger.Fatal(exception, message);
         }
     }
 }

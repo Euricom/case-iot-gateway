@@ -23,47 +23,23 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/logs")]
         public IGetResponse QueryLogFiles()
         {
-            try
-            {
-                var logFiles = _logManager.QueryLogFiles();
-                return ResponseUtilities.GetResponseOk(logFiles);
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not get log: exception: {ex.Message}");
-            }
+            var logFiles = _logManager.QueryLogFiles();
+            return ResponseUtilities.GetResponseOk(logFiles);
         }
 
         [UriFormat("/logs_openzwave")]
         public IGetResponse GetOpenZWaveLog()
         {
-            try
-            {
-                var logFiles = _logManager.GetOpenZWaveLog();
-                return ResponseUtilities.GetResponseOk(logFiles);
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not get log: exception: {ex.Message}");
-            }
+            var logFiles = _logManager.GetOpenZWaveLog();
+            return ResponseUtilities.GetResponseOk(logFiles);
         }
 
         [UriFormat("/logs/{day}")]
         public IGetResponse GetAll(string day)
         {
-            try
-            {
-                var log = _logManager.GetLog(day);
-                var logDto = Mapper.Map<LogDto>(log);
-                return ResponseUtilities.GetResponseOk(logDto);
-            }
-            catch (Exception ex)
-            {
-                Logging.Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not get log: exception: {ex.Message}");
-            }
+            var log = _logManager.GetLog(day);
+            var logDto = Mapper.Map<LogDto>(log);
+            return ResponseUtilities.GetResponseOk(logDto);
         }
     }
 }

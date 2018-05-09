@@ -80,7 +80,7 @@ namespace Euricom.IoT.Messaging
                     var @event = await _deviceClient.ReceiveAsync();
                     if (@event == null)
                     {
-                        await Task.Delay(50, _cancellation.Token);
+                        await Task.Delay(10, _cancellation.Token);
                     }
                     else
                     {
@@ -100,7 +100,7 @@ namespace Euricom.IoT.Messaging
                 }
                 catch (Exception ex)
                 {
-                    Logger.Instance.LogError(ex);
+                    Logger.Instance.Error(ex);
                 }
             }
         }
@@ -109,6 +109,8 @@ namespace Euricom.IoT.Messaging
         {
             try
             {
+                Logger.Instance.Information($"Handling message: {data}");
+
                 var message = JsonConvert.DeserializeObject<CommandMessage>(data);
                 if (message == null)
                 {
@@ -121,10 +123,10 @@ namespace Euricom.IoT.Messaging
                 }
 
                 // Verify JWT token
-                var valid = JwtSecurity.VerifyJwt(message.CommandToken, out var _);
+                var valid = JwtSecurity.VerifyJwt(message.CommandToken, out var payload);
                 if (valid == false)
                 {
-                    throw new UnauthorizedAccessException("Invalid command token.");
+                    Logger.Instance.Warning($"Invalid jwt: {JsonConvert.SerializeObject(payload)}");
                 }
 
                 switch (message.MessageType)
@@ -137,14 +139,9 @@ namespace Euricom.IoT.Messaging
                         throw new InvalidOperationException("Unknown message type.");
                 }
             }
-            catch (UnauthorizedAccessException e)
-            {
-                Logger.Instance.LogError(e);
-                return true;
-            }
             catch (Exception e)
             {
-                Logger.Instance.LogError(e);
+                Logger.Instance.Error(e);
                 return true;
             }
         }
@@ -157,7 +154,7 @@ namespace Euricom.IoT.Messaging
                 {
                     if (_queue.TryDequeue(out var properties) == false)
                     {
-                        await Task.Delay(50, _cancellation.Token);
+                        await Task.Delay(10, _cancellation.Token);
                     }
                     else
                     {
@@ -173,7 +170,7 @@ namespace Euricom.IoT.Messaging
                 }
                 catch (Exception ex)
                 {
-                    Logger.Instance.LogError(ex);
+                    Logger.Instance.Error(ex);
                 }
             }
         }

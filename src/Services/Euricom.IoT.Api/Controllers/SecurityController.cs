@@ -4,7 +4,6 @@ using Euricom.IoT.Models.Security;
 using Restup.Webserver.Attributes;
 using Restup.Webserver.Models.Contracts;
 using Restup.Webserver.Models.Schemas;
-using System;
 using Euricom.IoT.Api.Models;
 using Euricom.IoT.Logging;
 using Restup.WebServer.Attributes;
@@ -12,7 +11,7 @@ using Restup.WebServer.Attributes;
 namespace Euricom.IoT.Api.Controllers
 {
     [RestController]
-    public class SecurityController: ControllerBase
+    public class SecurityController : ControllerBase
     {
         private readonly ISecurityManager _securityManager;
 
@@ -24,53 +23,34 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/security/login")]
         public IPostResponse Login([FromContent] LoginCredentials credentials)
         {
-            try
-            {
-                var jwt = _securityManager.Login(credentials.Username, credentials.Password);
-                Logger.Instance.LogInformationWithContext(GetType(), $"{credentials.Username} logged in");
-                return ResponseUtilities.PostResponseOk(jwt);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not login: exception: {ex.Message}");
-            }
+            var jwt = _securityManager.Login(credentials.Username, credentials.Password);
+
+            Logger.Instance.Information($"{credentials.Username} logged in");
+
+            return ResponseUtilities.PostResponseOk(jwt);
         }
 
         [UriFormat("/security/loginByPUK")]
         public IPostResponse Login([FromContent] PukCredentials credentials)
         {
-            try
-            {
-                var jwt = _securityManager.LoginWithPuk(credentials.PUK);
-                Logger.Instance.LogInformationWithContext(GetType(), "admin logged in with PUK code!");
-                return ResponseUtilities.PostResponseOk(jwt);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not login: exception: {ex.Message}");
-            }
+            var jwt = _securityManager.LoginWithPuk(credentials.PUK);
+
+            Logger.Instance.Information("admin logged in with PUK code!");
+
+            return ResponseUtilities.PostResponseOk(jwt);
         }
 
         [Authorize]
         [UriFormat("/security/password")]
         public IPutResponse ChangePassword([FromContent] ChangePasswordDto dto)
         {
-            try
-            {
-                var username = GetUsername();
-                _securityManager.ChangePassword(username, dto.Old, dto.New);
+            var username = GetUsername();
 
-                Logger.Instance.LogInformationWithContext(GetType(), $"{username} changed password!");
+            _securityManager.ChangePassword(username, dto.Old, dto.New);
 
-                return new PutResponse(PutResponse.ResponseStatus.OK);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw new Exception($"Could not change password: exception: {ex.Message}");
-            }
+            Logger.Instance.Information($"{username} changed password!");
+
+            return new PutResponse(PutResponse.ResponseStatus.NoContent);
         }
     }
 }

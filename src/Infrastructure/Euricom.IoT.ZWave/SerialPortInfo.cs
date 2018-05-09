@@ -10,7 +10,7 @@ namespace Euricom.IoT.ZWave
 #if NETFX_CORE
         internal SerialPortInfo(DeviceInformation info)
         {
-            PortID = info.Id;
+            PortId = info.Id;
             Name = info.Name;
         }
 #else
@@ -20,7 +20,7 @@ namespace Euricom.IoT.ZWave
             Name = id;
         }
 #endif
-        public string PortID { get; }
+        public string PortId { get; }
         public string Name { get; }
         public bool IsActive { get; private set; }
 
@@ -28,7 +28,7 @@ namespace Euricom.IoT.ZWave
         {
             if (IsActive == false)
             {
-                IsActive = ZWManager.Instance.AddDriver(PortID);
+                IsActive = ZWManager.Instance.AddDriver(PortId);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Euricom.IoT.ZWave
         {
             if (IsActive)
             {
-                IsActive = !ZWManager.Instance.RemoveDriver(PortID);
+                IsActive = !ZWManager.Instance.RemoveDriver(PortId);
             }
         }
     }

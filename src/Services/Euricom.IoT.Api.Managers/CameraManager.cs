@@ -76,50 +76,11 @@ namespace Euricom.IoT.Api.Managers
             _repository.Remove(deviceId);
         }
 
-        //public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
-        //{
-        //    var settings = _settingsRepository.Get();
-        //    var config = _database.GetCameraConfig(deviceId);
-        //    if (config.Enabled)
-        //    {
-        //        var notification = new CameraMotionMessage
-        //        {
-        //            Gateway = "IoTGateway",
-        //            Device = config.Name,
-        //            CommandToken = null,
-        //            MessageType = MessageTypes.Camera,
-        //            FilePath = url,
-        //            EventNumber = eventNumber,
-        //            FrameNumber = frameNumber,
-        //        };
-
-        //        // Publish to IoT Hub
-        //        PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
-        //    }
-        //}
-
-        //public async void UploadFilesToBlobStorage(string path, Dictionary<string, byte[]> files)
-        //{
-        //    foreach (var file in files)
-        //    {
-        //        using (MemoryStream ms = new MemoryStream(file.Value))
-        //        {
-        //            await _azureBlobStorageManager.PostImage(path, file.Key, ms);
-        //        }
-        //    }
-        //}
-
         public Task<bool> TestConnection(string deviceId)
         {
             var device = _repository.Get(deviceId);
 
             return device.TestConnection(_httpService);
         }
-
-        //private void PublishMotionEvent(Settings settings, string deviceName, string deviceKey, CameraMotionMessage notification)
-        //{
-        //    var json = JsonConvert.SerializeObject(notification);
-        //    new MqttMessagePublisher(settings, deviceName, deviceKey).Publish(json);
-        //}
     }
 }

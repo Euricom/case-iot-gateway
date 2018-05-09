@@ -19,11 +19,6 @@ export class AppComponent {
     private eventAggregator: EventAggregator,
     private vcr: ViewContainerRef) {
 
-      toastr.setRootViewContainerRef(vcr)
-      eventAggregator.listen('ERROR')
-      .subscribe((error) => {
-        console.error(error)
-        toastr.error(error, 'Oops')
-      })
+    toastr.setRootViewContainerRef(vcr)
   }
 }

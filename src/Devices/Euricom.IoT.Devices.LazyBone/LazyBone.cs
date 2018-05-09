@@ -40,11 +40,15 @@ namespace Euricom.IoT.Devices.LazyBone
 
         public bool TestConnection(ISocketClient client)
         {
+            EnforceEnabled();
+
             return client.TestConnection(Host, Port);
         }
 
         public LazyBoneState GetState(ISocketClient client)
         {
+            EnforceEnabled();
+
             var response = client.Send(Host, Port, HexUtilities.ToHexString(LazyBoneStates.CommandGetLampStates), true);
 
             return GetCurrentState(response);
@@ -52,6 +56,8 @@ namespace Euricom.IoT.Devices.LazyBone
 
         public void SetState(ISocketClient client, LazyBoneState state)
         {
+            EnforceEnabled();
+
             if (state.On)
             {
                 string message = HexUtilities.ToHexString(LazyBoneStates.CommandTurnOnLamp);

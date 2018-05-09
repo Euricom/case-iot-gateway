@@ -14,7 +14,7 @@ namespace Euricom.IoT.Messaging
         {
             if (String.IsNullOrEmpty(connectionString))
             {
-                Logger.Instance.LogWarningWithContext(GetType(), "Please set a connection string for Azure IoT Hub URI");
+                Logger.Instance.Warning("Please set a connection string for Azure IoT Hub URI");
                 throw new ArgumentException("settings.AzureIotHubUriConnectionString was empty");
             }
 

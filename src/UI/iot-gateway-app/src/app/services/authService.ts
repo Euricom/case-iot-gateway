@@ -19,7 +19,6 @@ export class AuthService {
 
   private loggedInUsername: String
   private subject: Subject<String> = new Subject<String>()
-  private loginByPukOk: boolean
 
   constructor(
     private http: Http,
@@ -43,7 +42,6 @@ export class AuthService {
   }
 
   setLoggedInByPuk() {
-    this.loginByPukOk = true
     this.loggedInUsername = 'admin'
     this.subject.next(this.loggedInUsername)
   }
@@ -55,7 +53,7 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return tokenNotExpired() || this.loginByPukOk
+    return tokenNotExpired();
   }
 
   login(credentials: Credentials, puk): Observable<any> {
@@ -77,7 +75,6 @@ export class AuthService {
 
   logout() {
     this.loggedInUsername = undefined
-    this.loginByPukOk = false
 
     this.storageService.removeToken()
     this.storageService.removeUsername()

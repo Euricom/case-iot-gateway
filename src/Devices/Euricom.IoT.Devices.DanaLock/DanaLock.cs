@@ -36,23 +36,29 @@ namespace Euricom.IoT.Devices.DanaLock
 
         public bool IsLocked(IZWaveController controller)
         {
-            Locked = controller.GetValue(NodeId, 0x62);
+            EnforceEnabled();
 
-            return Locked;
+            return controller.GetValue(NodeId, 0x62);
         }
 
         public void OpenLock(IZWaveController controller)
         {
+            EnforceEnabled();
+
             controller.SetValue(NodeId, 98, false);
         }
 
         public void CloseLock(IZWaveController controller)
         {
+            EnforceEnabled();
+
             controller.SetValue(NodeId, 98, true);
         }
 
         public bool TestConnection(IZWaveController controller)
         {
+            EnforceEnabled();
+
             return controller.TestConnection(NodeId);
         }
 

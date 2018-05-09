@@ -23,7 +23,7 @@ namespace Euricom.IoT.Api.Managers
             _controller = controller;
             _deviceRegistry = deviceRegistry;
         }
-        
+
         public IEnumerable<WallMountSwitchDto> Get()
         {
             var devices = _repository.Get();
@@ -34,7 +34,7 @@ namespace Euricom.IoT.Api.Managers
         public WallMountSwitchDto Get(string deviceId)
         {
             var wallmount = _repository.Get(deviceId);
-            
+
             return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
 
@@ -61,8 +61,9 @@ namespace Euricom.IoT.Api.Managers
             }
 
             var wallmount = _repository.Get(dto.DeviceId);
+
             wallmount.Update(dto.NodeId, dto.Name, dto.PollingTime, dto.Enabled);
-            
+
             _repository.Update(wallmount);
 
             return Mapper.Map<WallMountSwitchDto>(wallmount);
@@ -77,64 +78,35 @@ namespace Euricom.IoT.Api.Managers
 
         public bool IsOn(string deviceId)
         {
-            try
-            {
-                var device = _repository.Get(deviceId);
-                if (!device.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {device.Name} {deviceId} is not enabled");
-                }
-
-                return device.IsOn(_controller);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            var device = _repository.Get(deviceId);
+            return device.IsOn(_controller);
         }
 
         public void Switch(string deviceId, string state)
         {
             if (string.IsNullOrEmpty(state))
             {
-                throw new Exception("param state was null or empty");
+                throw new ArgumentNullException(nameof(state));
             }
 
             if (state != "on" && state != "off")
             {
-                throw new Exception($"UNKNOWN parameter: {state}. Please use 'on' or 'off'");
+                throw new ArgumentException(state) ;
             }
 
-            try
+            var device = _repository.Get(deviceId);
+
+            switch (state)
             {
-                var device = _repository.Get(deviceId);
-
-                if (!device.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {device.Name} {deviceId} is not enabled");
-                }
-
-                switch (state)
-                {
-                    case "on":
-                        device.TurnOn(_controller);
-                        break;
-                    case "off":
-                        device.TurnOff(_controller);
-                        break;
-                }
-
-                // Log command
-                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
+                case "on":
+                    device.TurnOn(_controller);
+                    break;
+                case "off":
+                    device.TurnOff(_controller);
+                    break;
             }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+
+            Logger.Instance.Information($"Device {deviceId} changed state: {state}");
         }
 
         public bool TestConnection(string deviceId)

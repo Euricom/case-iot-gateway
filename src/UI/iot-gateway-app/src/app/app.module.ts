@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms'
-import { NgModule } from '@angular/core'
+import { NgModule, ErrorHandler } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { ToastModule } from 'ng2-toastr/ng2-toastr'
 import { ToastOptions } from 'ng2-toastr'
@@ -53,7 +53,7 @@ import { StorageService } from './services/storageService';
 import { HomeViewComponent } from './views/home/homeView.component';
 import { AccountViewComponent } from './views/account/accountView.component';
 
-export function httpFactory(backend: XHRBackend, options, eventAggregator: EventAggregator) {
+export function httpFactory(backend: XHRBackend, options, eventAggregator: EventAggregator, authService: AuthService) {
     return new CustomHttpService(backend, options, eventAggregator)
 }
 
@@ -103,7 +103,7 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         LogService,
         EventAggregator,
         StorageService,
-        { provide: CustomErrorHandler, useClass: CustomErrorHandler },
+        { provide: ErrorHandler, useClass: CustomErrorHandler },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         {
             provide: Http,

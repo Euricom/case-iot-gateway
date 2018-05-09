@@ -1,10 +1,10 @@
-﻿using Euricom.IoT.Models;
+﻿using Euricom.IoT.Api.Models;
 
 namespace Euricom.IoT.Api.Managers.Interfaces
 {
     public interface IConfigurationManager
     {
-        Settings GetConfigSettings();
-        void SaveConfigSettings(Settings settings);
+        SettingsDto GetConfigSettings();
+        void SaveConfigSettings(SettingsDto settingsDto);
     }
 }

@@ -25,5 +25,13 @@ namespace Euricom.IoT.Models
         public HardwareType Type { get; private set; }
         public string Name { get; protected set; }
         public bool Enabled { get; protected set; }
+
+        protected void EnforceEnabled()
+        {
+            if (Enabled == false)
+            {
+                throw new InvalidOperationException($"{Type} {DeviceId} is not enabled.");
+            }
+        }
     }
 }

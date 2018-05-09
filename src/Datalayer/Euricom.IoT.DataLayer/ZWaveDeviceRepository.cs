@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Euricom.IoT.Common.Exceptions;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.ZWave;
-using Euricom.IoT.Logging;
 
 namespace Euricom.IoT.DataLayer
 {
@@ -23,15 +23,26 @@ namespace Euricom.IoT.DataLayer
 
         public ZWaveDevice GetZWaveDevice(byte nodeId)
         {
-            try
+            var device = _database.ZWaveDevices.FirstOrDefault(d => d.NodeId == nodeId);
+
+            if (device == null)
             {
-                return _database.ZWaveDevices.FirstOrDefault(d => d.NodeId == nodeId);
+                throw new NotFoundException(nodeId.ToString());
             }
-            catch (Exception ex)
+
+            return device;
+        }
+
+        private ZWaveDevice Get(string deviceId)
+        {
+            var device = _database.ZWaveDevices.FirstOrDefault(d => d.DeviceId == deviceId);
+
+            if (device == null)
             {
-                Logger.Instance.LogError(ex);
-                throw;
+                throw new NotFoundException(deviceId);
             }
+
+            return device;
         }
 
         public void UpdateZWaveDevice(ZWaveDevice device)
@@ -41,17 +52,10 @@ namespace Euricom.IoT.DataLayer
                 throw new ArgumentNullException(nameof(device));
             }
 
-            try
-            {
-                var d = _database.ZWaveDevices.Find(device.DeviceId);
-                _database.Entry(d).CurrentValues.SetValues(device);
-                _database.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithContext(GetType(), ex);
-                throw;
-            }
+            var d = Get(device.DeviceId);
+
+            _database.Entry(d).CurrentValues.SetValues(device);
+            _database.SaveChanges();
         }
     }
 }

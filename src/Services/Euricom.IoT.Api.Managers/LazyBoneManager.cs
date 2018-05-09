@@ -42,7 +42,7 @@ namespace Euricom.IoT.Api.Managers
         {
             var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
 
-            var device = new LazyBone(dto.DeviceId, primaryKey, dto.IsDimmer,dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
+            var device = new LazyBone(dto.DeviceId, primaryKey, dto.IsDimmer, dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
 
             _repository.Add(device);
 
@@ -78,52 +78,23 @@ namespace Euricom.IoT.Api.Managers
 
         public bool TestConnection(string deviceId)
         {
-            try
-            {
-                var device = _repository.Get(deviceId);
+            var device = _repository.Get(deviceId);
 
-                return device.TestConnection(_socketClient);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            return device.TestConnection(_socketClient);
         }
-        
+
         public void SetState(string deviceId, LazyBoneState state)
         {
-            try
-            {
-                var device = _repository.Get(deviceId);
+            var device = _repository.Get(deviceId);
 
-                device.SetState(_socketClient, state);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            device.SetState(_socketClient, state);
         }
 
         public LazyBoneState GetState(string deviceId)
         {
-            try
-            {
-                var lazybone = _repository.Get(deviceId);
-                if (!lazybone.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {lazybone.Name} {deviceId} is not enabled");
-                }
+            var lazybone = _repository.Get(deviceId);
 
-                return lazybone.GetState(_socketClient);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            return lazybone.GetState(_socketClient);
         }
     }
 }

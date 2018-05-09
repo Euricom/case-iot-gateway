@@ -4,6 +4,7 @@ using Autofac;
 using Euricom.IoT.Api.Authentication;
 using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
@@ -18,6 +19,7 @@ using Euricom.IoT.Models;
 using Euricom.IoT.Tcp;
 using Euricom.IoT.ZWave;
 using Restup.Webserver.Attributes;
+using Restup.Webserver.Rest;
 
 namespace Euricom.IoT.Api
 {
@@ -117,6 +119,8 @@ namespace Euricom.IoT.Api
                     builder.RegisterType(type);
                 }
             }
+
+            builder.RegisterType<GlobalExceptionHandler>().As<IExceptionHandler>();
         }
     }
 }

@@ -108,7 +108,6 @@
     <Compile Include="ZWaveController.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZWaveRequest.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.DanaLock.rd.xml" />
   </ItemGroup>
   <ItemGroup>

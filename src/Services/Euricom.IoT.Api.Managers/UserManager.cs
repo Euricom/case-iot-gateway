@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Models;
+using Euricom.IoT.Common.Exceptions;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Models;
 
@@ -21,6 +22,7 @@ namespace Euricom.IoT.Api.Managers
         public void AddUser(UserDto userDto)
         {
             var user = new User(userDto.Username, "Euri123com!");
+
             _repository.Add(user);
 
             if (userDto.Roles != null)
@@ -36,7 +38,7 @@ namespace Euricom.IoT.Api.Managers
         {
             if (userDto.Username == "admin")
             {
-                throw new UnauthorizedAccessException();
+                throw new NotAllowedException();
             }
 
             var user = _repository.Get(userDto.Username);
@@ -62,7 +64,7 @@ namespace Euricom.IoT.Api.Managers
         {
             if (username == "admin")
             {
-                throw new UnauthorizedAccessException();
+                throw new NotAllowedException();
             }
 
             _repository.Remove(username);

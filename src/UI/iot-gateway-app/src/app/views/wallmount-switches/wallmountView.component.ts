@@ -123,7 +123,7 @@ export class WallMountViewComponent implements OnInit {
     this.wallmountService.switch(wallmount.DeviceId, state)
       .subscribe(
         (data) => {
-          this.toastr.info(data)
+          this.toastr.info('Switch command sent')
         },
     )
   }

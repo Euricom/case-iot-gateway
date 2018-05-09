@@ -1,1 +1,2 @@
-<h2>Hi {{username}}</h2>
+<h2 *ngIf="!username">Hi stranger, please login</h2>
+<h2 *ngIf="username">Hi {{username}}</h2>

@@ -43,8 +43,11 @@ namespace Euricom.IoT.Devices.Camera
         }
 
         #region Functionality
+
         public Task<bool> TestConnection(IHttpService service)
         {
+            EnforceEnabled();
+
             return service.TestConnection(Address, "motionEye");
         }
 

@@ -1,4 +1,6 @@
-﻿using Euricom.IoT.Api.Managers.Interfaces;
+﻿using AutoMapper;
+using Euricom.IoT.Api.Managers.Interfaces;
+using Euricom.IoT.Api.Models;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Models;
 
@@ -13,13 +15,17 @@ namespace Euricom.IoT.Api.Managers
             _settingsRepository = settingsRepository;
         }
 
-        public Settings GetConfigSettings()
+        public SettingsDto GetConfigSettings()
         {
-            return _settingsRepository.Get();
+            var settings = _settingsRepository.Get();
+
+            return Mapper.Map<SettingsDto>(settings);
         }
 
-        public void SaveConfigSettings(Settings settings)
+        public void SaveConfigSettings(SettingsDto settingsDto)
         {
+            var settings = Mapper.Map<Settings>(settingsDto);
+
             _settingsRepository.Update(settings);
         }
     }

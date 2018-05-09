@@ -77,7 +77,7 @@ namespace Euricom.IoT.ZWave
             }
             else
             {
-                var serial = _serialPorts.SingleOrDefault(x => x.PortID.Contains("VID_0658"));
+                var serial = _serialPorts.SingleOrDefault(x => x.PortId.Contains("VID_0658"));
                 serial?.Activate(ZWManager.Instance);
             }
 
@@ -135,14 +135,6 @@ namespace Euricom.IoT.ZWave
             }
 
             return false;
-        }
-
-        private byte GetValueAsByte(byte nodeId, byte commandId)
-        {
-            _zwManager.GetValueAsByte(
-                new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
-                out var currentVal);
-            return currentVal;
         }
 
         public bool GetValue(byte nodeId, byte commandId)

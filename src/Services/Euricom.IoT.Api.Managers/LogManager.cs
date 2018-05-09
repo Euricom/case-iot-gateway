@@ -34,7 +34,7 @@ namespace Euricom.IoT.Api.Managers
             // Order by date desc
             jsonLogLines = jsonLogLines.OrderByDescending(x => x.Timestamp).ToList();
 
-            return new Log()
+            return new Log
             {
                 FileName = "log-" + date + ".txt",
                 LogLines = jsonLogLines.ToList()
@@ -46,13 +46,10 @@ namespace Euricom.IoT.Api.Managers
             var copy = new List<LogLine>();
             foreach (var jLogLine in jsonLogLines)
             {
-                if (jLogLine.Properties != null)
+                if (!String.IsNullOrEmpty(jLogLine.Properties?.DeviceId))
                 {
-                    if (!String.IsNullOrEmpty(jLogLine.Properties.DeviceId))
-                    {
-                        jLogLine.DeviceId = jLogLine.Properties.DeviceId;
-                        //jLogLine.DeviceName = _hardwareManager.GetDeviceName(jLogLine.Properties.DeviceId);
-                    }
+                    jLogLine.DeviceId = jLogLine.Properties.DeviceId;
+                    //jLogLine.DeviceName = _hardwareManager.GetDeviceName(jLogLine.Properties.DeviceId);
                 }
                 copy.Add(jLogLine);
             }

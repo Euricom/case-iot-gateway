@@ -36,11 +36,8 @@ namespace Euricom.IoT.ZWave
         /// </summary>
         public String Name
         {
-            get { return ZWManager.Instance.GetNodeName(HomeId, Id); }
-            set
-            {
-                ZWManager.Instance.SetNodeName(HomeId, Id, value);
-            }
+            get => ZWManager.Instance.GetNodeName(HomeId, Id);
+            set => ZWManager.Instance.SetNodeName(HomeId, Id, value);
         }
         
         /// <summary>

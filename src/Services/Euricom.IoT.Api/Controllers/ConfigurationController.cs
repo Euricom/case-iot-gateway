@@ -28,12 +28,11 @@ namespace Euricom.IoT.Api.Controllers
             try
             {
                 var settings = _configurationManager.GetConfigSettings();
-                var settingsDto = Mapper.Map<Settings>(settings);
-                return ResponseUtilities.GetResponseOk(settingsDto);
+                return ResponseUtilities.GetResponseOk(settings);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.Error(ex);
                 throw new Exception(ex.Message);
             }
         }
@@ -43,13 +42,12 @@ namespace Euricom.IoT.Api.Controllers
         {
             try
             {
-                var settings = Mapper.Map<Settings>(settingsDto);
-                _configurationManager.SaveConfigSettings(settings);
+                _configurationManager.SaveConfigSettings(settingsDto);
                 return new PutResponse(PutResponse.ResponseStatus.OK);
             }
             catch (Exception ex)
             {
-                Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                Logging.Logger.Instance.Error(ex);
                 throw new Exception(ex.Message);
             }
         }

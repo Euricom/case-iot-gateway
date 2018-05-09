@@ -127,14 +127,12 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.6</Version>
     </PackageReference>
-    <PackageReference Include="Rebus">
-      <Version>4.2.1</Version>
-    </PackageReference>
-    <PackageReference Include="Rebus.NewtonsoftJson">
-      <Version>3.1.5</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Euricom.IoT.Common\Euricom.IoT.Common.csproj">
+      <Project>{7ABE0FEA-6B32-4515-A5C3-E511951F3562}</Project>
+      <Name>Euricom.IoT.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\Euricom.IoT.Interfaces\Euricom.IoT.Interfaces.csproj">
       <Project>{5111A896-62D6-4239-B352-426A2C48960D}</Project>
       <Name>Euricom.IoT.Interfaces</Name>

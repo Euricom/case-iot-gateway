@@ -29,7 +29,7 @@ namespace Euricom.IoT.Api.Managers
 
                     var state = device.GetState();
 
-                    Task.Run(async () => await _gatewayDeviceRegistry.SendAsync(device.DeviceId, state)).Wait();
+                    Task.Run(async () => await _gatewayDeviceRegistry.SendAsync(device.DeviceId, state));
                 }
             }
         }

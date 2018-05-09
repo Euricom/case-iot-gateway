@@ -43,7 +43,7 @@ namespace Euricom.IoT.Api.Managers
             var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
 
             var danalock = new DanaLock(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
-            
+
             _repository.Add(danalock);
 
             return Mapper.Map<DanaLockDto>(danalock);
@@ -78,80 +78,44 @@ namespace Euricom.IoT.Api.Managers
 
         public bool TestConnection(string deviceId)
         {
-            try
-            {
-                var device = _repository.Get(deviceId);
+            var device = _repository.Get(deviceId);
 
-                return device.TestConnection(_controller);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            return device.TestConnection(_controller);
         }
 
         public bool IsLocked(string deviceId)
         {
-            try
-            {
-                var danalock = _repository.Get(deviceId);
-                if (!danalock.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {danalock.Name} {deviceId} is not enabled");
-                }
+            var danalock = _repository.Get(deviceId);
 
-                return danalock.IsLocked(_controller);
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            return danalock.IsLocked(_controller);
         }
 
         public void Switch(string deviceId, string state)
         {
             if (string.IsNullOrEmpty(state))
             {
-                throw new Exception("param state was null or empty");
+                throw new ArgumentNullException(nameof(state));
             }
 
             if (state != "open" && state != "close")
             {
-                throw new Exception($"UNKNOWN parameter: { state}. Please use 'open' or 'close'");
+                throw new ArgumentException(state);
             }
 
-            try
+
+            var danalock = _repository.Get(deviceId);
+            
+            switch (state)
             {
-                var danalock = _repository.Get(deviceId);
-                if (!danalock.Enabled)
-                {
-                    Logger.Instance.LogWarningWithDeviceContext(deviceId, "Not checking device state because device is not enabled");
-                    throw new InvalidOperationException($"Device: {danalock.Name} {deviceId} is not enabled");
-                }
-
-                switch (state)
-                {
-                    case "open":
-                        danalock.OpenLock(_controller);
-                        break;
-                    case "close":
-                        danalock.CloseLock(_controller);
-                        break;
-                    default:
-                        throw new InvalidOperationException($"unknown operation for DanaLock node: {deviceId}, state: {state}");
-                }
-
-                // Log command
-                Logger.Instance.LogInformationWithDeviceContext(deviceId, $"Changed state: {state}");
+                case "open":
+                    danalock.OpenLock(_controller);
+                    break;
+                case "close":
+                    danalock.CloseLock(_controller);
+                    break;
             }
-            catch (Exception ex)
-            {
-                Logger.Instance.LogErrorWithDeviceContext(deviceId, ex);
-                throw;
-            }
+            
+            Logger.Instance.Information($"Device {deviceId} changed state: {state}");
         }
     }
 }

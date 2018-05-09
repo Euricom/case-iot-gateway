@@ -123,7 +123,7 @@ export class DanaLocksViewComponent implements OnInit {
         this.danaLockService.switch(danaLock.DeviceId, state)
             .subscribe(
                 (data) => {
-                    this.toastr.info(data)
+                    this.toastr.info('Switch command sent')
                 },
         )
     }

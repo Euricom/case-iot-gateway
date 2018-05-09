@@ -32,21 +32,29 @@ namespace Euricom.IoT.Devices.WallMountSwitch
         #region Functionality
         public bool IsOn(IZWaveController controller)
         {
+            EnforceEnabled();
+
             return controller.GetValue(NodeId, 37);
         }
 
         public void TurnOn(IZWaveController controller)
         {
+            EnforceEnabled();
+
             controller.SetValue(NodeId, 37, true);
         }
 
         public void TurnOff(IZWaveController controller)
         {
+            EnforceEnabled();
+
             controller.SetValue(NodeId, 37, false);
         }
 
         public bool TestConnection(IZWaveController controller)
         {
+            EnforceEnabled();
+
             return controller.TestConnection(NodeId);
         }
         #endregion

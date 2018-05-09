@@ -12,7 +12,7 @@ namespace Euricom.IoT.Api.Authentication
     {
         private readonly ISecurityManager _securityManager;
 
-        public string Realm { get { return null; } }
+        public string Realm => null;
 
         public JwtAuthenticationProvider(ISecurityManager securityManager)
         {
@@ -31,7 +31,7 @@ namespace Euricom.IoT.Api.Authentication
                 var valid = _securityManager.ValidateToken(jwtToken, out var payload);
 
                 // If not a valid token return unauthorized
-                if (!valid || attribute != null && ValidateRoles(attribute.Roles, payload.roles) == false)
+                if (!valid || attribute != null && ValidateRoles(attribute.Roles, payload.Roles) == false)
                 {
                     return HttpResponseStatus.Unauthorized;
                 }
