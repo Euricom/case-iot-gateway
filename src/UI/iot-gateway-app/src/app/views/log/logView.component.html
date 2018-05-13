@@ -1,6 +1,5 @@
-
-
 <style type="text/css">
+
   .loglevel.verbose {
     background-color: lightslategray !important
   }
@@ -24,7 +23,6 @@
   .loglevel.fatal {
     background-color: red !important
   }
-
 </style>
 
 <h2>Logging</h2>
@@ -75,7 +73,6 @@
           <td>
             {{logline.Timestamp | date: 'dd/MM/yyyy H:m:s'}}
           </td>
-          <td>{{logline.DeviceName}}</td>
           <td class="loglevel" [ngClass]="getLogLevelClass(logline.Level)">{{logline.Level}}</td>
           <td>{{logline.MessageTemplate}}</td>
           <td>{{logline.Exception}}</td>
