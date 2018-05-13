@@ -15,7 +15,7 @@ namespace Euricom.IoT.Api.Managers
     {
         private readonly IUserRepository _userRepository;
 
-        private const int LoginExpires = 1;
+        private const int LoginExpires = 60;
         private const int WifiExpires = 5;
 
         public SecurityManager(IUserRepository userRepository)

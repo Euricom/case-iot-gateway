@@ -33,7 +33,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 function authHttpServiceFactory(http, options) {
-    return new __WEBPACK_IMPORTED_MODULE_2_angular2_jwt__["AuthHttp"](new __WEBPACK_IMPORTED_MODULE_2_angular2_jwt__["AuthConfig"](), http, options);
+    return new __WEBPACK_IMPORTED_MODULE_2_angular2_jwt__["AuthHttp"](new __WEBPACK_IMPORTED_MODULE_2_angular2_jwt__["AuthConfig"]({
+        noJwtError: true,
+    }), http, options);
 }
 var AuthModule = /** @class */ (function () {
     function AuthModule() {
@@ -113,11 +115,6 @@ var AppComponent = /** @class */ (function () {
         // Sets initial value to true to show loading spinner on first load
         this.loading = true;
         toastr.setRootViewContainerRef(vcr);
-        eventAggregator.listen('ERROR')
-            .subscribe(function (error) {
-            console.error(error);
-            toastr.error(error, 'Oops');
-        });
     }
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -140,9 +137,11 @@ var AppComponent = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("../../../router/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__ = __webpack_require__("../../../../ng2-toastr/ng2-toastr.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__("../../../router/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_toastr_ng2_toastr__ = __webpack_require__("../../../../ng2-toastr/ng2-toastr.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng2_toastr_ng2_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_ng2_toastr_ng2_toastr__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_authService__ = __webpack_require__("../../../../../src/app/services/authService.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CustomErrorHandler; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -156,34 +155,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var CustomErrorHandler = /** @class */ (function () {
-    function CustomErrorHandler(injector, toastr) {
+    function CustomErrorHandler(injector) {
         this.injector = injector;
-        this.toastr = toastr;
-        this.router = this.injector.get(__WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]);
+        this.router = this.injector.get(__WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */]);
+        this.toastr = this.injector.get(__WEBPACK_IMPORTED_MODULE_3_ng2_toastr_ng2_toastr__["ToastsManager"]);
+        this.authService = this.injector.get(__WEBPACK_IMPORTED_MODULE_4__services_authService__["a" /* AuthService */]);
     }
     CustomErrorHandler_1 = CustomErrorHandler;
     CustomErrorHandler.prototype.ngOnInit = function () {
     };
     CustomErrorHandler.prototype.handleError = function (error) {
-        switch (error.status) {
-            case 401:
-                if (this.router) {
-                    this.router.navigateByUrl('/unauthorized');
-                }
-                break;
-            default:
-                this.toastr.error(error.statusText);
+        console.error(error);
+        if (error instanceof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Response"]) {
+            switch (error.status) {
+                case 0:
+                    this.toastr.error("Failed to connect to server. Bad connectivity or server down.");
+                    break;
+                case 401:
+                    this.toastr.error("Token expired.");
+                    if (this.router) {
+                        this.authService.setLoggedOut();
+                        this.router.navigateByUrl('/unauthorized');
+                    }
+                    break;
+                default:
+                    this.toastr.error(error.statusText);
+            }
+        }
+        else {
+            this.toastr.error(error);
         }
     };
     CustomErrorHandler = CustomErrorHandler_1 = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             providers: [{ provide: CustomErrorHandler_1, useClass: CustomErrorHandler_1 }],
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"]) === "function" && _b || Object])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"]) === "function" && _a || Object])
     ], CustomErrorHandler);
     return CustomErrorHandler;
-    var CustomErrorHandler_1, _a, _b;
+    var CustomErrorHandler_1, _a;
 }());
 
 //# sourceMappingURL=app.error.module.js.map
@@ -292,7 +305,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-function httpFactory(backend, options, eventAggregator) {
+function httpFactory(backend, options, eventAggregator, authService) {
     return new __WEBPACK_IMPORTED_MODULE_37__services_customHttp__["a" /* CustomHttpService */](backend, options, eventAggregator);
 }
 var AppModule = /** @class */ (function () {
@@ -345,7 +358,7 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_20__services_logService__["a" /* LogService */],
                 __WEBPACK_IMPORTED_MODULE_38__services_eventAggregator__["a" /* EventAggregator */],
                 __WEBPACK_IMPORTED_MODULE_41__services_storageService__["a" /* StorageService */],
-                { provide: __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */] },
+                { provide: __WEBPACK_IMPORTED_MODULE_2__angular_core__["ErrorHandler"], useClass: __WEBPACK_IMPORTED_MODULE_35__app_error_module__["a" /* CustomErrorHandler */] },
                 { provide: __WEBPACK_IMPORTED_MODULE_9__angular_common__["LocationStrategy"], useClass: __WEBPACK_IMPORTED_MODULE_9__angular_common__["HashLocationStrategy"] },
                 {
                     provide: __WEBPACK_IMPORTED_MODULE_6__angular_http__["Http"],
@@ -577,7 +590,7 @@ var PageNotFoundComponent = /** @class */ (function () {
 /***/ "../../../../../src/app/components/unauthorized/unauthorized.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h1>\r\n  You are not logged in or your sesion was expired.\r\n</h1>\r\n"
+module.exports = "<h1>\r\n  You are not logged in or your sesion was expired.\r\n</h1>"
 
 /***/ }),
 
@@ -847,6 +860,7 @@ var AuthGuardService = /** @class */ (function () {
             return true;
         }
         else {
+            this.authService.setLoggedOut();
             this.router.navigateByUrl('/unauthorized');
             return false;
         }
@@ -923,7 +937,6 @@ var AuthService = /** @class */ (function () {
         this.subject.next(this.loggedInUsername);
     };
     AuthService.prototype.setLoggedInByPuk = function () {
-        this.loginByPukOk = true;
         this.loggedInUsername = 'admin';
         this.subject.next(this.loggedInUsername);
     };
@@ -933,7 +946,7 @@ var AuthService = /** @class */ (function () {
         this.subject.next(this.loggedInUsername);
     };
     AuthService.prototype.isLoggedIn = function () {
-        return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6_angular2_jwt__["tokenNotExpired"])() || this.loginByPukOk;
+        return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6_angular2_jwt__["tokenNotExpired"])();
     };
     AuthService.prototype.login = function (credentials, puk) {
         if (credentials && credentials.Username && credentials.Password) {
@@ -952,7 +965,6 @@ var AuthService = /** @class */ (function () {
     };
     AuthService.prototype.logout = function () {
         this.loggedInUsername = undefined;
-        this.loginByPukOk = false;
         this.storageService.removeToken();
         this.storageService.removeUsername();
         this.storageService.removeRoles();
@@ -1119,18 +1131,11 @@ var CustomHttpService = /** @class */ (function (_super) {
         return _this;
     }
     CustomHttpService.prototype.request = function (request, options) {
-        var _this = this;
-        request.url = "http://192.168.40.185:8800" + request.url;
+        //request.url = "http://192.168.40.185:8800" + request.url;
         console.info("HTTP: " + mapMethods[request.method] + ": " + request.url);
         return _super.prototype.request.call(this, request, options)
-            .catch(function (errorRes) {
-            console.error('ERROR: ', errorRes.statusText, errorRes.status);
-            var errorMessage = "" + errorRes.json().Message;
-            if (errorRes.status === 0) {
-                errorMessage = "Failed to connect to server. Bad connectivity or server down.";
-            }
-            _this.eventAggregator.publish('ERROR', errorMessage);
-            return __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["Observable"].throw(errorMessage);
+            .catch(function (response) {
+            return __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["Observable"].throw(response);
         });
     };
     CustomHttpService = __decorate([
@@ -2109,7 +2114,7 @@ var DanaLocksViewComponent = /** @class */ (function () {
         }
         this.danaLockService.switch(danaLock.DeviceId, state)
             .subscribe(function (data) {
-            _this.toastr.info(data);
+            _this.toastr.info('Switch command sent');
         });
     };
     DanaLocksViewComponent.prototype.setClickedRow = function (i, danaLock) {
@@ -2140,7 +2145,7 @@ var DanaLocksViewComponent = /** @class */ (function () {
 /***/ "../../../../../src/app/views/home/homeView.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Hi {{username}}</h2>"
+module.exports = "<h2 *ngIf=\"!username\">Hi stranger, please login</h2>\r\n<h2 *ngIf=\"username\">Hi {{username}}</h2>"
 
 /***/ }),
 
@@ -2791,7 +2796,7 @@ var SettingsViewComponent = /** @class */ (function () {
 /***/ "../../../../../src/app/views/users/UsersView.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Users</h2>\r\n\r\n<style type=\"text/css\">\r\n    .top-buffer {\r\n        margin-top: 20px;\r\n    }\r\n\r\n    .table tr.active td {\r\n        background-color: #123456 !important;\r\n        color: white;\r\n    }\r\n</style>\r\n\r\n<div class=\"row\">\r\n    <div class=\"col-md-12\">\r\n        <table class=\"table table-striped table-bordered\">\r\n            <thead>\r\n                <tr>\r\n                    <th>Username</th>\r\n                    <th>AccessToken</th>\r\n                    <th>Roles</th>\r\n                    <th></th>\r\n                    <th></th>\r\n                </tr>\r\n            </thead>\r\n            <tbody>\r\n                <tr *ngFor=\"let user of users; let i=index\" (click)=\"setClickedRow(i, user)\" [class.active]=\"i == selectedRowIndex\">\r\n                    <td>{{user.Username}}</td>\r\n                    <td>{{user.AccessToken}}</td>\r\n                    <td>{{user.Roles.join(\", \")}}</td>\r\n                    <td>\r\n                        <button type=\"button\" (click)=\"generateAccessToken(user, $event)\" class=\"btn btn-primary\">Renew</button>\r\n                    </td>\r\n                    <td>\r\n                        <button type=\"button\" (click)=\"deleteUser(user, $event)\" class=\"btn btn-primary\">Delete</button>\r\n                    </td>\r\n                </tr>\r\n            </tbody>\r\n        </table>\r\n\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row\">\r\n    <div class=\"col-md-12\">\r\n        <button type=\"button\" class=\"btn btn-primary\" (click)=\"setAddMode()\">Add new User</button>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row top-buffer\">\r\n    <div class=\"col-md-4\">\r\n        <div *ngIf=\"isAddMode || (selectedRowIndex != undefined)\" class=\"panel panel-default\">\r\n            <div class=\"panel-heading\">\r\n                <h3 class=\"panel-title\" *ngIf=\"isAddMode && (selectedRowIndex == undefined)\">Add User</h3>\r\n                <h3 class=\"panel-title\" *ngIf=\"(selectedRowIndex != undefined)\">Edit User</h3>\r\n            </div>\r\n            <div class=\"panel-body\">\r\n                <form class=\"form-horizontal\" role=\"form\" (ngSubmit)=\"onSubmit(form)\" #form=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\" class=\"control-label col-sm-4\">Username</label>\r\n                        <div class=\"col-sm-8\">\r\n                            <input type=\"text\" class=\"form-control\" name=\"username\" id=\"username\" [(ngModel)]=\"user.Username\" [readonly]=\"(selectedRowIndex != undefined)\">\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"name\" class=\"control-label col-sm-4\">AccessToken</label>\r\n                        <div class=\"col-sm-8\">\r\n                            <input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" readonly [(ngModel)]=\"user.AccessToken\">\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"form-group\" *ngFor=\"let role of roles; let i=index\">\r\n                        <label for=\"enabled \" class=\"control-label col-sm-4 \">{{role.Name}}</label>\r\n                        <div class=\" col-sm-8 \">\r\n                            <div class=\"checkbox \">\r\n                                <label>\r\n                                    <input type=\"checkbox\" name=\"enabled\" id=\"enabled\" [checked]=\"user.Roles && user.Roles.includes(role.Name)\" (change)=\"addRole(user, role.Name, $event)\">\r\n                                </label>\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"pull-right \">\r\n                        <button type=\"submit\" id=\"submitBtn\" name=\"submitBtn\" class=\"btn btn-primary\" [disabled]=\"!form.valid\">Save</button>\r\n                        <button type=\"button\" id=\"cancelBtn\" name=\"cancelBtn\" class=\"btn btn-default\" (click)=\"cancelEdit()\">Cancel</button>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<h2>Users</h2>\r\n\r\n<style type=\"text/css\">\r\n    .top-buffer {\r\n        margin-top: 20px;\r\n    }\r\n\r\n    .table tr.active td {\r\n        background-color: #123456 !important;\r\n        color: white;\r\n    }\r\n</style>\r\n\r\n<div class=\"row\">\r\n    <div class=\"col-md-12\">\r\n        <table class=\"table table-striped table-bordered\">\r\n            <thead>\r\n                <tr>\r\n                    <th>Username</th>\r\n                    <th>AccessToken</th>\r\n                    <th>Roles</th>\r\n                    <th></th>\r\n                    <th></th>\r\n                </tr>\r\n            </thead>\r\n            <tbody>\r\n                <tr *ngFor=\"let user of users; let i=index\" (click)=\"setClickedRow(i, user)\" [class.active]=\"i == selectedRowIndex\">\r\n                    <td>{{user.Username}}</td>\r\n                    <td>{{user.AccessToken}}</td>\r\n                    <td>{{user.Roles.join(\", \")}}</td>\r\n                    <td>\r\n                        <button type=\"button\" (click)=\"generateAccessToken(user, $event)\" class=\"btn btn-primary\">Renew</button>\r\n                    </td>\r\n                    <td>\r\n                        <button type=\"button\" (click)=\"delete(user, $event)\" class=\"btn btn-danger\">Delete</button>\r\n                    </td>\r\n                </tr>\r\n            </tbody>\r\n        </table>\r\n\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row\">\r\n    <div class=\"col-md-12\">\r\n        <button type=\"button\" class=\"btn btn-primary\" (click)=\"setAddMode()\">Add new User</button>\r\n    </div>\r\n</div>\r\n\r\n<div class=\"row top-buffer\">\r\n    <div class=\"col-md-4\">\r\n        <div *ngIf=\"isAddMode || (selectedRowIndex != undefined)\" class=\"panel panel-default\">\r\n            <div class=\"panel-heading\">\r\n                <h3 class=\"panel-title\" *ngIf=\"isAddMode && (selectedRowIndex == undefined)\">Add User</h3>\r\n                <h3 class=\"panel-title\" *ngIf=\"(selectedRowIndex != undefined)\">Edit User</h3>\r\n            </div>\r\n            <div class=\"panel-body\">\r\n                <form class=\"form-horizontal\" role=\"form\" (ngSubmit)=\"onSubmit(form)\" #form=\"ngForm\">\r\n                    <div class=\"form-group\">\r\n                        <label for=\"username\" class=\"control-label col-sm-4\">Username</label>\r\n                        <div class=\"col-sm-8\">\r\n                            <input type=\"text\" class=\"form-control\" name=\"username\" id=\"username\" [(ngModel)]=\"user.Username\" [readonly]=\"(selectedRowIndex != undefined)\">\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"form-group\">\r\n                        <label for=\"name\" class=\"control-label col-sm-4\">AccessToken</label>\r\n                        <div class=\"col-sm-8\">\r\n                            <input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" readonly [(ngModel)]=\"user.AccessToken\">\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"form-group\" *ngFor=\"let role of roles; let i=index\">\r\n                        <label for=\"enabled \" class=\"control-label col-sm-4 \">{{role.Name}}</label>\r\n                        <div class=\" col-sm-8 \">\r\n                            <div class=\"checkbox \">\r\n                                <label>\r\n                                    <input type=\"checkbox\" name=\"enabled\" id=\"enabled\" [checked]=\"user.Roles && user.Roles.includes(role.Name)\" (change)=\"addRole(user, role.Name, $event)\">\r\n                                </label>\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                    <div class=\"pull-right \">\r\n                        <button type=\"submit\" id=\"submitBtn\" name=\"submitBtn\" class=\"btn btn-primary\" [disabled]=\"!form.valid\">Save</button>\r\n                        <button type=\"button\" id=\"cancelBtn\" name=\"cancelBtn\" class=\"btn btn-default\" (click)=\"cancelEdit()\">Cancel</button>\r\n                    </div>\r\n                </form>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -3061,7 +3066,7 @@ var WallMountViewComponent = /** @class */ (function () {
         }
         this.wallmountService.switch(wallmount.DeviceId, state)
             .subscribe(function (data) {
-            _this.toastr.info(data);
+            _this.toastr.info('Switch command sent');
         });
     };
     WallMountViewComponent.prototype.setClickedRow = function (i, wallmount) {
