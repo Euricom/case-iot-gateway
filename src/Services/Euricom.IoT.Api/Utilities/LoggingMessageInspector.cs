@@ -9,16 +9,16 @@ namespace Euricom.IoT.Api.Utilities
     {
         public BeforeHandleRequestResult BeforeHandleRequest(IHttpServerRequest request)
         {
-            if (Logger.Instance.IsEnabled(LogLevel.Verbose))
-            {
-                Logger.Instance.Verbose(request.ToMessageString());
-            }
-
             return null;
         }
 
         public AfterHandleRequestResult AfterHandleRequest(IHttpServerRequest request, HttpServerResponse httpResponse)
         {
+            if (Logger.Instance.IsEnabled(LogLevel.Verbose))
+            {
+                Logger.Instance.Verbose(request.ToMessageString());
+            }
+
             return null;
         }
     }

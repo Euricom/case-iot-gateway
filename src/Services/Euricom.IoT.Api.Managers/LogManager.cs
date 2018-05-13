@@ -27,10 +27,7 @@ namespace Euricom.IoT.Api.Managers
 
             // Convert to json LogLine
             var jsonLogLines = DeserializeLogLines(logLines);
-
-            // Get device name if found
-            jsonLogLines = GetDeviceNames(jsonLogLines);
-
+            
             // Order by date desc
             jsonLogLines = jsonLogLines.OrderByDescending(x => x.Timestamp).ToList();
 
@@ -40,22 +37,7 @@ namespace Euricom.IoT.Api.Managers
                 LogLines = jsonLogLines.ToList()
             };
         }
-
-        private IEnumerable<LogLine> GetDeviceNames(IEnumerable<LogLine> jsonLogLines)
-        {
-            var copy = new List<LogLine>();
-            foreach (var jLogLine in jsonLogLines)
-            {
-                if (!String.IsNullOrEmpty(jLogLine.Properties?.DeviceId))
-                {
-                    jLogLine.DeviceId = jLogLine.Properties.DeviceId;
-                    //jLogLine.DeviceName = _hardwareManager.GetDeviceName(jLogLine.Properties.DeviceId);
-                }
-                copy.Add(jLogLine);
-            }
-            return copy;
-        }
-
+        
         private IEnumerable<LogLine> DeserializeLogLines(string[] logLines)
         {
             foreach(var l in logLines)

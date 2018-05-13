@@ -11,6 +11,11 @@ namespace Euricom.IoT.Api.Utilities
             return $"METHOD: {request.Method}; URI: {request.Uri}; USER: {request.GetUsername()}";
         }
 
+        public static string ToMessageString(this IHttpServerRequest request, HttpServerResponse response)
+        {
+            return $"METHOD: {request.Method}; URI: {request.Uri}; USER: {request.GetUsername() ?? "unauthorized" }; RESPONSE: {response.ResponseStatus}";
+        }
+
         public static string GetUsername(this IHttpServerRequest request)
         {
             var auth = request.Headers.SingleOrDefault(h => h.Name == "Authorization");
