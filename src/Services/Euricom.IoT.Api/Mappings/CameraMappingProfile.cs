@@ -9,7 +9,9 @@ namespace Euricom.IoT.Api.Mappings
         public CameraMappingProfile()
         {
             CreateMap<Camera, CameraDto>();
-            CreateMap<CameraDto, Camera>();
+            CreateMap<CameraDto, Camera>()
+                .ForMember(d => d.PrimaryKey, src => src.Ignore())
+                .ForMember(d => d.Type, src => src.Ignore());
         }
     }
 }

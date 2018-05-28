@@ -119,6 +119,7 @@
     <Compile Include="RoleDto.cs" />
     <Compile Include="SettingsDto.cs" />
     <Compile Include="UserDto.cs" />
+    <Compile Include="ValueDto.cs" />
     <Compile Include="WallMountSwitchDto.cs" />
     <EmbeddedResource Include="Properties\Euricom.IoT.Api.Models.rd.xml" />
   </ItemGroup>

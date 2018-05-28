@@ -3,6 +3,7 @@ using System.Reflection;
 using Autofac;
 using Euricom.IoT.Api.Authentication;
 using Euricom.IoT.Api.Managers;
+using Euricom.IoT.Api.Managers.Handlers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
 using Euricom.IoT.DataLayer;
@@ -95,7 +96,7 @@ namespace Euricom.IoT.Api
             builder.RegisterType<UserManager>().As<IUserManager>();
 
             builder.RegisterType<MessageHandler>().As<IMessageHandler>();
-            builder.RegisterType<ZWaveDeviceNotifier>().As<IZWaveDeviceNotifier>().SingleInstance();
+            builder.RegisterType<ZWaveDeviceNotificationHandler>().As<IZWaveDeviceNotificationHandler>().SingleInstance();
         }
 
         private static void RegisterDatabase(ContainerBuilder builder)

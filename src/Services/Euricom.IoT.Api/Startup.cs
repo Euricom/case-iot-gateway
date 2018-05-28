@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
-using Euricom.IoT.Api.Mappings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Autofac;
+using Euricom.IoT.Api.Mappings;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
@@ -52,11 +53,8 @@ namespace Euricom.IoT.Api
 
             // Init DanaLock
             var zWaveController = _container.Resolve<IZWaveController>();
-            await zWaveController.Initialize(_container.Resolve<IZWaveDeviceNotifier>(), settings.ZWaveNetworkKey);
-
-            // Set up monitoring of devices / regular tasks that cleanup files
-            //StartMonitors();
-
+            await zWaveController.Initialize(_container.Resolve<IZWaveDeviceNotificationHandler>(), settings.ZWaveNetworkKey);
+            
             // Init Webserver
             await _container.Resolve<WebServer>().InitializeWebServer();
 
@@ -88,6 +86,8 @@ namespace Euricom.IoT.Api
                 cfg.AddProfile<LogMappingProfile>();
                 cfg.AddProfile<UserMappingProfile>();
             });
+
+            Mapper.AssertConfigurationIsValid();
         }
 
         public void Dispose()

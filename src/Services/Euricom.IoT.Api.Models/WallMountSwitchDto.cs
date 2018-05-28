@@ -3,6 +3,7 @@
     public class WallMountSwitchDto
     {
         public string DeviceId { get; set; }
+        public string PrimaryKey { get; set; }
         public string Name { get; set; }
         public byte NodeId { get; set; }
         public int PollingTime { get; set; }

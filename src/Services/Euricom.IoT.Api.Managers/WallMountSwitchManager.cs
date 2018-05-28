@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -16,12 +17,14 @@ namespace Euricom.IoT.Api.Managers
         private readonly IDeviceRepository<WallMountSwitch> _repository;
         private readonly IZWaveController _controller;
         private readonly IDeviceHubRegistry _deviceRegistry;
+        private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry)
+        public WallMountSwitchManager(IDeviceRepository<WallMountSwitch> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
             _controller = controller;
             _deviceRegistry = deviceRegistry;
+            _gatewayDeviceRegistry = gatewayDeviceRegistry;
         }
 
         public IEnumerable<WallMountSwitchDto> Get()
@@ -40,10 +43,12 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<WallMountSwitchDto> Add(WallMountSwitchDto dto)
         {
-            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId, HardwareType.WallMountSwitch);
             var wallmount = new WallMountSwitch(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(wallmount);
+
+            await _gatewayDeviceRegistry.AddDeviceAsync(dto.DeviceId, primaryKey);
 
             return Mapper.Map<WallMountSwitchDto>(wallmount);
         }
@@ -71,6 +76,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
+            await _gatewayDeviceRegistry.RemoveDeviceAsync(deviceId);
             await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
@@ -105,8 +111,6 @@ namespace Euricom.IoT.Api.Managers
                     device.TurnOff(_controller);
                     break;
             }
-
-            Logger.Instance.Information($"Device {deviceId} changed state: {state}");
         }
 
         public bool TestConnection(string deviceId)

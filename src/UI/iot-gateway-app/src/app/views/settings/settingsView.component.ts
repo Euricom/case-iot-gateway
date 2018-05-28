@@ -47,8 +47,7 @@ export class SettingsViewComponent implements OnInit {
     this.settingsService.getSettings()
       .subscribe(
         (data: any) => {
-          this.settings = <Settings>data
-          this.settings.LogLevel = this.logLevelsEnum[data.LogLevel]
+          this.settings = <Settings>data;
         },
     )
   }

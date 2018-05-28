@@ -30,7 +30,7 @@ export class CustomHttpService extends Http {
     }
 
     request(request: Request, options?: RequestOptionsArgs): Observable<Response> {
-        //request.url = "http://192.168.40.185:8800" + request.url;
+        request.url = "http://192.168.40.185:8800" + request.url;
         console.info(`HTTP: ${mapMethods[request.method]}: ${request.url}`)
         return super.request(request, options)
             .catch((response) => {

@@ -7,6 +7,7 @@ using Euricom.IoT.Api.Models;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -15,12 +16,14 @@ namespace Euricom.IoT.Api.Managers
         private readonly IDeviceRepository<Camera> _repository;
         private readonly IHttpService _httpService;
         private readonly IDeviceHubRegistry _deviceRegistry;
+        private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IDeviceHubRegistry deviceRegistry)
+        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IDeviceHubRegistry deviceRegistry, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
             _httpService = httpService;
             _deviceRegistry = deviceRegistry;
+            _gatewayDeviceRegistry = gatewayDeviceRegistry;
         }
 
         public IEnumerable<CameraDto> Get()
@@ -37,12 +40,14 @@ namespace Euricom.IoT.Api.Managers
         
         public async Task<CameraDto> Add(CameraDto dto)
         {
-            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId, HardwareType.Camera);
 
             var camera = new Camera(dto.DeviceId, primaryKey, dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
                 dto.MaximumDaysDropbox, dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
 
             _repository.Add(camera);
+
+            await _gatewayDeviceRegistry.AddDeviceAsync(dto.DeviceId, primaryKey);
 
             return Mapper.Map<CameraDto>(camera);
         }
@@ -71,7 +76,8 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
-           await _deviceRegistry.RemoveDeviceAsync(deviceId);
+            await _gatewayDeviceRegistry.RemoveDeviceAsync(deviceId);
+            await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
         }

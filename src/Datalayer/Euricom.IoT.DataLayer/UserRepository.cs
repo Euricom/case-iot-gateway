@@ -99,7 +99,6 @@ namespace Euricom.IoT.DataLayer
         {
             return _database
                 .Users
-                .Include(u => u.Roles)
                 .FirstOrDefault(u => u.Username == username) != null;
         }
 
@@ -128,6 +127,13 @@ namespace Euricom.IoT.DataLayer
             return _database.Roles.ToList();
         }
 
+        public bool ExistsRole(string role)
+        {
+            return _database
+                       .Roles
+                       .FirstOrDefault(u => u.Name == role) != null;
+        }
+
         public void Seed()
         {
             if (!Exists("admin"))
@@ -135,20 +141,23 @@ namespace Euricom.IoT.DataLayer
                 Add(new User("admin", "secret_password"));
             }
 
-            if (GetRole("Administrator") == null)
+            if (!ExistsRole("Administrator"))
             {
                 AddRole("Administrator");
             }
 
-            if (GetRole("Manager") == null)
+            if (!ExistsRole("Manager"))
             {
                 AddRole("Manager");
             }
 
-            if (GetRole("User") == null)
+            if (!ExistsRole("User"))
             {
                 AddRole("User");
             }
+
+            AddUserRole("admin", "Administrator");
+            AddUserRole("admin", "Manager");
         }
 
         private void AddRole(string name)

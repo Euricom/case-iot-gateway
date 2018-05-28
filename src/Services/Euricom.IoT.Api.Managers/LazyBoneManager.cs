@@ -8,6 +8,7 @@ using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.LazyBone;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -16,12 +17,14 @@ namespace Euricom.IoT.Api.Managers
         private readonly IDeviceRepository<LazyBone> _repository;
         private readonly ISocketClient _socketClient;
         private readonly IDeviceHubRegistry _deviceRegistry;
+        private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IDeviceHubRegistry deviceRegistry)
+        public LazyBoneManager(IDeviceRepository<LazyBone> repository, ISocketClient socketClient, IDeviceHubRegistry deviceRegistry, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
             _socketClient = socketClient;
             _deviceRegistry = deviceRegistry;
+            _gatewayDeviceRegistry = gatewayDeviceRegistry;
         }
 
         public IEnumerable<LazyBoneDto> Get()
@@ -40,11 +43,13 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<LazyBoneDto> Add(LazyBoneDto dto)
         {
-            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId, dto.IsDimmer ? HardwareType.LazyBoneDimmer : HardwareType.LazyBoneSwitch);
 
             var device = new LazyBone(dto.DeviceId, primaryKey, dto.IsDimmer, dto.Name, dto.Enabled, dto.PollingTime, dto.Name, dto.Port);
 
             _repository.Add(device);
+
+            await _gatewayDeviceRegistry.AddDeviceAsync(dto.DeviceId, primaryKey);
 
             return Mapper.Map<LazyBoneDto>(device);
         }
@@ -71,6 +76,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
+            await _gatewayDeviceRegistry.RemoveDeviceAsync(deviceId);
             await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);

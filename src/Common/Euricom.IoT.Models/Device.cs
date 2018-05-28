@@ -10,7 +10,7 @@ namespace Euricom.IoT.Models
 
         public Device(string deviceId, string primaryKey, HardwareType type)
         {
-            if (Validation.ValidateDeviceId(deviceId))
+            if (Validation.ValidateDeviceId(deviceId) == false)
             {
                 throw new ArgumentException(nameof(deviceId));
             }

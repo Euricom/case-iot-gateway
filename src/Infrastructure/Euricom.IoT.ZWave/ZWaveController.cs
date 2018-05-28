@@ -1,33 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Euricom.IoT.Interfaces;
+using Euricom.IoT.Logging;
 using OpenZWave;
 
 namespace Euricom.IoT.ZWave
 {
     public class ZWaveController : IZWaveController
     {
-        private IZWaveDeviceNotifier _notifier;
-        
+        private IZWaveDeviceNotificationHandler _notificationHandler;
+
         private readonly ZWManager _zwManager = ZWManager.Instance;
-        private readonly ObservableCollection<Node> _nodeList = new ObservableCollection<Node>();
-        private readonly ObservableCollection<SerialPortInfo> _serialPorts = new ObservableCollection<SerialPortInfo>();
+        private readonly List<Node> _nodeList = new List<Node>();
+        private readonly List<SerialPortInfo> _serialPorts = new List<SerialPortInfo>();
 
         private bool _initialized;
-        
+
         private uint _homeId;
         private string _status;
         private string _networkKey;
 
-        public async Task Initialize(IZWaveDeviceNotifier notifier, string networkKey)
+        public async Task Initialize(IZWaveDeviceNotificationHandler notificationHandler, string networkKey)
         {
-            _notifier = notifier;
+            _notificationHandler = notificationHandler;
             _networkKey = networkKey;
 
             ZWOptions.Instance.Initialize();
@@ -51,6 +51,8 @@ namespace Euricom.IoT.ZWave
             // Create the OpenZWave Manager
             _zwManager.Initialize();
             _zwManager.NotificationReceived += OnNodeNotification;
+
+            Thread.Sleep(10000);
 
 #if NETFX_CORE
             var serialPortSelector = Windows.Devices.SerialCommunication.SerialDevice.GetDeviceSelector();
@@ -83,7 +85,7 @@ namespace Euricom.IoT.ZWave
 
             Debug.WriteLine("OpenZWave initialized");
         }
-
+        
         public bool TestConnection(byte nodeId)
         {
             if (_homeId > 0 && _nodeList != null && _nodeList.Any(x => x.Id == nodeId))
@@ -139,16 +141,34 @@ namespace Euricom.IoT.ZWave
 
         public bool GetValue(byte nodeId, byte commandId)
         {
+            //var valueId = _nodeList
+            //    .FirstOrDefault(n => n.Id == nodeId)?
+            //    .GetValueId(commandId);
+
+            //if (valueId == null)
+            //{
+            //    throw new Exception("Unknown command ID. Sleep problem?");
+            //}
+
             _zwManager.GetValueAsBool(
-                new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
-                out var currentVal);
+                    new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
+                    out var currentVal);
+
             return currentVal;
         }
 
         public void SetValue(byte nodeId, byte commandId, bool value)
         {
-            _zwManager.SetValue(new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
-                value);
+            var valueId = _nodeList
+                .FirstOrDefault(n => n.Id == nodeId)?
+                .GetValueId(commandId);
+
+            if (valueId == null)
+            {
+                throw new Exception("Unknown command ID. Sleep problem?");
+            }
+
+            _zwManager.SetValue(valueId, value);
         }
 
         public List<INode> GetNodes()
@@ -196,7 +216,7 @@ namespace Euricom.IoT.ZWave
                 await Task.Delay(10000);
             }
 
-            await Initialize(_notifier, _networkKey);
+            await Initialize(_notificationHandler, _networkKey);
         }
 
         #region Notifications
@@ -271,38 +291,54 @@ namespace Euricom.IoT.ZWave
 
                 case ZWNotificationType.AllNodesQueried:
                     {
-                        _status = "Ready:  All nodes queried.";
+                        _status = ZWNotificationType.AllNodesQueried.ToString();
 
-                        ZWManager.Instance.WriteConfig(homeId);
+                        Logger.Instance.Information(_status);
+
                         break;
                     }
 
                 case ZWNotificationType.AllNodesQueriedSomeDead:
                     {
-                        _status = "Ready:  All nodes queried but some are dead.";
+                        _status = ZWNotificationType.AllNodesQueriedSomeDead.ToString();
 
-                        ZWManager.Instance.WriteConfig(homeId);
+                        Logger.Instance.Information(_status);
+
                         break;
                     }
-
                 case ZWNotificationType.AwakeNodesQueried:
                     {
-                        _status = "Ready:  Awake nodes queried (but not some sleeping nodes).";
+                        _status = ZWNotificationType.AwakeNodesQueried.ToString();
 
-                        ZWManager.Instance.WriteConfig(homeId);
+                        Logger.Instance.Information(_status);
+
                         break;
                     }
+                case ZWNotificationType.NodeProtocolInfo:
+                case ZWNotificationType.NodeEvent:
+                case ZWNotificationType.NodeNaming:
+                case ZWNotificationType.ValueAdded:
+                case ZWNotificationType.ValueRefreshed:
+                case ZWNotificationType.ValueRemoved:
                 case ZWNotificationType.ValueChanged:
+                case ZWNotificationType.Group:
                     {
                         if (nodeId > 0)
                         {
                             var node = GetNode(homeId, nodeId);
                             if (node != null)
                             {
-                                _notifier.Notify(nodeId, notification.ValueId.CommandClassId,
-                                    Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
+                                node.HandleEvent(notification);
+
+                                if (_status == ZWNotificationType.AllNodesQueried.ToString() ||
+                                    _status == ZWNotificationType.AllNodesQueriedSomeDead.ToString())
+                                {
+                                    _notificationHandler.Notify(nodeId, notification.ValueId.CommandClassId,
+                                        Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
+                                }
                             }
                         }
+
                         break;
                     }
             }

@@ -106,9 +106,9 @@ export class DanaLocksViewComponent implements OnInit {
             .subscribe(
                 (data) => {
                     if (data == 'True') {
-                        this.toastr.info('DanaLock door is locked')
+                        this.toastr.info('DanaLock door is closed')
                     } else if (data == 'False') {
-                        this.toastr.info('DanaLock door is unlocked')
+                        this.toastr.info('DanaLock door is open')
                     }
                 },
         )

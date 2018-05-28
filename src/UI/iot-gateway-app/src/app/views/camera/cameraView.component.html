@@ -4,12 +4,11 @@
   .top-buffer {
     margin-top: 20px;
   }
-  
+
   .table tr.active td {
     background-color: #123456 !important;
     color: white;
   }
-
 </style>
 
 <div class="row">
@@ -25,7 +24,7 @@
           <th>Dropbox folder location</th>
           <th>Dropbox keep files for (days)</th>
           <th>Azure Blob storage keep files for (days)</th>
-          <th>PollingTime</th>
+          <!-- <th>PollingTime</th> -->
           <th>Enabled</th>
           <th> </th>
         </tr>
@@ -40,7 +39,7 @@
           <td>{{camera.DropboxPath}}</td>
           <td>{{camera.MaximumDaysDropbox}}</td>
           <td>{{camera.MaximumDaysAzureBlobStorage}}</td>
-          <td>{{camera.PollingTime}}</td>
+          <!-- <td>{{camera.PollingTime}}</td> -->
           <td>{{camera.Enabled}}</td>
           <td>
             <button type="button" (click)="testConnection(camera, $event)" class="btn btn-primary">Test Connection</button>
@@ -69,7 +68,8 @@
           <div class="form-group">
             <label for="deviceId" class="control-label col-sm-4">Device ID</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="deviceId" id="deviceId" [(ngModel)]="camera.DeviceId" pattern="^[A-Za-z_\-0-9]+$" placeholder="Enter camera Id">
+              <input type="text" class="form-control" name="deviceId" id="deviceId" [(ngModel)]="camera.DeviceId" pattern="^[A-Za-z_\-0-9]+$"
+                placeholder="Enter camera Id">
             </div>
           </div>
           <div class="form-group">
@@ -90,12 +90,12 @@
               <input type="text" class="form-control" name="dropboxPath" id="dropboxPath" [(ngModel)]="camera.DropboxPath" placeholder="Enter Dropbox folder location, example: /camera1">
             </div>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="pollingtime" class="control-label col-sm-4">Polling time (dropbox)</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="camera.PollingTime" placeholder="Enter polling time in milliseconds">
             </div>
-          </div>
+          </div> -->
           <div class="form-group">
             <label for="maxDaysOfCameraFilesDropbox" class="control-label col-sm-4">Keep camera images/mp4s for maximum days on Dropbox</label>
             <div class="col-sm-8">
@@ -122,8 +122,8 @@
             <div class=" col-sm-8">
               <div class="checkbox">
                 <label>
-            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="camera.Enabled">
-          </label>
+                  <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="camera.Enabled">
+                </label>
               </div>
             </div>
           </div>

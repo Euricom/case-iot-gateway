@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Euricom.IoT.Api.Models;
-using Euricom.IoT.ZWave;
+using Euricom.IoT.Interfaces;
 
 namespace Euricom.IoT.Api.Mappings
 {
@@ -8,8 +8,7 @@ namespace Euricom.IoT.Api.Mappings
     {
         public NodeMappingProfile()
         {
-            CreateMap<Node, NodeDto>();
-            CreateMap<NodeDto, Node>();
+            CreateMap<INode, NodeDto>();
         }
     }
 }

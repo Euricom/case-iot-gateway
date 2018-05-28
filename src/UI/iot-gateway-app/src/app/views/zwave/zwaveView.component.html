@@ -33,6 +33,7 @@
           <th>Label</th>
           <th>Product</th>
           <th>Manufacturer</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -44,25 +45,146 @@
           <td>{{node.Label}}</td>
           <td>{{node.Product}}</td>
           <td>{{node.Manufacturer}}</td>
+          <td>
+            <button type="button" (click)="show(node, $event)" class="btn btn-default">Show Values</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!--<h3>Add hardware</h3>
-
-<form (ngSubmit)="onSubmit(form)" novalidate>
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" name="name" id="name" [(ngModel)]="device.name" placeholder="">
+<modal #modal>
+  <div class="app-modal-header">
+    <h2>Values</h2>
   </div>
-  <div class="form-group">
-    <label for="type">Type</label>
-    <select required [(ngModel)]="device.type" name="deviceType" id="deviceType" class="form-control">
-      <option value="">--</option>
-      <option *ngFor="let deviceType of deviceTypes" value="{{deviceType.id}}">{{deviceType.name}}</option>
-    </select>
+  <div class="app-modal-body">
+    <div class="row form-group">
+      <div class="col-md-12">
+        <h4>User Values</h4>
+        <table class="table table-striped table-bordered" *ngIf="node">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Index</th>
+              <th>Instance</th>
+              <th>CommandClassId</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let value of node.UserValues" class="node-row">
+              <td>{{value.Label}}</td>
+              <td>{{value.Value}}</td>
+              <td>{{value.Unit}}</td>
+              <td>{{value.Id}}</td>
+              <td>{{value.Type}}</td>
+              <td>{{value.Index}}</td>
+              <td>{{value.Instance}}</td>
+              <td>{{value.CommandClassId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-12">
+        <h4>Basic Values</h4>
+        <table class="table table-striped table-bordered" *ngIf="node">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Index</th>
+              <th>Instance</th>
+              <th>CommandClassId</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let value of node.BasicValues" class="node-row">
+              <td>{{value.Label}}</td>
+              <td>{{value.Value}}</td>
+              <td>{{value.Unit}}</td>
+              <td>{{value.Id}}</td>
+              <td>{{value.Type}}</td>
+              <td>{{value.Index}}</td>
+              <td>{{value.Instance}}</td>
+              <td>{{value.CommandClassId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-12">
+        <h4>System Values</h4>
+        <table class="table table-striped table-bordered" *ngIf="node">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Index</th>
+              <th>Instance</th>
+              <th>CommandClassId</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let value of node.SystemValues" class="node-row">
+              <td>{{value.Label}}</td>
+              <td>{{value.Value}}</td>
+              <td>{{value.Unit}}</td>
+              <td>{{value.Id}}</td>
+              <td>{{value.Type}}</td>
+              <td>{{value.Index}}</td>
+              <td>{{value.Instance}}</td>
+              <td>{{value.CommandClassId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-12">
+        <h4>Config Values</h4>
+        <table class="table table-striped table-bordered" *ngIf="node">
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Index</th>
+              <th>Instance</th>
+              <th>CommandClassId</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let value of node.ConfigValues" class="node-row">
+              <td>{{value.Label}}</td>
+              <td>{{value.Value}}</td>
+              <td>{{value.Unit}}</td>
+              <td>{{value.Id}}</td>
+              <td>{{value.Type}}</td>
+              <td>{{value.Index}}</td>
+              <td>{{value.Instance}}</td>
+              <td>{{value.CommandClassId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary">Save</button>
-</form>-->
+  <div class="app-modal-footer">
+    <button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+  </div>
+</modal>

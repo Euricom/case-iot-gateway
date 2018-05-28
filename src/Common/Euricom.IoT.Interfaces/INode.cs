@@ -1,4 +1,6 @@
-﻿namespace Euricom.IoT.Interfaces
+﻿using System.Collections.Generic;
+
+namespace Euricom.IoT.Interfaces
 {
     public interface INode
     {
@@ -9,5 +11,17 @@
         string Label { get; }
         string Manufacturer { get; }
         string Product { get; }
+
+        /// <summary>Gets the basic set of device values.</summary>
+        List<INodeValue> BasicValues { get; }
+
+        /// <summary>Gets the basic set of user values.</summary>
+        List<INodeValue> UserValues { get;  }
+
+        /// <summary>Gets the basic set of system values.</summary>
+        List<INodeValue> SystemValues { get;  }
+
+        /// <summary>Gets the basic set of configuration values.</summary>
+        List<INodeValue> ConfigValues { get;  }
     }
 }

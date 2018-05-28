@@ -45,13 +45,13 @@ namespace Euricom.IoT.DataLayer
         {
             var settings = new Settings
             {
-                AzureAccountName = "euricomiot",
+                AzureAccountName = "eurismartofficestorage",
                 AzureStorageAccessKey =
-                    "HXi3yoXCgM5HAjpD2q6MNFX3n0v4AtquhDero/c0l1qdi92awRwMDHwBAtIZmRrPWDvkUd1w2+j9H+jNhZvwEQ==",
-                AzureIotHubUri = "EuricomIoT.azure-devices.net",
+                    "krNr4wi5c+oEge9Y2S/uT7l7q55SjB81PaDUp/PR7rko3djcUDmhDOnrnvVJMYcA24UnFKsakFLCzSvFjbpEzQ==",
+                AzureIotHubUri = "EuriSmartOffice.azure-devices.net",
                 AzureIotHubUriConnectionString =
-                    "HostName=EuricomIoT.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1sBuf9qLaN/p5zI4XFJPrlSpk8Wfw7/K1Bd5/9yIJBA=",
-                HistoryLog = 1,
+                    "HostName=EuriSmartOffice.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=rHheV3n90p8bqzAzQld9JUUi7caRHpoDh5K7NwRh1tQ=",
+                HistoryLog = int.MaxValue,
                 LogLevel = LogLevel.Verbose,
                 GatewayDeviceKey = "q5H3XA0s+XFhh+qNdfUmeJdCM9/88Hs5w59XGevZNkE=",
                 ZWaveNetworkKey =

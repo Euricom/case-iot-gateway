@@ -28,6 +28,7 @@ import { AppComponent } from './app.component'
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component'
 import { PageNotFoundComponent } from './components/pageNotFound/pageNotFound.component'
 import { NavigationComponent } from './components/navigation/navigation.component'
+import { ModalComponent } from './components/modal/modal.component';
 
 import { LoginViewComponent } from './views/login/loginView.component'
 import { SettingsViewComponent } from './views/settings/settingsView.component'
@@ -74,7 +75,8 @@ export function httpFactory(backend: XHRBackend, options, eventAggregator: Event
         LogViewComponent,
         OpenZWaveLogViewComponent,
         HomeViewComponent,
-        AccountViewComponent
+        AccountViewComponent,
+        ModalComponent
     ],
     imports: [
         BrowserModule,

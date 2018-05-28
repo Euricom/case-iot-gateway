@@ -4,12 +4,11 @@
   .top-buffer {
     margin-top: 20px;
   }
-  
+
   .table tr.active td {
     background-color: #123456 !important;
     color: white;
   }
-
 </style>
 
 <div class="row">
@@ -22,7 +21,7 @@
           <th>Is dimmer?</th>
           <th>IP Address</th>
           <th>Port</th>
-          <th>PollingTime</th>
+          <!-- <th>PollingTime</th> -->
           <th>Enabled</th>
           <th> </th>
           <th> </th>
@@ -39,7 +38,7 @@
           <td>{{lazyBone.IsDimmer}}</td>
           <td>{{lazyBone.Address}}</td>
           <td>{{lazyBone.Port}}</td>
-          <td>{{lazyBone.PollingTime}}</td>
+          <!-- <td>{{lazyBone.PollingTime}}</td> -->
           <td>{{lazyBone.Enabled}}</td>
           <td>
             <button type="button" (click)="testConnection(lazyBone, $event)" class="btn btn-primary">Test Connection</button>
@@ -86,7 +85,8 @@
           <div class="form-group">
             <label for="deviceId" class="control-label col-sm-4">Device ID</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" name="deviceId" id="deviceId" [(ngModel)]="lazyBone.DeviceId" pattern="^[A-Za-z_\-0-9]+$" placeholder="Enter Lazy Bone Id">
+              <input type="text" class="form-control" name="deviceId" id="deviceId" [(ngModel)]="lazyBone.DeviceId" pattern="^[A-Za-z_\-0-9]+$"
+                placeholder="Enter Lazy Bone Id">
             </div>
           </div>
           <div class="form-group">
@@ -100,8 +100,8 @@
             <div class=" col-sm-8">
               <div class="checkbox">
                 <label>
-            <input type="checkbox" name="isDimmer" id="isDimmer" [(ngModel)]="lazyBone.IsDimmer">
-          </label>
+                  <input type="checkbox" name="isDimmer" id="isDimmer" [(ngModel)]="lazyBone.IsDimmer">
+                </label>
               </div>
             </div>
           </div>
@@ -117,19 +117,19 @@
               <input type="text" class="form-control" name="port" id="port" [(ngModel)]="lazyBone.Port" placeholder="Enter port number (for example 2000)">
             </div>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="pollingtime" class="control-label col-sm-4">Polling time</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="lazyBone.PollingTime" placeholder="Enter polling time in milliseconds">
             </div>
-          </div>
+          </div> -->
           <div class="form-group">
             <label for="enabled" class="control-label col-sm-4">Enabled</label>
             <div class=" col-sm-8">
               <div class="checkbox">
                 <label>
-            <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="lazyBone.Enabled">
-          </label>
+                  <input type="checkbox" name="enabled" id="enabled" [(ngModel)]="lazyBone.Enabled">
+                </label>
               </div>
             </div>
           </div>

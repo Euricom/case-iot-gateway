@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Euricom.IoT.Common.Exceptions;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Interfaces;
 
-namespace Euricom.IoT.Api.Managers
+namespace Euricom.IoT.Api.Managers.Handlers
 {
-    public class ZWaveDeviceNotifier : IZWaveDeviceNotifier
+    public class ZWaveDeviceNotificationHandler : IZWaveDeviceNotificationHandler
     {
         private readonly IZWaveDeviceRepository _repository;
         private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public ZWaveDeviceNotifier(IZWaveDeviceRepository repository, IGatewayDeviceRegistry gatewayDeviceRegistry)
+        public ZWaveDeviceNotificationHandler(IZWaveDeviceRepository repository, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
             _gatewayDeviceRegistry = gatewayDeviceRegistry;
@@ -17,10 +18,10 @@ namespace Euricom.IoT.Api.Managers
 
         public void Notify(byte nodeId, byte key, byte value)
         {
-            var device = _repository.GetZWaveDevice(nodeId);
-
-            if (device != null)
+            try
             {
+                var device = _repository.GetZWaveDevice(nodeId);
+
                 // Sometimes we get notifications twice
                 // We keep the state so we can check 
                 if (device.UpdateState(key, value))
@@ -32,6 +33,8 @@ namespace Euricom.IoT.Api.Managers
                     Task.Run(async () => await _gatewayDeviceRegistry.SendAsync(device.DeviceId, state));
                 }
             }
+            catch (NotFoundException)
+            { }
         }
     }
 }

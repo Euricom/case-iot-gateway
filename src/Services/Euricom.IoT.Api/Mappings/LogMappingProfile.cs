@@ -13,10 +13,6 @@ namespace Euricom.IoT.Api.Mappings
 
             CreateMap<LogLine, LogLineDto>()
                 .ReverseMap();
-
-            CreateMap<LogLineDto, LogLine>();
-
-            CreateMap<LogLine, LogLineDto>();
         }
     }
 }

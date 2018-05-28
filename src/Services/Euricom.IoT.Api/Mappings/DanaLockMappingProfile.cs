@@ -10,7 +10,10 @@ namespace Euricom.IoT.Api.Mappings
         public DanaLockMappingProfile()
         {
             CreateMap<DanaLock, DanaLockDto>();
-            CreateMap<DanaLockDto, DanaLock>();
+            CreateMap<DanaLockDto, DanaLock>()
+                .ForMember(d => d.PrimaryKey, src => src.Ignore())
+                .ForMember(d => d.Locked, src => src.Ignore())
+                .ForMember(d => d.Type, src => src.Ignore());
         }
     }
 }

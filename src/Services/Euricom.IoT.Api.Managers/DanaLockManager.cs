@@ -8,6 +8,7 @@ using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.DanaLock;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Logging;
+using Euricom.IoT.Models;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -16,12 +17,14 @@ namespace Euricom.IoT.Api.Managers
         private readonly IDeviceRepository<DanaLock> _repository;
         private readonly IZWaveController _controller;
         private readonly IDeviceHubRegistry _deviceRegistry;
+        private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
 
-        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry)
+        public DanaLockManager(IDeviceRepository<DanaLock> repository, IZWaveController controller, IDeviceHubRegistry deviceRegistry, IGatewayDeviceRegistry gatewayDeviceRegistry)
         {
             _repository = repository;
             _controller = controller;
             _deviceRegistry = deviceRegistry;
+            _gatewayDeviceRegistry = gatewayDeviceRegistry;
         }
 
         public IEnumerable<DanaLockDto> Get()
@@ -40,11 +43,13 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task<DanaLockDto> Add(DanaLockDto dto)
         {
-            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId);
+            var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId, HardwareType.DanaLock);
 
             var danalock = new DanaLock(dto.DeviceId, primaryKey, dto.NodeId, dto.Name, dto.Enabled, dto.PollingTime);
 
             _repository.Add(danalock);
+
+            await _gatewayDeviceRegistry.AddDeviceAsync(dto.DeviceId, primaryKey);
 
             return Mapper.Map<DanaLockDto>(danalock);
         }
@@ -71,6 +76,7 @@ namespace Euricom.IoT.Api.Managers
 
         public async Task Remove(string deviceId)
         {
+            await _gatewayDeviceRegistry.RemoveDeviceAsync(deviceId);
             await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
             _repository.Remove(deviceId);
@@ -101,8 +107,7 @@ namespace Euricom.IoT.Api.Managers
             {
                 throw new ArgumentException(state);
             }
-
-
+            
             var danalock = _repository.Get(deviceId);
             
             switch (state)
@@ -114,8 +119,6 @@ namespace Euricom.IoT.Api.Managers
                     danalock.CloseLock(_controller);
                     break;
             }
-            
-            Logger.Instance.Information($"Device {deviceId} changed state: {state}");
         }
     }
 }

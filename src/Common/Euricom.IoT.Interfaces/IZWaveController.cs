@@ -6,8 +6,7 @@ namespace Euricom.IoT.Interfaces
     public interface IZWaveController
     {
         Task SoftReset();
-        Task Initialize(IZWaveDeviceNotifier notifier, string networkKey);
-
+        Task Initialize(IZWaveDeviceNotificationHandler notificationHandler, string networkKey);
         bool TestConnection(byte nodeId);
         bool GetValue(byte nodeId, byte commandId);
         void SetValue(byte nodeId, byte commandId, bool value);

@@ -77,10 +77,10 @@ namespace Euricom.IoT.Messaging
             {
                 try
                 {
-                    var @event = await _deviceClient.ReceiveAsync();
+                    var @event = await _deviceClient.ReceiveAsync(TimeSpan.FromMilliseconds(2000));
                     if (@event == null)
                     {
-                        await Task.Delay(10, _cancellation.Token);
+                        await Task.Delay(50, _cancellation.Token);
                     }
                     else
                     {
@@ -190,13 +190,6 @@ namespace Euricom.IoT.Messaging
                 }
 
                 _cancellation.Cancel();
-
-                _sender.Wait();
-                _receiver.Wait();
-
-                _receiver.Dispose();
-                _sender.Dispose();
-
                 _cancellation = new CancellationTokenSource();
             }
         }
