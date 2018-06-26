@@ -121,14 +121,6 @@
       <Project>{2b675e07-0441-4fa5-9f46-435effd17a01}</Project>
       <Name>Euricom.IoT.Api.Managers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Integration\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
-      <Project>{ba6a5b9a-62ce-40e2-b9e4-eaafc1910d60}</Project>
-      <Name>Euricom.IoT.AzureBlobStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Integration\Euricom.IoT.Dropbox\Euricom.IoT.Dropbox.csproj">
-      <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
-      <Name>Euricom.IoT.Dropbox</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Messaging\Euricom.IoT.Messaging.csproj">
       <Project>{b70fc52f-d02c-4f41-9cb9-e64dfde544d7}</Project>
       <Name>Euricom.IoT.Messaging</Name>

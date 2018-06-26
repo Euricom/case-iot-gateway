@@ -251,10 +251,6 @@
       <Project>{a0b0ae9e-6e31-49fc-818f-94b0d10bb9f8}</Project>
       <Name>Euricom.IoT.ZWave</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Integration\Euricom.IoT.Dropbox\Euricom.IoT.Dropbox.csproj">
-      <Project>{fe6440e6-c92e-4a85-ac19-1355356f4e34}</Project>
-      <Name>Euricom.IoT.Dropbox</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\UI\Euricom.IoT.UI.WebAdministration\Euricom.IoT.UI.WebAdministration.csproj">
       <Project>{fb95c4c7-5c90-4b6d-a35d-0a96bca47e5f}</Project>
       <Name>Euricom.IoT.UI.WebAdministration</Name>

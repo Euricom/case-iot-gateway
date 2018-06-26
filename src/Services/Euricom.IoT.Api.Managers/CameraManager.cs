@@ -88,5 +88,28 @@ namespace Euricom.IoT.Api.Managers
 
             return device.TestConnection(_httpService);
         }
+
+        public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
+        {
+            var device = _repository.Get(deviceId);
+
+
+            //if (config.Enabled)
+            //{
+            //    var notification = new CameraMotionMessage
+            //    {
+            //        Gateway = "IoTGateway",
+            //        Device = config.Name,
+            //        CommandToken = null,
+            //        MessageType = MessageTypes.Camera,
+            //        FilePath = url,
+            //        EventNumber = eventNumber,
+            //        FrameNumber = frameNumber,
+            //    };
+
+            //    // Publish to IoT Hub
+            //    PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
+            //}
+        }
     }
 }

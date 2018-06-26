@@ -51,6 +51,11 @@ namespace Euricom.IoT.Devices.Camera
             return service.TestConnection(Address, "motionEye");
         }
 
+        //public Task MotionDetected(IAzureBlob)
+        //{
+
+        //}
+
         #endregion
     }
 }

@@ -62,5 +62,24 @@ namespace Euricom.IoT.Api.Controllers
             bool succeeded = await _cameraManager.TestConnection(deviceId);
             return ResponseUtilities.GetResponseOk(succeeded);
         }
+
+        [UriFormat("/camera/notify?devicename={devicename}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
+        public IGetResponse Notify(string devicename, string url, string timestamp, int frameNumber, int eventNumber)
+        {
+            try
+            {
+                //Send notification to IoT hub
+                //var deviceId = new HardwareManager().GetDeviceId(devicename);
+                //_cameraManager.Notify(deviceId, url, timestamp, frameNumber, eventNumber);
+
+                // Send response back
+                return ResponseUtilities.GetResponseOk("");
+            }
+            catch (Exception ex)
+            {                
+                //Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
