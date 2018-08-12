@@ -101,6 +101,17 @@ export class UsersViewComponent implements OnInit {
         )
     }
 
+    generateCommandToken(user: User, event: Event) {
+        event.stopPropagation()
+
+        this.userService.generateCommandToken(user.AccessToken)
+            .subscribe(
+                (data) => {
+                    this.toastr.info(`Command token: ${data}`)
+                },
+        )
+    }
+
     setClickedRow(i: Number, User: User) {
         this.selectedRowIndex = i
         this.user = User

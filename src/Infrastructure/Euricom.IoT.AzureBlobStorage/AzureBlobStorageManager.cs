@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Euricom.IoT.Interfaces;
 using Microsoft.WindowsAzure.Storage;
@@ -12,39 +11,34 @@ namespace Euricom.IoT.AzureBlobStorage
     {
         private readonly string _account;
         private readonly string _key;
-        private readonly string _container;
 
-        private CloudBlobContainer _blobContainer;
+        private CloudBlobClient _blobClient;
 
-        public AzureBlobStorageManager(string account, string key, string container)
+        public AzureBlobStorageManager(string account, string key)
         {
             _account = account;
             _key = key;
-            _container = container;
         }
 
-        public async Task Initialize()
+        public Task Initialize()
         {
             var credentials = new StorageCredentials(_account, _key);
             var storageAccount = new CloudStorageAccount(credentials, true);
-            var client = storageAccount.CreateCloudBlobClient();
+            _blobClient = storageAccount.CreateCloudBlobClient();
 
-            _blobContainer = client.GetContainerReference(_container);
-            await _blobContainer.CreateIfNotExistsAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task<string> PostImage(string name, Stream body)
+        public async Task<string> PostImage(string container, string name, Stream body)
         {
-            CloudBlockBlob blob = _blobContainer.GetBlockBlobReference(name);
+            var blobContainer = _blobClient.GetContainerReference(container);
+            await blobContainer.CreateIfNotExistsAsync(BlobContainerPublicAccessType.Blob, new BlobRequestOptions(), new OperationContext());
+
+            CloudBlockBlob blob = blobContainer.GetBlockBlobReference(name);
 
             await blob.UploadFromStreamAsync(body);
 
-            return blob.Uri.ToString();
-        }
-
-        public Task CleanupAsync(TimeSpan age)
-        {
-            throw new NotImplementedException();
+            return blob.Uri.AbsoluteUri.Replace(blob.Uri.AbsolutePath, blob.Uri.AbsolutePath.Replace(":", "%3A"));
         }
     }
 }

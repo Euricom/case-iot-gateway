@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Autofac;
 using Euricom.IoT.Api.Mappings;
@@ -54,15 +53,19 @@ namespace Euricom.IoT.Api
             // Init DanaLock
             var zWaveController = _container.Resolve<IZWaveController>();
             await zWaveController.Initialize(_container.Resolve<IZWaveDeviceNotificationHandler>(), settings.ZWaveNetworkKey);
-            
+
+            // Init storage manager
+            var storageManager = _container.Resolve<IStorageManager>();
+            await storageManager.Initialize();
+
             // Init Webserver
             await _container.Resolve<WebServer>().InitializeWebServer();
 
             // Start receiving and sending to IoT Hub
             var deviceGatewayRegistry = _container.Resolve<IGatewayDeviceRegistry>();
-            var zwaveRepository = _container.Resolve<IZWaveDeviceRepository>();
+            var deviceRepository = _container.Resolve<IDeviceRepository<Device>>();
 
-            await deviceGatewayRegistry.Initialize(zwaveRepository.GetDevices()
+            await deviceGatewayRegistry.Initialize(deviceRepository.Get()
                 .ToDictionary(d => d.DeviceId, d => d.PrimaryKey));
 
             // Start monitoring

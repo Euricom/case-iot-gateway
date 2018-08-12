@@ -30,6 +30,7 @@
                     <td>{{user.Roles.join(", ")}}</td>
                     <td>
                         <button type="button" (click)="generateAccessToken(user, $event)" class="btn btn-primary">Renew</button>
+                        <button type="button" (click)="generateCommandToken(user, $event)" class="btn btn-primary">Get Command Token</button>
                     </td>
                     <td>
                         <button type="button" (click)="delete(user, $event)" class="btn btn-danger">Delete</button>

@@ -223,6 +223,10 @@
       <Project>{45EE642F-ED31-4973-90B0-3C837FD3C115}</Project>
       <Name>Euricom.IoT.Devices.ZWave</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.AzureBlobStorage\Euricom.IoT.AzureBlobStorage.csproj">
+      <Project>{BA6A5B9A-62CE-40E2-B9E4-EAAFC1910D60}</Project>
+      <Name>Euricom.IoT.AzureBlobStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\Euricom.IoT.Http\Euricom.IoT.Http.csproj">
       <Project>{0525e383-d416-4465-8b1d-a06e9d48cf9b}</Project>
       <Name>Euricom.IoT.Http</Name>
@@ -262,10 +266,6 @@
     <ProjectReference Include="..\Euricom.IoT.Api.Models\Euricom.IoT.Api.Models.csproj">
       <Project>{BCAC3E11-F195-4C66-9E8F-B1E5B200E3BA}</Project>
       <Name>Euricom.IoT.Api.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Euricom.IoT.Monitoring\Euricom.IoT.Monitoring.csproj">
-      <Project>{e2c002a8-3c66-4d75-af99-0dd636ae1691}</Project>
-      <Name>Euricom.IoT.Monitoring</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -97,6 +97,21 @@ export class CameraViewComponent implements OnInit {
     )
   }
 
+  getPicture(camera: Camera, event: Event) {
+    event.stopPropagation()
+    if (!camera.Address) {
+      this.toastr.error('Cannot get picture without valid ip address')
+      return
+    }
+    this.toastr.info('Getting picture, please wait')
+    this.cameraService.getPicture(camera.Name)
+      .subscribe(
+        (data) => {
+          window.open(data, '_blank')
+        },
+    )
+  }
+
   setClickedRow(i: Number, camera: Camera) {
     this.selectedRowIndex = i
     this.camera = camera

@@ -10,7 +10,6 @@ using Restup.Webserver.Models.Schemas;
 
 namespace Euricom.IoT.Api.Controllers
 {
-    [Authorize("Manager")]
     [RestController]
     public class CameraController
     {
@@ -21,6 +20,7 @@ namespace Euricom.IoT.Api.Controllers
             _cameraManager = cameraManager;
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera")]
         public IGetResponse GetAll()
         {
@@ -28,6 +28,7 @@ namespace Euricom.IoT.Api.Controllers
             return ResponseUtilities.GetResponseOk(cameras);
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera/{deviceId}")]
         public IGetResponse Get(string deviceId)
         {
@@ -35,6 +36,7 @@ namespace Euricom.IoT.Api.Controllers
             return ResponseUtilities.GetResponseOk(camera);
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera")]
         public async Task<IPostResponse> Add([FromContent] CameraDto dto)
         {
@@ -42,6 +44,7 @@ namespace Euricom.IoT.Api.Controllers
             return ResponseUtilities.PostResponseOk(newCamera);
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera")]
         public IPutResponse Edit([FromContent] CameraDto dto)
         {
@@ -49,6 +52,7 @@ namespace Euricom.IoT.Api.Controllers
             return ResponseUtilities.PutResponseOk(camera);
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera/{deviceId}")]
         public async Task<IDeleteResponse> Delete(string deviceId)
         {
@@ -56,6 +60,7 @@ namespace Euricom.IoT.Api.Controllers
             return new DeleteResponse(DeleteResponse.ResponseStatus.NoContent);
         }
 
+        [Authorize("Manager")]
         [UriFormat("/camera/testconnection/{deviceId}")]
         public async Task<IGetResponse> TestConnection(string deviceId)
         {
@@ -63,22 +68,33 @@ namespace Euricom.IoT.Api.Controllers
             return ResponseUtilities.GetResponseOk(succeeded);
         }
 
-        [UriFormat("/camera/notify?devicename={devicename}&url={url}&ts={timestamp}&frame={frameNumber}&event={eventNumber}")]
-        public IGetResponse Notify(string devicename, string url, string timestamp, int frameNumber, int eventNumber)
+        [Authorize("Manager")]
+        [UriFormat("/camera/{deviceId}/picture")]
+        public async Task<IGetResponse> GetPicture(string deviceId)
+        {
+            var url = await _cameraManager.GetPicture(deviceId, null);
+            return ResponseUtilities.GetResponseOk(url);
+        }
+
+        [UriFormat("/camera/{deviceId}/notify?fileName={fileName}&timestamp={timestamp}")]
+        public IGetResponse Notify(string deviceId, string fileName, DateTime timestamp)
         {
             try
             {
-                //Send notification to IoT hub
-                //var deviceId = new HardwareManager().GetDeviceId(devicename);
-                //_cameraManager.Notify(deviceId, url, timestamp, frameNumber, eventNumber);
+#pragma warning disable 4014
+                // Just fire off and forget.
+                Task.Run(() =>
+                {
+                    _cameraManager.Notify(deviceId, fileName, timestamp);
+                });
+#pragma warning restore 4014
 
-                // Send response back
-                return ResponseUtilities.GetResponseOk("");
+                return new GetResponse(GetResponse.ResponseStatus.OK);
             }
             catch (Exception ex)
             {                
-                //Logging.Logger.Instance.LogErrorWithContext(this.GetType(), ex);
-                throw new Exception(ex.Message);
+                Logging.Logger.Instance.Error(ex);
+                return new GetResponse(GetResponse.ResponseStatus.OK);
             }
         }
     }

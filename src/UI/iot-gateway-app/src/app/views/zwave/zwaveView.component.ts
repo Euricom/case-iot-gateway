@@ -53,6 +53,12 @@ export class ZwaveViewComponent implements OnInit {
     }, )
   }
 
+  heal() {
+    this.zwaveService.heal().subscribe((data) => {
+      this.toastr.info('Heal initiated')
+    }, )
+  }
+
   addNode(secure) {
     this.zwaveService.addNode(secure).subscribe((data) => {
       this.toastr.info('Awaiting manual action, please click the button on the device to include.')

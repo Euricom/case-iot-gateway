@@ -7,7 +7,6 @@ namespace Euricom.IoT.Interfaces
     public interface IStorageManager
     {
         Task Initialize();
-        Task<string> PostImage(string name, Stream body);
-        Task CleanupAsync(TimeSpan age);
+        Task<string> PostImage(string container, string name, Stream body);
     }
 }

@@ -18,13 +18,8 @@
         <tr>
           <th>Device ID</th>
           <th>Name</th>
+          <th>MotionEye Identifier</th>
           <th>IP Address</th>
-          <!--<th>Username</th>
-      <th>Password</th>-->
-          <th>Dropbox folder location</th>
-          <th>Dropbox keep files for (days)</th>
-          <th>Azure Blob storage keep files for (days)</th>
-          <!-- <th>PollingTime</th> -->
           <th>Enabled</th>
           <th> </th>
         </tr>
@@ -33,16 +28,12 @@
         <tr *ngFor="let camera of cameras; let i=index" (click)="setClickedRow(i, camera)" [class.active]="i == selectedRowIndex">
           <td>{{camera.DeviceId}}</td>
           <td>{{camera.Name}}</td>
+          <td>{{camera.MotionEyeIdentifier}}</td>
           <td>{{camera.Address}}</td>
-          <!--<td>{{camera.Username}}</td>
-      <td>{{camera.Password}}</td>-->
-          <td>{{camera.DropboxPath}}</td>
-          <td>{{camera.MaximumDaysDropbox}}</td>
-          <td>{{camera.MaximumDaysAzureBlobStorage}}</td>
-          <!-- <td>{{camera.PollingTime}}</td> -->
           <td>{{camera.Enabled}}</td>
           <td>
             <button type="button" (click)="testConnection(camera, $event)" class="btn btn-primary">Test Connection</button>
+            <button type="button" (click)="getPicture(camera, $event)" class="btn btn-primary">Picture</button>
           </td>
         </tr>
       </tbody>
@@ -79,42 +70,16 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="motionEyeIdentifier" class="control-label col-sm-4">MotionEyeIdentifier</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="motionEyeIdentifier" id="motionEyeIdentifier" [(ngModel)]="camera.MotionEyeIdentifier"
+                placeholder="Enter motion eye identifier" pattern="^[0-9]+$">
+            </div>
+          </div>
+          <div class="form-group">
             <label for="address" class="control-label col-sm-4">Ip address</label>
             <div class="col-sm-8">
               <input type="text" class="form-control" name="address" id="address" [(ngModel)]="camera.Address" placeholder="Enter ip address or hostname">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="address" class="control-label col-sm-4">Dropbox folder location</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" name="dropboxPath" id="dropboxPath" [(ngModel)]="camera.DropboxPath" placeholder="Enter Dropbox folder location, example: /camera1">
-            </div>
-          </div>
-          <!-- <div class="form-group">
-            <label for="pollingtime" class="control-label col-sm-4">Polling time (dropbox)</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" name="pollingTime" id="pollingTime" [(ngModel)]="camera.PollingTime" placeholder="Enter polling time in milliseconds">
-            </div>
-          </div> -->
-          <div class="form-group">
-            <label for="maxDaysOfCameraFilesDropbox" class="control-label col-sm-4">Keep camera images/mp4s for maximum days on Dropbox</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" name="maxDaysOfCameraFilesDropbox" id="maxDaysOfCameraFilesDropbox" [(ngModel)]="camera.MaximumDaysDropbox"
-                placeholder="Enter number of days">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="maxStorageDropbox" class="control-label col-sm-4">Start delete camera images/mp4s when Dropbox storage reaches (GigaBytes)</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" name="maxStorageDropbox" id="maxStorageDropbox" [(ngModel)]="camera.MaximumStorageDropbox"
-                placeholder="Enter gigabytes">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="maxDaysOfCameraFilesAzure" class="control-label col-sm-4">Keep camera images/mp4s for maximum days on Azure Blob storage</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control" name="maxDaysOfCameraFilesAzure" id="maxDaysOfCameraFilesAzure" [(ngModel)]="camera.MaximumDaysAzureBlobStorage"
-                placeholder="Enter number of days">
             </div>
           </div>
           <div class="form-group">

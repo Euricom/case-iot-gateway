@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Euricom.IoT.Models.Messages;
 
 namespace Euricom.IoT.Messaging.Interfaces
 {
@@ -9,6 +10,7 @@ namespace Euricom.IoT.Messaging.Interfaces
         bool IsRunning();
         void Start();
         void Stop();
-        void Send(Dictionary<string, object> properties);
+        void UpdateState(Dictionary<string, object> state);
+        void SendMessage(DeviceMessage message);
     }
 }

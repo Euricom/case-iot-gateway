@@ -8,6 +8,7 @@ using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
+using Euricom.IoT.Models.Messages;
 
 namespace Euricom.IoT.Api.Managers
 {
@@ -17,13 +18,19 @@ namespace Euricom.IoT.Api.Managers
         private readonly IHttpService _httpService;
         private readonly IDeviceHubRegistry _deviceRegistry;
         private readonly IGatewayDeviceRegistry _gatewayDeviceRegistry;
+        private readonly IStorageManager _storageManager;
 
-        public CameraManager(IDeviceRepository<Camera> repository, IHttpService httpService, IDeviceHubRegistry deviceRegistry, IGatewayDeviceRegistry gatewayDeviceRegistry)
+        public CameraManager(IDeviceRepository<Camera> repository, 
+            IHttpService httpService, 
+            IDeviceHubRegistry deviceRegistry, 
+            IGatewayDeviceRegistry gatewayDeviceRegistry,
+            IStorageManager storageManager)
         {
             _repository = repository;
             _httpService = httpService;
             _deviceRegistry = deviceRegistry;
             _gatewayDeviceRegistry = gatewayDeviceRegistry;
+            _storageManager = storageManager;
         }
 
         public IEnumerable<CameraDto> Get()
@@ -42,8 +49,7 @@ namespace Euricom.IoT.Api.Managers
         {
             var primaryKey = await _deviceRegistry.AddDeviceAsync(dto.DeviceId, HardwareType.Camera);
 
-            var camera = new Camera(dto.DeviceId, primaryKey, dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime,
-                dto.MaximumDaysDropbox, dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
+            var camera = new Camera(dto.DeviceId, primaryKey, dto.Name, dto.MotionEyeIdentifier, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime);
 
             _repository.Add(camera);
 
@@ -66,8 +72,7 @@ namespace Euricom.IoT.Api.Managers
 
             var camera = _repository.Get(dto.DeviceId);
 
-            camera.Update(dto.Name, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime, dto.MaximumDaysDropbox,
-                dto.MaximumStorageDropbox, dto.MaximumDaysAzureBlobStorage);
+            camera.Update(dto.Name, dto.MotionEyeIdentifier, dto.Enabled, dto.Address, dto.DropboxPath, dto.PollingTime);
 
             _repository.Update(camera);
 
@@ -79,7 +84,7 @@ namespace Euricom.IoT.Api.Managers
             await _gatewayDeviceRegistry.RemoveDeviceAsync(deviceId);
             await _deviceRegistry.RemoveDeviceAsync(deviceId);
 
-            _repository.Remove(deviceId);
+            _repository.Remove(deviceId); 
         }
 
         public Task<bool> TestConnection(string deviceId)
@@ -89,27 +94,43 @@ namespace Euricom.IoT.Api.Managers
             return device.TestConnection(_httpService);
         }
 
-        public void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber)
+        public async Task Notify(string deviceId, string fileName, DateTime timestamp)
         {
             var device = _repository.Get(deviceId);
 
+            var picture = await device.GetPicture(_httpService, fileName);
 
-            //if (config.Enabled)
-            //{
-            //    var notification = new CameraMotionMessage
-            //    {
-            //        Gateway = "IoTGateway",
-            //        Device = config.Name,
-            //        CommandToken = null,
-            //        MessageType = MessageTypes.Camera,
-            //        FilePath = url,
-            //        EventNumber = eventNumber,
-            //        FrameNumber = frameNumber,
-            //    };
+            var location = await _storageManager.PostImage(deviceId, $"{timestamp:yyyy-MM-dd}/{timestamp:O}_{Guid.NewGuid():D}.jpg", picture);
 
-            //    // Publish to IoT Hub
-            //    PublishMotionEvent(settings, config.Name, config.DeviceId, notification);
-            //}
+            picture.Dispose();
+
+            await _gatewayDeviceRegistry.SendMessageAsync(device.DeviceId, new CameraImageMessage
+            {
+                Url = location,
+                Timestamp = timestamp.ToString("O"),
+                Motion = true
+            });
+        }
+
+        public async Task<string> GetPicture(string deviceId, Guid? correlationId)
+        {
+            var device = _repository.Get(deviceId);
+            var picture = await device.GetPicture(_httpService);
+
+            var now = DateTime.UtcNow;
+            var location = await _storageManager.PostImage(deviceId, $"{now:yyyy-MM-dd}/{now:O}_{correlationId ?? Guid.NewGuid():D}.jpg", picture);
+
+            picture.Dispose();
+            
+            await _gatewayDeviceRegistry.SendMessageAsync(device.DeviceId, new CameraImageMessage
+            {
+                Url = location,
+                Timestamp = now.ToString("O"),
+                CorrelationId = correlationId,
+                Motion = false
+            });
+
+            return location;
         }
     }
 }

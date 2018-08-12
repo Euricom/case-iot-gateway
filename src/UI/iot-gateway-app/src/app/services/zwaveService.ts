@@ -25,6 +25,10 @@ export class ZwaveService {
     return this.authHttp.put(`/api/zwave/reset/soft`, undefined);
   }
 
+  heal() {
+    return this.authHttp.put('/api/zwave/heal', undefined);
+  }
+
   addNode(secure) {
     return this.authHttp.post(`/api/zwave/node/` + secure, undefined);
   }

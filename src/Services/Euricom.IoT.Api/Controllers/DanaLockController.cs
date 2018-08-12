@@ -65,7 +65,7 @@ namespace Euricom.IoT.Api.Controllers
         [UriFormat("/danalock/{deviceId}/switch/{state}")]
         public IPutResponse Switch(string deviceId, string state)
         {
-            //Send switch command to the manager
+            //UpdateStateAsync switch command to the manager
             _danaLockManager.Switch(deviceId, state);
 
             //If it works, send response back to client

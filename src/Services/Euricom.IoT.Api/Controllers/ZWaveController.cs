@@ -22,6 +22,15 @@ namespace Euricom.IoT.Api.Controllers
         public async Task<IPutResponse> Initialize()
         {
             await _zWaveManager.SoftReset();
+
+            return new PutResponse(PutResponse.ResponseStatus.NoContent);
+        }
+
+        [UriFormat("/zwave/heal")]
+        public IPutResponse Heal()
+        {
+            _zWaveManager.Heal();
+
             return new PutResponse(PutResponse.ResponseStatus.NoContent);
         }
 

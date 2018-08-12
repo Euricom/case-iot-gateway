@@ -1,5 +1,6 @@
 ﻿using Euricom.IoT.Api;
 using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -25,7 +26,7 @@ namespace Euricom.IoT.UI
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
 
-            new Startup().Run();
+            Task.Run(() => new Startup().Run());
         }
 
         /// <summary>

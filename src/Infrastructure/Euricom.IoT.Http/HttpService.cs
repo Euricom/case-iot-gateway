@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Euricom.IoT.Interfaces;
@@ -9,7 +10,7 @@ namespace Euricom.IoT.Http
     {
         public async Task<bool> TestConnection(string address, string server)
         {
-            HttpWebRequest request = GetAddress(address);
+            HttpWebRequest request = GetRequest(address);
             request.Credentials = CredentialCache.DefaultCredentials;
             HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
 
@@ -26,7 +27,30 @@ namespace Euricom.IoT.Http
             throw new Exception($"Could not get a valid response from {request.RequestUri}");
         }
 
-        private static HttpWebRequest GetAddress(string address)
+        public async Task<Stream> GetFile(string url)
+        {
+            var request = GetRequest(url);
+
+            int i = 0;
+            HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+
+            while (response.StatusCode == HttpStatusCode.OK && response.ContentLength <= 4000 && i < 15)
+            {
+                await Task.Delay(500);
+                i++;
+
+                response = (HttpWebResponse)await request.GetResponseAsync();
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK && response.ContentLength > 4000)
+            {
+                return response.GetResponseStream();
+            }
+
+            throw new Exception($"Could not get a valid response from {request.RequestUri}");
+        }
+
+        private static HttpWebRequest GetRequest(string address)
         {
             if (String.IsNullOrEmpty(address))
             {

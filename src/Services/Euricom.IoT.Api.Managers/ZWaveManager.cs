@@ -42,5 +42,10 @@ namespace Euricom.IoT.Api.Managers
         {
             return _izWaveController.GetStatus();
         }
+
+        public void Heal()
+        {
+            _izWaveController.Heal();
+        }
     }
 }

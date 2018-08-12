@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Models;
 
@@ -9,7 +10,7 @@ namespace Euricom.IoT.Devices.Camera
         // EF
         private Camera() { }
 
-        public Camera(string deviceId, string primaryKey, string name, bool enabled, string address, string dropboxPath, int pollingTime, int maximumDaysDropbox, double maximumStorageDropbox, int maximumDaysAzureBlobStorage)
+        public Camera(string deviceId, string primaryKey, string name, string motionEyeIdentifier, bool enabled, string address, string dropboxPath, int pollingTime)
             : base(deviceId, primaryKey, HardwareType.Camera)
         {
             Name = name;
@@ -17,29 +18,22 @@ namespace Euricom.IoT.Devices.Camera
             Address = address;
             DropboxPath = dropboxPath;
             PollingTime = pollingTime;
-            MaximumDaysDropbox = maximumDaysDropbox;
-            MaximumStorageDropbox = maximumStorageDropbox;
-            MaximumDaysAzureBlobStorage = maximumDaysAzureBlobStorage;
+            MotionEyeIdentifier = motionEyeIdentifier;
         }
 
+        public string MotionEyeIdentifier { get; protected set; }
         public string Address { get; protected set; }
         public string DropboxPath { get; protected set; }
         public int PollingTime { get; protected set; }
-        public int MaximumDaysDropbox { get; protected set; }
-        public double MaximumStorageDropbox { get; protected set; }
-        public int MaximumDaysAzureBlobStorage { get; protected set; }
 
-        public void Update(string name, bool enabled, string address, string dropboxPath, int pollingTime,
-            int maximumDaysDropbox, double maximumStorageDropbox, int maximumDaysAzureBlobStorage)
+        public void Update(string name,string motionEyeIdentifier, bool enabled, string address, string dropboxPath, int pollingTime)
         {
             Name = name;
+            MotionEyeIdentifier = motionEyeIdentifier;
             Enabled = enabled;
             Address = address;
             DropboxPath = dropboxPath;
             PollingTime = pollingTime;
-            MaximumDaysDropbox = maximumDaysDropbox;
-            MaximumStorageDropbox = maximumStorageDropbox;
-            MaximumDaysAzureBlobStorage = maximumDaysAzureBlobStorage;
         }
 
         #region Functionality
@@ -51,10 +45,19 @@ namespace Euricom.IoT.Devices.Camera
             return service.TestConnection(Address, "motionEye");
         }
 
-        //public Task MotionDetected(IAzureBlob)
-        //{
+        public async Task<Stream> GetPicture(IHttpService httpService, string fileName)
+        {
+            EnforceEnabled();
 
-        //}
+            return await httpService.GetFile($"{Address}/picture/{MotionEyeIdentifier}/preview/{fileName}/");
+        }
+
+        public async Task<Stream> GetPicture(IHttpService httpService)
+        {
+            EnforceEnabled();
+            
+            return await httpService.GetFile($"{Address}/picture/{MotionEyeIdentifier}/current/");
+        }
 
         #endregion
     }

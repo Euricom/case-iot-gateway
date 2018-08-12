@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Euricom.IoT.Api.Models;
 
@@ -13,6 +14,7 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         Task Remove(string deviceId);
 
         Task<bool> TestConnection(string deviceId);
-        //void Notify(string deviceId, string url, string timestamp, int frameNumber, int eventNumber);
+        Task Notify(string deviceId, string fileName, DateTime timestamp);
+        Task<string> GetPicture(string deviceId, Guid? correlationId);
     }
 }

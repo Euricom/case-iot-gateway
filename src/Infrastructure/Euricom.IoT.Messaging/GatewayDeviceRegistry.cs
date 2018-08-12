@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Logging;
 using Euricom.IoT.Messaging.Interfaces;
+using Euricom.IoT.Models.Messages;
 
 namespace Euricom.IoT.Messaging
 {
@@ -51,11 +52,21 @@ namespace Euricom.IoT.Messaging
             return Task.CompletedTask;
         }
 
-        public Task SendAsync(string deviceId, Dictionary<string, object> properties)
+        public Task UpdateStateAsync(string deviceId, Dictionary<string, object> properties)
         {
             if (_devices.TryGetValue(deviceId, out var device))
             {
-                device.Send(properties);
+                device.UpdateState(properties);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task SendMessageAsync(string deviceId, DeviceMessage message)
+        {
+            if (_devices.TryGetValue(deviceId, out var device))
+            {
+                device.SendMessage(message);
             }
 
             return Task.CompletedTask;

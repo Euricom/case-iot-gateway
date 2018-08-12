@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Windows.Storage;
 using Euricom.IoT.Interfaces;
 using Euricom.IoT.Logging;
 using OpenZWave;
@@ -23,12 +25,13 @@ namespace Euricom.IoT.ZWave
 
         private uint _homeId;
         private string _status;
-        private string _networkKey;
+
+        private DateTime _lastReset = DateTime.Now.AddMinutes(-5);
+        private readonly object _sync = new object();
 
         public async Task Initialize(IZWaveDeviceNotificationHandler notificationHandler, string networkKey)
         {
             _notificationHandler = notificationHandler;
-            _networkKey = networkKey;
 
             ZWOptions.Instance.Initialize();
             _initialized = true;
@@ -54,6 +57,33 @@ namespace Euricom.IoT.ZWave
 
             Thread.Sleep(10000);
 
+            await AddDriver();
+
+            Debug.WriteLine("OpenZWave initialized");
+        }
+
+        private void ClearCache()
+        {
+            var files = Directory.GetFiles(ApplicationData.Current.LocalFolder.Path, "*.xml")
+                .Where(path => path.Contains("ozwcache"))
+                .ToList();
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    File.Delete(file);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Instance.Warning(e.ToString());
+                }
+            }
+        }
+
+        private async Task AddDriver()
+        {
 #if NETFX_CORE
             var serialPortSelector = Windows.Devices.SerialCommunication.SerialDevice.GetDeviceSelector();
             var devices = await DeviceInformation.FindAllAsync(serialPortSelector);
@@ -83,9 +113,8 @@ namespace Euricom.IoT.ZWave
                 serial?.Activate(ZWManager.Instance);
             }
 
-            Debug.WriteLine("OpenZWave initialized");
         }
-        
+
         public bool TestConnection(byte nodeId)
         {
             if (_homeId > 0 && _nodeList != null && _nodeList.Any(x => x.Id == nodeId))
@@ -141,18 +170,19 @@ namespace Euricom.IoT.ZWave
 
         public bool GetValue(byte nodeId, byte commandId)
         {
-            //var valueId = _nodeList
-            //    .FirstOrDefault(n => n.Id == nodeId)?
-            //    .GetValueId(commandId);
+            var valueId = _nodeList
+                .FirstOrDefault(n => n.Id == nodeId)?
+                .GetValueId(commandId);
 
-            //if (valueId == null)
-            //{
-            //    throw new Exception("Unknown command ID. Sleep problem?");
-            //}
+            if (valueId == null)
+            {
+                SoftReset();
+                throw new Exception("Unknown value ID. Resetting cache. Please try again later.");
+            }
 
             _zwManager.GetValueAsBool(
-                    new ZWValueId(_homeId, nodeId, ZWValueGenre.User, commandId, 1, 0, ZWValueType.Bool, 0),
-                    out var currentVal);
+                valueId,
+                out var currentVal);
 
             return currentVal;
         }
@@ -165,7 +195,8 @@ namespace Euricom.IoT.ZWave
 
             if (valueId == null)
             {
-                throw new Exception("Unknown command ID. Sleep problem?");
+                SoftReset();
+                throw new Exception("Unknown value ID. Resetting cache. Please try again later.");
             }
 
             _zwManager.SetValue(valueId, value);
@@ -194,29 +225,53 @@ namespace Euricom.IoT.ZWave
             return _status;
         }
 
-        public async Task SoftReset()
+        public void Heal()
         {
+            _zwManager.HealNetwork(_homeId, true);
+        }
+
+        public Task SoftReset()
+        {
+            if (_lastReset.AddMinutes(5) > DateTime.Now)
+            {
+                Logger.Instance.Debug("Last reset occurred less than 5 minutes ago. skipping...");
+                return Task.CompletedTask;
+            }
+            else
+            {
+                lock (_sync)
+                {
+                    if (_lastReset.AddMinutes(5) > DateTime.Now)
+                    {
+                        Logger.Instance.Debug("Last reset occurred less than 5 minutes ago. skipping...");
+                        return Task.CompletedTask;
+                    }
+
+                    _lastReset = DateTime.Now;
+                }
+            }
+
+
+            Logger.Instance.Debug("Resetting...");
             if (_initialized && ZWOptions.Instance.AreLocked)
             {
-                _zwManager.SoftReset(_homeId);
+                ZWManager.Instance.SoftReset(_homeId);
 
-                await Task.Delay(10000);
+                Task.Delay(10000).Wait();
 
                 var port = _serialPorts.FirstOrDefault(p => p.IsActive);
                 port?.Deactivate(_zwManager);
 
-                _serialPorts.Clear();
+                ClearCache();
+
                 _nodeList.Clear();
 
-                _zwManager.NotificationReceived -= OnNodeNotification;
+                Task.Delay(10000).Wait();
 
-                _zwManager.Destroy();
-                ZWOptions.Instance.Destroy();
-
-                await Task.Delay(10000);
+                port?.Activate(_zwManager);
             }
 
-            await Initialize(_notificationHandler, _networkKey);
+            return Task.CompletedTask;
         }
 
         #region Notifications

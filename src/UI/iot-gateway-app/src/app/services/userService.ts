@@ -49,6 +49,11 @@ export class UserService {
       .map((res: Response) => (res.json()))
   }
 
+  generateCommandToken(accessToken: String) {
+    return this.authHttp.post(`/api/security/command-token`, { accessToken: accessToken })
+      .map((res: Response) => (res.json()))
+  }
+
   getRoles(): Observable<Role[]> {
     return this.authHttp.get(`/api/users/roles`)
       .map((res: Response) => (res.json()))

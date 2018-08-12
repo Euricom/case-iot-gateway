@@ -6,6 +6,7 @@ using Euricom.IoT.Api.Managers;
 using Euricom.IoT.Api.Managers.Handlers;
 using Euricom.IoT.Api.Managers.Interfaces;
 using Euricom.IoT.Api.Utilities;
+using Euricom.IoT.AzureBlobStorage;
 using Euricom.IoT.DataLayer;
 using Euricom.IoT.DataLayer.Interfaces;
 using Euricom.IoT.Devices.Camera;
@@ -49,6 +50,12 @@ namespace Euricom.IoT.Api
             builder.RegisterType<ZWaveManager>();
             builder.RegisterType<HttpService>().As<IHttpService>();
             builder.RegisterType<ZWaveController>().As<IZWaveController>().SingleInstance();
+            builder.RegisterType<ZWaveMonitor>().As<IMonitor>().SingleInstance();
+            builder.Register(c =>
+            {
+                var settings = c.Resolve<Settings>();
+                return new AzureBlobStorageManager(settings.AzureAccountName, settings.AzureStorageAccessKey);
+            }).As<IStorageManager>().SingleInstance();
         }
 
         private static void RegisterAzure(ContainerBuilder builder)
@@ -81,6 +88,7 @@ namespace Euricom.IoT.Api
             builder.RegisterType<DeviceRepository<DanaLock>>().As<IDeviceRepository<DanaLock>>();
             builder.RegisterType<DeviceRepository<Camera>>().As<IDeviceRepository<Camera>>();
             builder.RegisterType<DeviceRepository<LazyBone>>().As<IDeviceRepository<LazyBone>>();
+            builder.RegisterType<DeviceRepository<Device>>().As<IDeviceRepository<Device>>();
         }
 
         private static void RegisterManagers(ContainerBuilder builder)

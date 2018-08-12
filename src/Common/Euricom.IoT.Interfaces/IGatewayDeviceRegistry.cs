@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Euricom.IoT.Models.Messages;
 
 namespace Euricom.IoT.Interfaces
 {
@@ -8,6 +9,7 @@ namespace Euricom.IoT.Interfaces
         Task Initialize(Dictionary<string, string> devices);
         Task AddDeviceAsync(string deviceId, string primaryKey);
         Task RemoveDeviceAsync(string deviceId);
-        Task SendAsync(string deviceId, Dictionary<string, object> properties);
+        Task UpdateStateAsync(string deviceId, Dictionary<string, object> properties);
+        Task SendMessageAsync(string deviceId, DeviceMessage message);
     }
 }

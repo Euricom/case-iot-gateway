@@ -5,7 +5,8 @@ namespace Euricom.IoT.Interfaces
 {
     public interface IMessageHandler
     {
-        Task<bool> HandleDanaLockMessage(string deviceId, DanaLockMessage message);
-        Task<bool> HandleWallMountSwitchMessage(string deviceId, WallmountSwitchMessage message);
+        Task HandleDanaLockMessage(string deviceId, DanaLockMessage message);
+        Task HandleWallMountSwitchMessage(string deviceId, WallmountSwitchMessage message);
+        Task<CameraImageMessage> HandleCameraMessage(string deviceId, CameraSnapshotMessage message);
     }
 }

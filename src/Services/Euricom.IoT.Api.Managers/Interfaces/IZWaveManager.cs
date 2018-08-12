@@ -11,5 +11,6 @@ namespace Euricom.IoT.Api.Managers.Interfaces
         void AddNode(bool secure);
         void RemoveNode();
         string GetStatus();
+        void Heal();
     }
 }

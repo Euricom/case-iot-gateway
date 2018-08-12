@@ -22,52 +22,54 @@ namespace Euricom.IoT.Messaging
         private const string ConnectionStringTemplate = "HostName={0};DeviceId={1};SharedAccessKey={2}";
 
         private readonly IMessageHandler _messageHandler;
-        private readonly string _deviceId;
         private readonly string _primaryKey;
         private readonly string _host;
 
         private readonly object _lock = new object();
-        private readonly ConcurrentQueue<Dictionary<string, object>> _queue = new ConcurrentQueue<Dictionary<string, object>>();
+        private readonly ConcurrentQueue<Dictionary<string, object>> _stateQueue = new ConcurrentQueue<Dictionary<string, object>>();
+        private readonly ConcurrentQueue<DeviceMessage> _messageQueue = new ConcurrentQueue<DeviceMessage>();
 
         private CancellationTokenSource _cancellation = new CancellationTokenSource();
 
         private Task _receiver;
-        private Task _sender;
+        private Task _stateSender;
+        private Task _messageSender;
         private DeviceClient _deviceClient;
 
         public GatewayDevice(IMessageHandler messageHandler, string host, string deviceId, string primaryKey)
         {
             _host = host;
-            _deviceId = deviceId;
+            DeviceId = deviceId;
             _primaryKey = primaryKey;
             _messageHandler = messageHandler;
         }
 
-        public string DeviceId => _deviceId;
+        public string DeviceId { get; private set; }
 
         public bool IsRunning()
         {
-            return _receiver?.IsCompleted == false && _sender?.IsCompleted == false;
+            return _receiver?.IsCompleted == false && _stateSender?.IsCompleted == false && _messageSender?.IsCompleted == false;
         }
 
         public void Start()
         {
-            if (_cancellation.IsCancellationRequested || _receiver != null || _sender != null)
+            if (_cancellation.IsCancellationRequested || _receiver != null || _stateSender != null)
             {
                 throw new Exception("This worker is already running, or is currently stopping...");
             }
 
             lock (_lock)
             {
-                if (_cancellation.IsCancellationRequested || _receiver != null || _sender != null)
+                if (_cancellation.IsCancellationRequested || _receiver != null || _stateSender != null)
                 {
                     throw new Exception("This worker is already running, or is currently stopping...");
                 }
 
-                _deviceClient = DeviceClient.CreateFromConnectionString(string.Format(ConnectionStringTemplate, _host, _deviceId, _primaryKey), TransportType.Mqtt);
+                _deviceClient = DeviceClient.CreateFromConnectionString(string.Format(ConnectionStringTemplate, _host, DeviceId, _primaryKey), TransportType.Mqtt);
 
                 _receiver = Task.Run(async () => await ReceiveAsync());
-                _sender = Task.Run(async () => await SendAsync());
+                _stateSender = Task.Run(async () => await UpdateStateAsync());
+                _messageSender = Task.Run(async () => await SendMessageAsync());
             }
         }
 
@@ -132,12 +134,21 @@ namespace Euricom.IoT.Messaging
                 switch (message.MessageType)
                 {
                     case "danalock":
-                        return await _messageHandler.HandleDanaLockMessage(message.Device, JsonConvert.DeserializeObject<DanaLockMessage>(data));
+                        await _messageHandler.HandleDanaLockMessage(message.Device, JsonConvert.DeserializeObject<DanaLockMessage>(data));
+                        break;
                     case "wallmount_switch":
-                        return await _messageHandler.HandleWallMountSwitchMessage(message.Device, JsonConvert.DeserializeObject<WallmountSwitchMessage>(data));
+                        await _messageHandler.HandleWallMountSwitchMessage(message.Device, JsonConvert.DeserializeObject<WallmountSwitchMessage>(data));
+                        break;
+                    case "camera_snapshot":
+                        var response = await _messageHandler.HandleCameraMessage(message.Device, JsonConvert.DeserializeObject<CameraSnapshotMessage>(data));
+
+                        SendMessage(response);
+                        break;
                     default:
                         throw new InvalidOperationException("Unknown message type.");
                 }
+
+                return true;
             }
             catch (Exception e)
             {
@@ -146,13 +157,13 @@ namespace Euricom.IoT.Messaging
             }
         }
 
-        private async Task SendAsync()
+        private async Task UpdateStateAsync()
         {
             while (_cancellation.IsCancellationRequested == false)
             {
                 try
                 {
-                    if (_queue.TryDequeue(out var properties) == false)
+                    if (_stateQueue.TryDequeue(out var properties) == false)
                     {
                         await Task.Delay(10, _cancellation.Token);
                     }
@@ -166,6 +177,31 @@ namespace Euricom.IoT.Messaging
                             }));
 
                         await _deviceClient.UpdateReportedPropertiesAsync(collection);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Error(ex);
+                }
+            }
+        }
+
+        private async Task SendMessageAsync()
+        {
+            while (_cancellation.IsCancellationRequested == false)
+            {
+                try
+                {
+                    if (_messageQueue.TryDequeue(out var messageContent) == false)
+                    {
+                        await Task.Delay(10, _cancellation.Token);
+                    }
+                    else
+                    {
+                        var content = JsonConvert.SerializeObject(messageContent);
+                        var message = new Message(Encoding.UTF8.GetBytes(content));
+
+                        await _deviceClient.SendEventAsync(message);
                     }
                 }
                 catch (Exception ex)
@@ -194,9 +230,14 @@ namespace Euricom.IoT.Messaging
             }
         }
 
-        public void Send(Dictionary<string, object> properties)
+        public void UpdateState(Dictionary<string, object> state)
         {
-            _queue.Enqueue(properties);
+            _stateQueue.Enqueue(state);
+        }
+
+        public void SendMessage(DeviceMessage message)
+        {
+            _messageQueue.Enqueue(message);
         }
     }
 }

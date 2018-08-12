@@ -47,4 +47,9 @@ export class CameraService {
     return this.authHttp.get(`/api/camera/testconnection/${id}`)
       .map((res: Response) => (res.json()))
   }
+
+  getPicture(id: String) {
+    return this.authHttp.get(`/api/camera/${id}/picture`)
+      .map((res: Response) => (res.json()))
+  }
 }
