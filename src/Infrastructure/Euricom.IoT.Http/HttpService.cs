@@ -32,13 +32,14 @@ namespace Euricom.IoT.Http
             var request = GetRequest(url);
 
             int i = 0;
-            HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
 
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             while (response.StatusCode == HttpStatusCode.OK && response.ContentLength <= 4000 && i < 15)
             {
                 await Task.Delay(500);
                 i++;
 
+                request = GetRequest(url);
                 response = (HttpWebResponse)await request.GetResponseAsync();
             }
 

@@ -85,7 +85,14 @@ namespace Euricom.IoT.Api.Controllers
                 // Just fire off and forget.
                 Task.Run(() =>
                 {
-                    _cameraManager.Notify(deviceId, fileName, timestamp);
+                    try
+                    {
+                        _cameraManager.Notify(deviceId, fileName, timestamp);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logging.Logger.Instance.Error(ex, $"Could not get image: {ex.Message}");
+                    }
                 });
 #pragma warning restore 4014
 

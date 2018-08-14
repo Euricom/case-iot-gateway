@@ -16,6 +16,9 @@ namespace Euricom.IoT.ZWave
 
         private CancellationTokenSource _cancellation;
 
+        private DateTime _heal;
+        private DateTime _reset;
+
         public void StartMonitoring()
         {
             _cancellation = new CancellationTokenSource();
@@ -27,14 +30,16 @@ namespace Euricom.IoT.ZWave
         {
             while (_cancellation.IsCancellationRequested == false)
             {
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 1)
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 1 && _heal.Date != DateTime.Now.Date)
                 {
                     _controller.Heal();
+                    _heal = DateTime.Today;
                 }
 
-                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 4)
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && DateTime.Now.Hour == 4 && _reset.Date != DateTime.Now.Date)
                 {
                     await _controller.SoftReset();
+                    _reset = DateTime.Today;
                 }
 
                 await Task.Delay(60000);
