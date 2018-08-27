@@ -1191,7 +1191,7 @@ var CustomHttpService = /** @class */ (function (_super) {
         return _this;
     }
     CustomHttpService.prototype.request = function (request, options) {
-        request.url = "http://192.168.40.184:8800" + request.url;
+        //request.url = "http://192.168.40.184:8800" + request.url;
         console.info("HTTP: " + mapMethods[request.method] + ": " + request.url);
         return _super.prototype.request.call(this, request, options)
             .catch(function (response) {

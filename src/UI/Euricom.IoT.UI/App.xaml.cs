@@ -25,7 +25,7 @@ namespace Euricom.IoT.UI
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
-
+            
             Task.Run(() => new Startup().Run());
         }
 
