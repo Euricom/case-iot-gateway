@@ -266,7 +266,7 @@ namespace Euricom.IoT.ZWave
 
                 _nodeList.Clear();
 
-                Task.Delay(10000).Wait();
+                Task.Delay(20000).Wait();
 
                 port?.Activate(_zwManager);
             }
@@ -278,124 +278,135 @@ namespace Euricom.IoT.ZWave
 
         private void OnNodeNotification(ZWManager sender, NotificationReceivedEventArgs args)
         {
-            var notification = args.Notification;
-
-            var homeId = notification.HomeId;
-            var nodeId = notification.NodeId;
-
-            if (homeId > 0)
+            try
             {
-                _homeId = homeId;
-            }
+                var notification = args.Notification;
 
-            switch (notification.Type)
-            {
-                // NodeAdded : Node now exists in the system. Very little useful info
-                case ZWNotificationType.NodeAdded:
-                    {
-                        //if this node was in zwcfg*.xml, this is the first node notification
-                        //if not, the NodeNew notification should already have been received
-                        if (GetNode(homeId, nodeId) == null)
+                var homeId = notification.HomeId;
+                var nodeId = notification.NodeId;
+
+                if (homeId > 0)
+                {
+                    _homeId = homeId;
+                }
+
+                switch (notification.Type)
+                {
+                    // NodeAdded : Node now exists in the system. Very little useful info
+                    case ZWNotificationType.NodeAdded:
                         {
-                            _nodeList.Add(new Node(nodeId, homeId));
-                        }
-                        break;
-                    }
-
-                case ZWNotificationType.NodeNew:
-                    {
-                        //Add the new node to our list(and flag as uninitialized)
-                        _nodeList.Add(new Node(nodeId, homeId));
-                        break;
-                    }
-
-                case ZWNotificationType.NodeRemoved:
-                    {
-                        foreach (var node in _nodeList)
-                        {
-                            if (node.Id == nodeId)
+                            //if this node was in zwcfg*.xml, this is the first node notification
+                            //if not, the NodeNew notification should already have been received
+                            if (GetNode(homeId, nodeId) == null)
                             {
-                                _nodeList.Remove(node);
-                                break;
+                                _nodeList.Add(new Node(nodeId, homeId));
                             }
+
+                            break;
                         }
-                        break;
-                    }
 
-                case ZWNotificationType.DriverReady:
-                    {
-                        _status = $"Initializing...driver with Home ID 0x{notification.HomeId:X8} is ready.";
-                        break;
-                    }
-
-                case ZWNotificationType.DriverFailed:
-                    {
-                        _status = "Driver failed for HomeID " + homeId;
-                        break;
-                    }
-
-                case ZWNotificationType.DriverRemoved:
-                    {
-                        var nodes = GetNodes(homeId).ToArray();
-                        foreach (var node in nodes)
+                    case ZWNotificationType.NodeNew:
                         {
-                            _nodeList.Remove(node);
+                            //Add the new node to our list(and flag as uninitialized)
+                            _nodeList.Add(new Node(nodeId, homeId));
+                            break;
                         }
-                        break;
-                    }
 
-                case ZWNotificationType.AllNodesQueried:
-                    {
-                        _status = ZWNotificationType.AllNodesQueried.ToString();
-
-                        Logger.Instance.Information(_status);
-
-                        break;
-                    }
-
-                case ZWNotificationType.AllNodesQueriedSomeDead:
-                    {
-                        _status = ZWNotificationType.AllNodesQueriedSomeDead.ToString();
-
-                        Logger.Instance.Information(_status);
-
-                        break;
-                    }
-                case ZWNotificationType.AwakeNodesQueried:
-                    {
-                        _status = ZWNotificationType.AwakeNodesQueried.ToString();
-
-                        Logger.Instance.Information(_status);
-
-                        break;
-                    }
-                case ZWNotificationType.NodeProtocolInfo:
-                case ZWNotificationType.NodeEvent:
-                case ZWNotificationType.NodeNaming:
-                case ZWNotificationType.ValueAdded:
-                case ZWNotificationType.ValueRefreshed:
-                case ZWNotificationType.ValueRemoved:
-                case ZWNotificationType.ValueChanged:
-                case ZWNotificationType.Group:
-                    {
-                        if (nodeId > 0)
+                    case ZWNotificationType.NodeRemoved:
                         {
-                            var node = GetNode(homeId, nodeId);
-                            if (node != null)
+                            foreach (var node in _nodeList)
                             {
-                                node.HandleEvent(notification);
-
-                                if (_status == ZWNotificationType.AllNodesQueried.ToString() ||
-                                    _status == ZWNotificationType.AllNodesQueriedSomeDead.ToString())
+                                if (node.Id == nodeId)
                                 {
-                                    _notificationHandler.Notify(nodeId, notification.ValueId.CommandClassId,
-                                        Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
+                                    _nodeList.Remove(node);
+                                    break;
                                 }
                             }
+
+                            break;
                         }
 
-                        break;
-                    }
+                    case ZWNotificationType.DriverReady:
+                        {
+                            _status = $"Initializing...driver with Home ID 0x{notification.HomeId:X8} is ready.";
+                            break;
+                        }
+
+                    case ZWNotificationType.DriverFailed:
+                        {
+                            _status = "Driver failed for HomeID " + homeId;
+                            break;
+                        }
+
+                    case ZWNotificationType.DriverRemoved:
+                        {
+                            var nodes = GetNodes(homeId).ToArray();
+                            foreach (var node in nodes)
+                            {
+                                _nodeList.Remove(node);
+                            }
+
+                            break;
+                        }
+
+                    case ZWNotificationType.AllNodesQueried:
+                        {
+                            _status = ZWNotificationType.AllNodesQueried.ToString();
+
+                            Logger.Instance.Information(_status);
+
+                            break;
+                        }
+
+                    case ZWNotificationType.AllNodesQueriedSomeDead:
+                        {
+                            _status = ZWNotificationType.AllNodesQueriedSomeDead.ToString();
+
+                            Logger.Instance.Information(_status);
+
+                            break;
+                        }
+                    case ZWNotificationType.AwakeNodesQueried:
+                        {
+                            _status = ZWNotificationType.AwakeNodesQueried.ToString();
+
+                            Logger.Instance.Information(_status);
+
+                            break;
+                        }
+                    case ZWNotificationType.NodeProtocolInfo:
+                    case ZWNotificationType.NodeEvent:
+                    case ZWNotificationType.NodeNaming:
+                    case ZWNotificationType.ValueAdded:
+                    case ZWNotificationType.ValueRefreshed:
+                    case ZWNotificationType.ValueRemoved:
+                    case ZWNotificationType.ValueChanged:
+                    case ZWNotificationType.Group:
+                        {
+                            if (nodeId > 0 && notification.ValueId.CommandClassId > 0)
+                            {
+                                var node = GetNode(homeId, nodeId);
+                                if (node != null)
+                                {
+                                    node.HandleEvent(notification);
+
+                                    if (_status == ZWNotificationType.AllNodesQueried.ToString() ||
+                                        _status == ZWNotificationType.AllNodesQueriedSomeDead.ToString())
+                                    {
+                                        _notificationHandler.Notify(nodeId, notification.ValueId.CommandClassId,
+                                            Convert.ToByte(GetValue(nodeId, notification.ValueId.CommandClassId)));
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                }
+
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.Error(e);
             }
         }
 

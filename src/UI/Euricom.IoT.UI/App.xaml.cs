@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.ExtendedExecution.Foreground;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -25,8 +26,35 @@ namespace Euricom.IoT.UI
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
-            
-            Task.Run(() => new Startup().Run());
+        }
+
+        ExtendedExecutionForegroundSession _session;
+        private async Task PreventFromSuspending()
+        {
+            ExtendedExecutionForegroundSession newSession = new ExtendedExecutionForegroundSession();
+            newSession.Reason = ExtendedExecutionForegroundReason.Unconstrained;
+            newSession.Revoked += SessionRevoked;
+
+            ExtendedExecutionForegroundResult result = await newSession.RequestExtensionAsync();
+            switch (result)
+            {
+                case ExtendedExecutionForegroundResult.Allowed:
+                    _session = newSession;
+                    break;
+                default:
+                case ExtendedExecutionForegroundResult.Denied:
+                    newSession.Dispose();
+                    break;
+            }
+        }
+
+        private void SessionRevoked(object sender, ExtendedExecutionForegroundRevokedEventArgs args)
+        {
+            if (_session != null)
+            {
+                _session.Dispose();
+                _session = null;
+            }
         }
 
         /// <summary>
@@ -34,8 +62,10 @@ namespace Euricom.IoT.UI
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+            Task.Run(() => new Startup().Run());
+
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -74,6 +104,9 @@ namespace Euricom.IoT.UI
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
+            if (_session == null)
+                await PreventFromSuspending();
         }
 
         /// <summary>
@@ -95,6 +128,8 @@ namespace Euricom.IoT.UI
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            Logger.Instance.Warning("Suspending application.");
+
             var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
         }
